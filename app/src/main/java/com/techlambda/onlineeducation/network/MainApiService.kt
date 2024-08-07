@@ -6,7 +6,5 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface MainApiService {
-    @GET("/Virtual/{screenName}")
-    suspend fun getScreenData(@Path("screenName") screenName: String): Response<ScreenDataModel>
-
+    suspend fun getScreenData(@Path("screenName") screenName: String): ApiResponse<ScreenDataModel>
 }

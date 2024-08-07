@@ -1,15 +1,24 @@
 package com.techlambda.onlineeducation.di
 
 import com.techlambda.onlineeducation.network.MainApiService
+import com.techlambda.onlineeducation.utils.AppApiRoutes.BASE_URL
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -18,25 +27,24 @@ class AppDiModule {
 
     @Singleton
     @Provides
-    fun providesRetrofit(): Retrofit {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+    fun provideKtorHttpClient(): HttpClient {
+        return HttpClient(OkHttp){
+            install(ContentNegotiation) {
+                json(json = Json {
+                    ignoreUnknownKeys = true
+                })
+            }
+            install(DefaultRequest)
+            defaultRequest {
+                url(BASE_URL)
+            }
+            engine {
+                config {
+                    retryOnConnectionFailure(true)
+                    connectTimeout(5, TimeUnit.SECONDS)
+                }
+            }
         }
-
-        // Create OkHttpClient and add the logging interceptor
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
-
-        return Retrofit.Builder().baseUrl("http://93.127.185.153:3022")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
     }
 
-    @Singleton
-    @Provides
-    fun provideLoginAPIService(retrofit: Retrofit) : MainApiService {
-        return retrofit.create(MainApiService::class.java)
-    }
 }
