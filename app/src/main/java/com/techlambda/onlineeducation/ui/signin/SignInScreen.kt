@@ -90,8 +90,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Password Input
-        val passwordVisibility = uiStates.isPasswordVisible // You should manage this state properly
+        val passwordVisibility = uiStates.isPasswordVisible
         OutlinedTextField(
             value = uiStates.password,
             onValueChange = {

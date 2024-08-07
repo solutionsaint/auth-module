@@ -9,9 +9,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-class SignInViewModel : ViewModel() {
+@HiltViewModel
+class SignInViewModel @Inject constructor() : ViewModel() {
 
     private val _uiStates = MutableStateFlow(SignInUiState())
     val state = _uiStates.asStateFlow()
