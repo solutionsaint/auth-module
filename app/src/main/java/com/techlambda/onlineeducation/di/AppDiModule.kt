@@ -1,8 +1,6 @@
 package com.techlambda.onlineeducation.di
 
-import com.techlambda.onlineeducation.network.MainApiService
 import com.techlambda.onlineeducation.utils.AppApiRoutes.BASE_URL
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,10 +12,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
