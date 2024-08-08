@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 CompositionLocalProvider(value = LocalNavigationProvider provides navController) {
                     Surface(color = MaterialTheme.colorScheme.background) {
-                        MainScreen()
+                        AppNavHost(modifier = Modifier)
                     }
                 }
 
