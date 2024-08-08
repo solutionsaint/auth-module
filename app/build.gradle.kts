@@ -83,6 +83,7 @@ dependencies {
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
+
     implementation(libs.accompanist.systemuicontroller)
 
     //Ktor
@@ -94,4 +95,8 @@ dependencies {
     implementation(libs.ktor.client.auth)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.android)
+
+    //DataStore
+    implementation (libs.androidx.datastore.preferences)
+
 }

@@ -22,9 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.techlambda.onlineeducation.navigation.AppNavigation
+import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
 
 @Composable
 fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
+    val navigation = LocalNavigationProvider.current
     val state by viewModel.state.collectAsState()
     var isVerifyButtonEnabled by remember {
         mutableStateOf(false)
@@ -54,7 +57,10 @@ fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { viewModel.onEvent(OtpUiEvent.VerifyOtp) },
+            onClick = {
+                viewModel.onEvent(OtpUiEvent.VerifyOtp)
+                navigation.navigate(AppNavigation.Home)
+            },
             modifier = Modifier.fillMaxWidth(),
             enabled = isVerifyButtonEnabled
         ) {

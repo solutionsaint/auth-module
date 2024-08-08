@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation.network
+package com.techlambda.onlineeducation.data.network
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
