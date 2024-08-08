@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -16,23 +14,17 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.techlambda.onlineeducation.R
-import com.techlambda.onlineeducation.ui.theme.orange
-import com.techlambda.onlineeducation.utils.Constants.homeScreen
-import com.techlambda.onlineeducation.utils.Constants.moreScreen
-import com.techlambda.onlineeducation.utils.Constants.ourServicesScreen
-import com.techlambda.onlineeducation.utils.Constants.productPortfolioScreen
+import com.techlambda.onlineeducation.ui.theme.blue
 
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val currentRoute = navController.currentDestination?.route
-    NavigationBar(containerColor = orange) {
+    NavigationBar(containerColor = blue) {
         NavigationBarItem(icon = {
             Icon(
                 imageVector = Icons.Filled.Home,
