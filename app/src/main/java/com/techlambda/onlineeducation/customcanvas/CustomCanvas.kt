@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LineWeight
 import androidx.compose.material.icons.filled.Rectangle
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
@@ -32,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -151,8 +153,12 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            IconButton(onClick = {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(onClick = {
                 val shape = Shape(
                     id = shapesList.size,
                     type = ShapeType.ROOM,
@@ -167,33 +173,29 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                 rotation = shape.rotationDegree
                 shapesList.add(shape)
             }) {
-                Icon(
-                    imageVector = Icons.Default.Rectangle,
-                    contentDescription = "room",
-                    tint = Color.Black
-                )
+                Text(text = "Add Room", color = Color.Black)
             }
-            IconButton(onClick = {
-                val shape = Shape(
-                    type = ShapeType.DOOR,
-                    offset = Coordinates(0f, 0f),
-                    width = 100f,
-                    height = 100f,
-                    rotationDegree = 0f,
-                )
-                shapesList.add(shape)
-            }) {
-                Icon(imageVector = Icons.Default.LineWeight, contentDescription = "line")
-            }
-            IconButton(onClick = {
-            }) {
-                Icon(imageVector = Icons.Default.Rectangle, contentDescription = "room")
-            }
+            /*   IconButton(onClick = {
+                   val shape = Shape(
+                       type = ShapeType.DOOR,
+                       offset = Coordinates(0f, 0f),
+                       width = 100f,
+                       height = 100f,
+                       rotationDegree = 0f,
+                   )
+                   shapesList.add(shape)
+               }) {
+                   Icon(imageVector = Icons.Default.LineWeight, contentDescription = "line")
+               }
+               IconButton(onClick = {
+               }) {
+                   Icon(imageVector = Icons.Default.Rectangle, contentDescription = "room")
+               }*/
 
 
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text("Width: ${width.toInt()}")
+            Text("Width ", color = Color.Black)
             Slider(
                 value = width,
                 onValueChange = {
@@ -206,7 +208,7 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
 
         // Height Slider
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text("Height: ${height.toInt()}")
+            Text("Height ", color = Color.Black)
             Slider(
                 value = height,
                 onValueChange = {
@@ -219,7 +221,7 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
 
         // Rotation Slider
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text("Rotation: ${rotation.toInt()}°")
+            Text("Deg: ${rotation.toInt()}°", color = Color.Black)
             Slider(
                 value = rotation,
                 onValueChange = {

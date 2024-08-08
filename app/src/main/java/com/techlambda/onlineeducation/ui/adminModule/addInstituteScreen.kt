@@ -35,18 +35,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
 import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
+import com.techlambda.onlineeducation.navigation.AppNavigation
+import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
 import com.techlambda.onlineeducation.ui.common.ImageSelectionDialog
-import com.techlambda.onlineeducation.ui.signin.SignInScreen
 
 @Composable
-fun addInstituteScreen() {
+fun AddInstituteScreen() {
     var imageUri by remember { mutableStateOf("") }
     var showPopup by remember { mutableStateOf(false) }
     val context = LocalContext.current
-
+    val navController = LocalNavigationProvider.current
 
     Column(
         modifier = Modifier
@@ -61,7 +61,8 @@ fun addInstituteScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text("Upload Institute\n Images - Step 1",
+            Text(
+                "Upload Institute\n Images - Step 1",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp),
@@ -89,18 +90,21 @@ fun addInstituteScreen() {
                 if (imageUri.isEmpty()) {
                     Toast.makeText(context, "Upload Image", Toast.LENGTH_SHORT).show()
                 } else {
-                   // navigateToNextScreen()
+                    navController.navigate(AppNavigation.AddLayout)
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2979FF), contentColor = Color.White)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF2979FF),
+                contentColor = Color.White
+            )
         ) {
             Text(text = "Submit")
         }
-}
-    if(showPopup) {
+    }
+    if (showPopup) {
         ImageSelectionDialog(
             showDialog = showPopup,
             onDismiss = { showPopup = false },
@@ -109,12 +113,15 @@ fun addInstituteScreen() {
 }
 
 @Composable
-private fun showImage(imageUri: String){
+private fun showImage(imageUri: String) {
     val uri = imageUri.toUri()
     if (imageUri.isNotEmpty()) {
         Image(
-            painter = rememberAsyncImagePainter(model = uri), contentDescription = "Selected Uri", modifier = Modifier.fillMaxSize())
-    }else{
+            painter = rememberAsyncImagePainter(model = uri),
+            contentDescription = "Selected Uri",
+            modifier = Modifier.fillMaxSize()
+        )
+    } else {
         Row {
             Icon(
                 modifier = Modifier.padding(5.dp),
@@ -129,5 +136,5 @@ private fun showImage(imageUri: String){
 @Preview(showBackground = true)
 @Composable
 private fun addInstituePrev() {
-    addInstituteScreen()
+    AddInstituteScreen()
 }

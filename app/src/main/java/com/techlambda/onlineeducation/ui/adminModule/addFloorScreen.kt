@@ -36,10 +36,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.techlambda.onlineeducation.R
+import com.techlambda.onlineeducation.navigation.AppNavigation
+import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFloorSetupScreen() {
+    val navController = LocalNavigationProvider.current
     var selectedFloor by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
     val floorOptions = listOf("Floor 1", "Floor 2", "Floor 3")
@@ -121,7 +124,7 @@ fun AddFloorSetupScreen() {
 }
         Button(
             onClick = {
-                // Handle add floor logic here
+                navController.navigate(AppNavigation.AddInstitute)
             },
             modifier = Modifier
                 .fillMaxWidth()

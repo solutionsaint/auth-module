@@ -27,10 +27,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.techlambda.onlineeducation.navigation.AppNavigation
+import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
 
 @Composable
 fun drawLayoutSetupScreen() {
-    val floorItems = listOf("Ground Floor", "First Floor", "Second Floor", "Third Floor", "Fourth Floor")
+    val navController = LocalNavigationProvider.current
+    val floorItems =
+        listOf("Ground Floor", "First Floor", "Second Floor", "Third Floor", "Fourth Floor")
 
     Column(
         modifier = Modifier
@@ -68,7 +72,7 @@ fun drawLayoutSetupScreen() {
                         .clip(RoundedCornerShape(20.dp))
                         .background(Color(0xFFF0F0F0))
                         .clickable {
-                            // Handle item click
+                            navController.navigate(AppNavigation.AddLayoutDraw)
                         }
                         .padding(horizontal = 16.dp, vertical = 16.dp)
                 ) {
@@ -94,12 +98,15 @@ fun drawLayoutSetupScreen() {
 
         Button(
             onClick = {
-                // Handle button click
+                navController.navigate(AppNavigation.SetupComplete)
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2979FF), contentColor = Color.White),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF2979FF),
+                contentColor = Color.White
+            ),
             shape = RoundedCornerShape(25.dp)
         ) {
             Text(text = "Upload All Layout", fontSize = 18.sp, fontWeight = FontWeight.Bold)

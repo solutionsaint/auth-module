@@ -9,6 +9,10 @@ import androidx.navigation.compose.composable
 import com.techlambda.onlineeducation.ui.signin.SignInScreen
 import com.techlambda.onlineeducation.ui.signin.SignUpScreen
 import com.techlambda.onlineeducation.customcanvas.BlueprintDrawer
+import com.techlambda.onlineeducation.ui.adminModule.AddFloorSetupScreen
+import com.techlambda.onlineeducation.ui.adminModule.AddInstituteScreen
+import com.techlambda.onlineeducation.ui.adminModule.SetupCompleteScreen
+import com.techlambda.onlineeducation.ui.adminModule.drawLayoutSetupScreen
 import kotlinx.serialization.Serializable
 
 
@@ -22,18 +26,23 @@ fun AppNavHost(modifier: Modifier) {
     NavHost(
         modifier = modifier,
         navController = navHostController,
-        startDestination = AppNavigation.SignInScreen,
+        startDestination = AppNavigation.AddFloor,
     ) {
-        composable<AppNavigation.Splash> {
+        composable<AppNavigation.AddFloor> {
+           AddFloorSetupScreen()
+        }
+        composable<AppNavigation.AddInstitute> {
+            AddInstituteScreen()
+        }
+        composable<AppNavigation.AddLayout> {
+            drawLayoutSetupScreen()
+        }
+        composable<AppNavigation.SetupComplete> {
+            SetupCompleteScreen()
+        }
+        composable<AppNavigation.AddLayoutDraw> {
             BlueprintDrawer()
         }
-        composable<AppNavigation.SignInScreen> {
-            SignInScreen()
-        }
-        composable<AppNavigation.SignupStudentScreen> {
-            SignUpScreen()
-        }
-        composable<AppNavigation.SignUpInstructorScreen> {}
         composable<AppNavigation.VerifyOtpScreen> {
 
         }
@@ -51,6 +60,21 @@ fun AppNavHost(modifier: Modifier) {
 sealed class AppNavigation {
     @Serializable
     data object Splash
+
+    @Serializable
+    data object AddFloor
+
+    @Serializable
+    data object AddInstitute
+
+    @Serializable
+    data object AddLayout
+
+    @Serializable
+    data object AddLayoutDraw
+
+    @Serializable
+    data object SetupComplete
 
     @Serializable
     data object SignInScreen
