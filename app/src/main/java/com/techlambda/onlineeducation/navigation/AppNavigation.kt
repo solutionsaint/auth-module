@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.techlambda.onlineeducation.customcanvas.BlueprintDrawer
 import kotlinx.serialization.Serializable
 
 
@@ -21,6 +22,9 @@ fun AppNavHost(modifier: Modifier) {
         navController = navHostController,
         startDestination = AppNavigation.Splash,
     ) {
+        composable<AppNavigation.Splash> {
+            BlueprintDrawer()
+        }
         composable<AppNavigation.SignInScreen> {
 
         }

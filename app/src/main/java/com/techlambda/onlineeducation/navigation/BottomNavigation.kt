@@ -81,7 +81,9 @@ fun BottomNavigationBar(navController: NavHostController) {
 @Composable
 fun MainScreen() {
     val navController = LocalNavigationProvider.current
-    Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {}) { paddingValues ->
+    Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
+        BottomNavigationBar(navController = navController)
+    }) { paddingValues ->
         AppNavHost(modifier = Modifier.padding(paddingValues))
     }
 }
