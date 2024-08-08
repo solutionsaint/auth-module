@@ -4,6 +4,6 @@ import androidx.compose.ui.graphics.Color
 
 val background_dark = Color(0xFFE6E6E6)
 val background_light = Color(0xFFFDFBFB)
-val orange = Color(0xFFDE713E)
-val orange_light = Color(0xFFFFEA975)
-val orange_dark = Color(0xFFFF6A0F)
+val blue = Color(0xFF1463DA)
+val blue_light = Color(0xFF20A6FF)
+val blue_dark = Color(0xFF0004E4)

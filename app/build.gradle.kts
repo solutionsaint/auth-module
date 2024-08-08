@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.techlambda.onlineeducation"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 3
         versionName = "1.3"
@@ -99,4 +99,6 @@ dependencies {
     //DataStore
     implementation (libs.androidx.datastore.preferences)
 
+    //Coil
+    implementation(libs.coil.compose)
 }

@@ -6,6 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.techlambda.onlineeducation.ui.signin.SignInScreen
+import com.techlambda.onlineeducation.ui.signin.SignUpScreen
 import kotlinx.serialization.Serializable
 
 
@@ -19,14 +21,18 @@ fun AppNavHost(modifier: Modifier) {
     NavHost(
         modifier = modifier,
         navController = navHostController,
-        startDestination = AppNavigation.Splash,
+        startDestination = AppNavigation.SignInScreen,
     ) {
         composable<AppNavigation.SignInScreen> {
+            SignInScreen()
+        }
+        composable<AppNavigation.SignupStudentScreen> {
+            SignUpScreen()
+        }
+        composable<AppNavigation.SignUpInstructorScreen> {}
+        composable<AppNavigation.VerifyOtpScreen> {
 
         }
-        composable<AppNavigation.SignupStudentScreen> {}
-        composable<AppNavigation.SignUpInstructorScreen> {}
-        composable<AppNavigation.VerifyOtpScreen> {}
         composable<AppNavigation.MyCourse> {}
         composable<AppNavigation.CourseDetailsScreen> {}
         composable<AppNavigation.CourseCreateScreen> {}
@@ -44,6 +50,9 @@ sealed class AppNavigation {
 
     @Serializable
     data object SignInScreen
+
+    @Serializable
+    data object SignUpScreen
 
     @Serializable
     data object SignupStudentScreen
