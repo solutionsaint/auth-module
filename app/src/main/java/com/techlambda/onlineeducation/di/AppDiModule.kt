@@ -41,4 +41,17 @@ class AppDiModule {
         }
     }
 
+    @Singleton
+    @Provides
+    fun provideAuthApi(client: HttpClient): AuthApi {
+        return AuthApiImpl(client)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAuthRepository(authApi: AuthApi): AuthRepository {
+        return AuthRepository(authApi)
+    }
+}
+
 }
