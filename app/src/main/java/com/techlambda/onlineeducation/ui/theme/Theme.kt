@@ -24,7 +24,14 @@ private val LightColorScheme = lightColorScheme(
     primary = blue,
     secondary = blue_light,
     tertiary = blue_light,
-    background = background_light
+    background = background_light,
+    onPrimary = Color.White,
+    surfaceContainer = Color.White,
+    onSecondaryContainer = Color.Black,
+    onSurface = Color.Black,
+    surface = Color.White,
+    onSurfaceVariant = Color.Black,
+    surfaceVariant = Color.White,
 )
 
 @Composable
@@ -45,7 +52,7 @@ fun VMTheme(
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = LightColorScheme,
         typography = Typography,
         content = content
     )

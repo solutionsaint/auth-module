@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
@@ -121,6 +122,9 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
         mutableFloatStateOf(0f)
     }
 
+    val mainBoxSize = remember { mutableStateOf(Size(0f, 0f)) }
+
+
     LaunchedEffect(shapesList.size) {
         selectedShape = shapesList.lastOrNull()
         Log.d(TAG, "offset: size $selectedShape")
@@ -129,8 +133,6 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
     LaunchedEffect(key1 = offset, key2 = height, key3 = width) {
         selectedShape =
             selectedShape?.copy(offset = offset.toCoordinates(), height = height, width = width)
-        Log.d(TAG, "offset: " + selectedShape?.offset)
-        Log.d(TAG, "offset: " + offset)
         shapesList.replaceAll {
             if (it.id == selectedShape?.id) {
                 selectedShape!!
@@ -175,24 +177,6 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
             }) {
                 Text(text = "Add Room", color = Color.Black)
             }
-            /*   IconButton(onClick = {
-                   val shape = Shape(
-                       type = ShapeType.DOOR,
-                       offset = Coordinates(0f, 0f),
-                       width = 100f,
-                       height = 100f,
-                       rotationDegree = 0f,
-                   )
-                   shapesList.add(shape)
-               }) {
-                   Icon(imageVector = Icons.Default.LineWeight, contentDescription = "line")
-               }
-               IconButton(onClick = {
-               }) {
-                   Icon(imageVector = Icons.Default.Rectangle, contentDescription = "room")
-               }*/
-
-
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Text("Width ", color = Color.Black)
@@ -236,6 +220,13 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                 .fillMaxSize()
                 .padding(20.dp)
                 .border(width = 4.dp, color = Color.Black)
+                .onGloballyPositioned { coordinates ->
+                    mainBoxSize.value = Size(
+                        coordinates.size.width.toFloat(),
+                        coordinates.size.height.toFloat()
+                    )
+
+                }
         ) {
             shapesList.forEach {
                 if (it.id != selectedShape?.id) {
@@ -261,10 +252,32 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                         }
                         .pointerInput(Unit) {
                             detectDragGestures { change, dragAmount ->
-                                offset = offset.plus(dragAmount)
-                            }
-                            detectTransformGestures { _, pan, _, _ ->
-                                //   offset = offset.plus(pan)
+                                val newOffset = offset + dragAmount
+
+
+                                // Boundary Check
+                                val clampedOffset = Offset(
+                                    x = newOffset.x.coerceIn(
+                                        0f,
+                                        mainBoxSize.value.width - width.dp.toPx()
+                                    ),
+                                    y = newOffset.y.coerceIn(
+                                        0f,
+                                        mainBoxSize.value.height - height.dp.toPx()
+                                    )
+                                )
+
+                                // Collision Detection
+                                val hasCollision = shapesList.any {shape->
+                                    it.id != shape.id &&
+                                            it.offset.x < clampedOffset.x + width &&
+                                            it.offset.x + it.width > clampedOffset.x &&
+                                            it.offset.y < clampedOffset.y + height &&
+                                            it.offset.y + it.height > clampedOffset.y
+                                }
+
+                                    offset = clampedOffset
+
                             }
                         }
 
