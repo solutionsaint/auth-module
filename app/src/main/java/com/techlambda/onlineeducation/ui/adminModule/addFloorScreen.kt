@@ -124,7 +124,7 @@ fun AddFloorSetupScreen() {
 }
         Button(
             onClick = {
-                navController.navigate(AppNavigation.AddInstitute)
+                navController.navigate(AppNavigation.AddLayout)
             },
             modifier = Modifier
                 .fillMaxWidth()

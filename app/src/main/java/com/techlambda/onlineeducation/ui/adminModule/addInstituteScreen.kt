@@ -90,7 +90,7 @@ fun AddInstituteScreen() {
                 if (imageUri.isEmpty()) {
                     Toast.makeText(context, "Upload Image", Toast.LENGTH_SHORT).show()
                 } else {
-                    navController.navigate(AppNavigation.AddLayout)
+                    navController.navigate(AppNavigation.AddFloor)
                 }
             },
             modifier = Modifier
