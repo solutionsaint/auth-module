@@ -285,7 +285,7 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                     drawShape(it)
                 }
             }
-            /*            selectedShape?.let {
+                        selectedShape?.let {
                             Canvas(
                                 modifier = Modifier
                                     .size(size = it.toDpSize())
@@ -317,7 +317,7 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                             ) {
                                 drawShape(it)
                             }
-                        }*/
+                        }
         }
     }
 }

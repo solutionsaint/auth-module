@@ -45,7 +45,7 @@ fun AddFloorSetupScreen() {
     val navController = LocalNavigationProvider.current
     var selectedFloor by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
-    val floorOptions = listOf("Floor 1", "Floor 2", "Floor 3")
+    val floorOptions = listOf("1", "2", "3", "4", "5")
 
     Box(
         modifier = Modifier

@@ -130,7 +130,7 @@ fun ImageSelectionDialog(
                         modifier = Modifier.width(240.dp),
                         colors = ButtonDefaults.buttonColors(
                             contentColor = Color.White,
-                            containerColor = Color(0XFF05A8B3)
+                            containerColor = Color(0xFF2979FF)
                         ), shape = RoundedCornerShape(10.dp),
                         contentPadding = PaddingValues(10.dp)
                     ) {
@@ -142,7 +142,7 @@ fun ImageSelectionDialog(
                         modifier = Modifier.width(240.dp),
                         colors = ButtonDefaults.buttonColors(
                             contentColor = Color.White,
-                            containerColor = Color(0XFF05A8B3)
+                            containerColor = Color(0xFF2979FF)
                         ), shape = RoundedCornerShape(10.dp),
                         contentPadding = PaddingValues(10.dp)
                     ) {

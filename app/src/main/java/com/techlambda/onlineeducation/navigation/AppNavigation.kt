@@ -26,7 +26,7 @@ fun AppNavHost(modifier: Modifier) {
     NavHost(
         modifier = modifier,
         navController = navHostController,
-        startDestination = AppNavigation.AddLayoutDraw,
+        startDestination = AppNavigation.AddInstitute,
     ) {
         composable<AppNavigation.AddFloor> {
            AddFloorSetupScreen()
