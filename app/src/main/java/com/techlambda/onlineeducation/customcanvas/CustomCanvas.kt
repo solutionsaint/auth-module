@@ -144,10 +144,11 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
         }
     }
 
-    LaunchedEffect(selectedShape) {
-        width = selectedShape?.width ?: 100f
-        height = selectedShape?.height ?: 100f
-        rotation = selectedShape?.rotationDegree ?: 0f
+    LaunchedEffect(shapesList.toList()) {
+        val selectShape = shapesList.find { it.isSelected }
+        width = selectShape?.width ?: 100f
+        height = selectShape?.height ?: 100f
+        rotation = selectShape?.rotationDegree ?: 0f
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -171,7 +172,8 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                     width = 100f,
                     height = 100f,
                     rotationDegree = 0f,
-                    isSelected = true
+                    isSelected = true,
+                    color = Color.Green
                 )
                 offset = shape.offset.toComposeOffset()
                 height = shape.height
@@ -229,16 +231,41 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                         coordinates.size.width.toFloat(),
                         coordinates.size.height.toFloat()
                     )
-
                 }
         ) {
-            shapesList.filter { !it.isSelected }.forEach {
+            shapesList.forEach {
                 Canvas(
                     modifier = Modifier
-
                         .size(size = it.toDpSize())
                         .offset {
-                            IntOffset(it.offset.x.toInt(), it.offset.y.toInt())
+                            if (it.isSelected) {
+                                IntOffset(offset.x.toInt(), offset.y.toInt())
+                            } else {
+                                IntOffset(it.offset.x.toInt(), it.offset.y.toInt())
+                            }
+                        }
+                        .pointerInput(Unit) {
+                            if (it.isSelected) {
+                                detectDragGestures(
+                                ) { change, dragAmount ->
+                                    change.position
+                                    val newOffset = offset + dragAmount
+
+
+                                    // Boundary Check
+                                    val clampedOffset = Offset(
+                                        x = newOffset.x.coerceIn(
+                                            0f,
+                                            mainBoxSize.value.width - width.dp.toPx()
+                                        ),
+                                        y = newOffset.y.coerceIn(
+                                            0f,
+                                            mainBoxSize.value.height - height.dp.toPx()
+                                        )
+                                    )
+                                    offset = clampedOffset
+                                }
+                            }
                         }
                         .clickable(onClick = {
                             if (shapesList.isNotEmpty()) {
@@ -247,48 +274,52 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                                         shape.copy(isSelected = false, color = Color.Black)
                                     } else shape
                                 }
+                                shapesList.replaceAll { shape ->
+                                    if (it.id == shape.id) {
+                                        shape.copy(isSelected = true, color = Color.Green)
+                                    } else {
+                                        shape
+                                    }
+                                }
                             }
-                            selectedShape = it.copy(color = Color.Green, isSelected = true)
-
                         })
-
                 ) {
                     drawShape(it)
                 }
             }
-            selectedShape?.let {
-                Canvas(
-                    modifier = Modifier
-                        .size(size = it.toDpSize())
-                        .offset {
-                            IntOffset(offset.x.toInt(), offset.y.toInt())
-                        }
-                        .pointerInput(Unit) {
-                            detectDragGestures(
-                            ) { change, dragAmount ->
-                                change.position
-                                val newOffset = offset + dragAmount
+            /*            selectedShape?.let {
+                            Canvas(
+                                modifier = Modifier
+                                    .size(size = it.toDpSize())
+                                    .offset {
+                                        IntOffset(offset.x.toInt(), offset.y.toInt())
+                                    }
+                                    .pointerInput(Unit) {
+                                        detectDragGestures(
+                                        ) { change, dragAmount ->
+                                            change.position
+                                            val newOffset = offset + dragAmount
 
 
-                                // Boundary Check
-                                val clampedOffset = Offset(
-                                    x = newOffset.x.coerceIn(
-                                        0f,
-                                        mainBoxSize.value.width - width.dp.toPx()
-                                    ),
-                                    y = newOffset.y.coerceIn(
-                                        0f,
-                                        mainBoxSize.value.height - height.dp.toPx()
-                                    )
-                                )
-                                offset = clampedOffset
+                                            // Boundary Check
+                                            val clampedOffset = Offset(
+                                                x = newOffset.x.coerceIn(
+                                                    0f,
+                                                    mainBoxSize.value.width - width.dp.toPx()
+                                                ),
+                                                y = newOffset.y.coerceIn(
+                                                    0f,
+                                                    mainBoxSize.value.height - height.dp.toPx()
+                                                )
+                                            )
+                                            offset = clampedOffset
+                                        }
+                                    }
+
+                            ) {
+                                drawShape(it)
                             }
-                        }
-
-                ) {
-                    drawShape(it)
-                }
-            }
+                        }*/
         }
     }
 }
