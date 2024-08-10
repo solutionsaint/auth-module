@@ -117,27 +117,19 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
     val mainBoxSize = remember { mutableStateOf(Size(0f, 0f)) }
 
 
-    LaunchedEffect(shapesList.size) {
-        selectedShape = shapesList.find { it.isSelected }?.copy(color = Color.Green)
-        Log.d(TAG, "shapesList:  $shapesList")
-    }
-
     LaunchedEffect(key1 = offset, key2 = height, key3 = width) {
-        selectedShape =
-            selectedShape?.copy(offset = offset.toCoordinates(), height = height, width = width)
         shapesList.replaceAll {
-            if (it.id == selectedShape?.id) {
-                selectedShape!!
+            if (it.isSelected) {
+                it.copy(offset = offset.toCoordinates(), height = height, width = width)
             } else {
                 it
             }
         }
     }
     LaunchedEffect(key1 = rotation) {
-        selectedShape = selectedShape?.copy(rotationDegree = rotation)
         shapesList.replaceAll {
-            if (it.id == selectedShape?.id) {
-                selectedShape!!
+            if (it.isSelected) {
+                it.copy(rotationDegree = rotation)
             } else {
                 it
             }
@@ -267,13 +259,15 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                                 }
                             }
                         }
-                        .clickable(onClick = {
+                        .clickable(
+                            interactionSource = null,
+                            indication = null
+                        ) {
                             if (shapesList.isNotEmpty()) {
                                 shapesList.replaceAll { shape ->
-                                    if (shape.isSelected) {
-                                        shape.copy(isSelected = false, color = Color.Black)
-                                    } else shape
+                                    shape.copy(isSelected = false, color = Color.Black)
                                 }
+
                                 shapesList.replaceAll { shape ->
                                     if (it.id == shape.id) {
                                         shape.copy(isSelected = true, color = Color.Green)
@@ -281,8 +275,12 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                                         shape
                                     }
                                 }
+                                offset = it.offset.toComposeOffset()
+                                height = it.height
+                                width = it.width
+                                rotation = it.rotationDegree
                             }
-                        })
+                        }
                 ) {
                     drawShape(it)
                 }
@@ -323,6 +321,7 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
         }
     }
 }
+
 
 fun DrawScope.drawShape(shape: Shape) {
     rotate(shape.rotationDegree) {
