@@ -12,6 +12,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -41,17 +42,6 @@ class AppDiModule {
         }
     }
 
-    @Singleton
-    @Provides
-    fun provideAuthApi(client: HttpClient): AuthApi {
-        return AuthApiImpl(client)
-    }
-
-    @Singleton
-    @Provides
-    fun provideAuthRepository(authApi: AuthApi): AuthRepository {
-        return AuthRepository(authApi)
-    }
-}
 
 }
+
