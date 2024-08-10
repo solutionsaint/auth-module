@@ -1,23 +1,21 @@
 package com.techlambda.onlineeducation.Viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.techlambda.onlineeducation.Repository.MainRepository
+import com.techlambda.onlineeducation.repository.auth.AuthRepositoryImpl
 import com.techlambda.onlineeducation.model.Request.LoginRequestModel
 import com.techlambda.onlineeducation.model.Request.SignupRequestModel
 import com.techlambda.onlineeducation.model.Response.LoginResponseModel
 import com.techlambda.onlineeducation.model.Response.SignupResponseModel
 import com.techlambda.onlineeducation.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewmodel @Inject constructor(private val repository: MainRepository) : ViewModel() {
+class MainViewmodel @Inject constructor(private val repository: AuthRepositoryImpl) : ViewModel() {
 
     val loginResult: StateFlow<NetworkResult<LoginResponseModel>?>
         get() = repository.loginResponse

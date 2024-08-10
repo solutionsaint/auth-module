@@ -1,17 +1,27 @@
 package com.techlambda.onlineeducation.ui.signin
 
+import androidx.compose.ui.util.fastCbrt
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.viewModelScope
+import com.techlambda.onlineeducation.model.Request.LoginRequestModel
+import com.techlambda.onlineeducation.repository.auth.AuthRepository
+import com.techlambda.onlineeducation.utils.onError
+import com.techlambda.onlineeducation.utils.onSuccess
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
-class SignInViewModel : ViewModel() {
+@HiltViewModel
+class SignInViewModel @Inject constructor(
+    val authRepository: AuthRepository
+): ViewModel() {
 
     private val _uiStates = MutableStateFlow(SignInUiState())
     val state = _uiStates.asStateFlow()
@@ -22,9 +32,10 @@ class SignInViewModel : ViewModel() {
 
     fun onEvent(event: SignInUiActions) {
         when (event) {
-
             is SignInUiActions.NameChanged -> {
-                _uiStates.value = _uiStates.value.copy(name = event.name)
+                _uiStates.update {
+                    it.copy(name = event.name)
+                }
             }
 
             is SignInUiActions.EmailChanged -> {
@@ -58,10 +69,32 @@ class SignInViewModel : ViewModel() {
         // Add your sign-in logic here
         // You can make network requests using the viewModelScope
         viewModelScope.launch {
-            // For example, calling a repository method
-            // repository.signIn(_state.value.email, _state.value.password)
+            _uiStates.update {
+                it.copy(isLoading = true)
+            }
+            authRepository.login(
+                LoginRequestModel(
+                    phone = _uiStates.value.number,
+                    password = "Bridgett",
+                    email = "Alexi",
+                    type = "Bobbie"
+                )
+            ).onSuccess {
+                _uiEvents.trySend(SignInUiEvents.SignInSuccess("Success"))
+                _uiStates.update {
+                    it.copy(isLoading = false)
+                }
+            }.onError {
+                _uiEvents.trySend(SignInUiEvents.OnError(it))
+                _uiStates.update {
+                    it.copy(isLoading = false)
+
+                }
+            }
         }
     }
+
+
 }
 
 data class SignInUiState(

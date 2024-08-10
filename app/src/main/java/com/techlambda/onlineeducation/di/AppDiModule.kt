@@ -1,6 +1,9 @@
 package com.techlambda.onlineeducation.di
 
+import com.techlambda.onlineeducation.repository.auth.AuthRepository
+import com.techlambda.onlineeducation.repository.auth.AuthRepositoryImpl
 import com.techlambda.onlineeducation.utils.AppApiRoutes.BASE_URL
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +15,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -23,7 +25,7 @@ class AppDiModule {
     @Singleton
     @Provides
     fun provideKtorHttpClient(): HttpClient {
-        return HttpClient(OkHttp){
+        return HttpClient(OkHttp) {
             install(ContentNegotiation) {
                 json(json = Json {
                     ignoreUnknownKeys = true
@@ -41,7 +43,11 @@ class AppDiModule {
             }
         }
     }
-
-
 }
 
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+    @Binds
+    abstract fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+}

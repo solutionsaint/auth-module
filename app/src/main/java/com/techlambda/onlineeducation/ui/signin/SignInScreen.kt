@@ -1,5 +1,6 @@
 package com.techlambda.onlineeducation.ui.signin
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +25,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -41,10 +46,11 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
     val navHostController = LocalNavigationProvider.current
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignInUiEvents.None).value
+    val context = LocalContext.current
 
    when (uiEvents) {
         is SignInUiEvents.OnError -> {
-
+            Toast.makeText(context, uiEvents.message, Toast.LENGTH_SHORT).show()
         }
         is SignInUiEvents.SignInSuccess -> {
             navHostController.navigate(AppNavigation.Home)
@@ -153,7 +159,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
-                    viewModel.onEvent(SignInUiActions.SignIn)
+                  // navigate to signup
                 }
             )
         }
