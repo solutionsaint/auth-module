@@ -2,10 +2,9 @@ package com.techlambda.onlineeducation.customcanvas
 
 import android.util.Log
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,46 +14,38 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LineWeight
-import androidx.compose.material.icons.filled.Rectangle
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.DrawStyle
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-import kotlin.io.path.Path
-import kotlin.io.path.moveTo
+import androidx.compose.ui.util.fastAny
+import kotlinx.coroutines.runBlocking
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 data class Shape(
     val id: Int = 0,
@@ -63,7 +54,8 @@ data class Shape(
     val width: Float,
     val height: Float,
     val rotationDegree: Float,
-    val color: Color = Color.Black
+    val color: Color = Color.Black,
+    val isSelected: Boolean
 )
 
 fun Shape.toDpSize(): DpSize {
@@ -126,8 +118,8 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
 
 
     LaunchedEffect(shapesList.size) {
-        selectedShape = shapesList.lastOrNull()
-        Log.d(TAG, "offset: size $selectedShape")
+        selectedShape = shapesList.find { it.isSelected }?.copy(color = Color.Green)
+        Log.d(TAG, "shapesList:  $shapesList")
     }
 
     LaunchedEffect(key1 = offset, key2 = height, key3 = width) {
@@ -143,8 +135,6 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
     }
     LaunchedEffect(key1 = rotation) {
         selectedShape = selectedShape?.copy(rotationDegree = rotation)
-        Log.d(TAG, "offset: " + selectedShape?.offset)
-        Log.d(TAG, "offset: " + offset)
         shapesList.replaceAll {
             if (it.id == selectedShape?.id) {
                 selectedShape!!
@@ -154,6 +144,12 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
         }
     }
 
+    LaunchedEffect(selectedShape) {
+        width = selectedShape?.width ?: 100f
+        height = selectedShape?.height ?: 100f
+        rotation = selectedShape?.rotationDegree ?: 0f
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -161,6 +157,13 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
             horizontalArrangement = Arrangement.Center
         ) {
             Button(onClick = {
+                if (shapesList.isNotEmpty()) {
+                    shapesList.replaceAll {
+                        if (it.isSelected) {
+                            it.copy(isSelected = false, color = Color.Black)
+                        } else it
+                    }
+                }
                 val shape = Shape(
                     id = shapesList.size,
                     type = ShapeType.ROOM,
@@ -168,6 +171,7 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                     width = 100f,
                     height = 100f,
                     rotationDegree = 0f,
+                    isSelected = true
                 )
                 offset = shape.offset.toComposeOffset()
                 height = shape.height
@@ -228,20 +232,29 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
 
                 }
         ) {
-            shapesList.forEach {
-                if (it.id != selectedShape?.id) {
-                    Canvas(
-                        modifier = Modifier
-                            .size(size = it.toDpSize())
-                            .offset {
-                                IntOffset(it.offset.x.toInt(), it.offset.y.toInt())
+            shapesList.filter { !it.isSelected }.forEach {
+                Canvas(
+                    modifier = Modifier
+
+                        .size(size = it.toDpSize())
+                        .offset {
+                            IntOffset(it.offset.x.toInt(), it.offset.y.toInt())
+                        }
+                        .clickable(onClick = {
+                            if (shapesList.isNotEmpty()) {
+                                shapesList.replaceAll { shape ->
+                                    if (shape.isSelected) {
+                                        shape.copy(isSelected = false, color = Color.Black)
+                                    } else shape
+                                }
                             }
+                            selectedShape = it.copy(color = Color.Green, isSelected = true)
 
-                    ) {
-                        drawShape(it)
-                    }
+                        })
+
+                ) {
+                    drawShape(it)
                 }
-
             }
             selectedShape?.let {
                 Canvas(
@@ -251,7 +264,9 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                             IntOffset(offset.x.toInt(), offset.y.toInt())
                         }
                         .pointerInput(Unit) {
-                            detectDragGestures { change, dragAmount ->
+                            detectDragGestures(
+                            ) { change, dragAmount ->
+                                change.position
                                 val newOffset = offset + dragAmount
 
 
@@ -266,18 +281,7 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                                         mainBoxSize.value.height - height.dp.toPx()
                                     )
                                 )
-
-                                // Collision Detection
-                                val hasCollision = shapesList.any {shape->
-                                    it.id != shape.id &&
-                                            it.offset.x < clampedOffset.x + width &&
-                                            it.offset.x + it.width > clampedOffset.x &&
-                                            it.offset.y < clampedOffset.y + height &&
-                                            it.offset.y + it.height > clampedOffset.y
-                                }
-
-                                    offset = clampedOffset
-
+                                offset = clampedOffset
                             }
                         }
 
