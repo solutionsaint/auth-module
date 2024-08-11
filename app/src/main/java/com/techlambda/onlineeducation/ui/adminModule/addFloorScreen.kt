@@ -45,7 +45,7 @@ fun AddFloorSetupScreen() {
     val navController = LocalNavigationProvider.current
     var selectedFloor by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
-    val floorOptions = listOf("1", "2", "3", "4", "5")
+    val floorOptions = listOf("Floor No.1","Floor No.2", "Floor No.3", "Floor No.4", "Floor No.5")
 
     Box(
         modifier = Modifier
@@ -70,17 +70,6 @@ fun AddFloorSetupScreen() {
             color = Color(0xFF3F51B5),
             modifier = Modifier.padding(bottom = 16.dp)
         )
-
-        Image(
-            painter = painterResource(id = R.drawable.floor_plan), // Replace with your image resource
-            contentDescription = "Floor Plan",
-            modifier = Modifier
-                .size(200.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Fit
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = "Select Floors",

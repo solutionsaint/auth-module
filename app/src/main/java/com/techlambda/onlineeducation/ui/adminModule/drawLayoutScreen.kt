@@ -116,6 +116,6 @@ fun drawLayoutSetupScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun drawLayoutScreenPreview(showbackground: Boolean = true) {
+fun drawLayoutScreenPreview() {
     drawLayoutSetupScreen()
 }
