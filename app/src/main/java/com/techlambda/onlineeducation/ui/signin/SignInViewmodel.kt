@@ -1,6 +1,5 @@
 package com.techlambda.onlineeducation.ui.signin
 
-import androidx.compose.ui.util.fastCbrt
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,8 +9,6 @@ import com.techlambda.onlineeducation.utils.onError
 import com.techlambda.onlineeducation.utils.onSuccess
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -26,7 +23,7 @@ class SignInViewModel @Inject constructor(
     private val _uiStates = MutableStateFlow(SignInUiState())
     val state = _uiStates.asStateFlow()
 
-    private val _uiEvents = Channel<SignInUiEvents>()
+    private val _uiEvents = Channel<SignUpUiEvents>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
 
@@ -62,6 +59,7 @@ class SignInViewModel @Inject constructor(
             is SignInUiActions.SignIn -> {
                 signIn()
             }
+
         }
     }
 
@@ -74,18 +72,18 @@ class SignInViewModel @Inject constructor(
             }
             authRepository.login(
                 LoginRequestModel(
-                    phone = _uiStates.value.number,
-                    password = "Bridgett",
-                    email = "Alexi",
-                    type = "Bobbie"
+                    username = _uiStates.value.name,
+                    password = _uiStates.value.password,
+                    email = _uiStates.value.email,
+                    role = "",
                 )
             ).onSuccess {
-                _uiEvents.trySend(SignInUiEvents.SignInSuccess("Success"))
+                _uiEvents.trySend(SignUpUiEvents.SignInSuccess("Success"))
                 _uiStates.update {
                     it.copy(isLoading = false)
                 }
             }.onError {
-                _uiEvents.trySend(SignInUiEvents.OnError(it))
+                _uiEvents.trySend(SignUpUiEvents.OnError(it))
                 _uiStates.update {
                     it.copy(isLoading = false)
 
@@ -117,8 +115,8 @@ sealed class SignInUiActions {
     data object SignIn : SignInUiActions()
 }
 
-sealed class SignInUiEvents {
-    data object None : SignInUiEvents()
-    data class SignInSuccess(val message: String) : SignInUiEvents()
-    data class OnError(val message: String) : SignInUiEvents()
+sealed class SignUpUiEvents {
+    data object None : SignUpUiEvents()
+    data class SignInSuccess(val message: String) : SignUpUiEvents()
+    data class OnError(val message: String) : SignUpUiEvents()
 }

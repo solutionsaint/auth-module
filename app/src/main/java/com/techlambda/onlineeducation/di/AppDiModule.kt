@@ -1,5 +1,6 @@
 package com.techlambda.onlineeducation.di
 
+import AuthApiService
 import com.techlambda.onlineeducation.repository.auth.AuthRepository
 import com.techlambda.onlineeducation.repository.auth.AuthRepositoryImpl
 import com.techlambda.onlineeducation.utils.AppApiRoutes.BASE_URL
@@ -13,7 +14,6 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.headers
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit

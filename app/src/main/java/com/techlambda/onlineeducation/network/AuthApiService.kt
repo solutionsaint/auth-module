@@ -1,15 +1,15 @@
 import com.techlambda.onlineeducation.model.Request.LoginRequestModel
-import com.techlambda.onlineeducation.model.Request.SignupRequestModel
+import com.techlambda.onlineeducation.model.Request.SignUpRequestModel
 import com.techlambda.onlineeducation.model.Response.LoginResponseModel
-import com.techlambda.onlineeducation.model.Response.SignupResponseModel
+import com.techlambda.onlineeducation.model.Response.SignUpResponseModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.forms.formData
-import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class AuthApiService @Inject constructor(
     private val httpClient: HttpClient
 ) {
@@ -21,7 +21,7 @@ class AuthApiService @Inject constructor(
     }
 
 
-    suspend fun signUp(signUpRequestModel: SignupRequestModel): SignupResponseModel {
+    suspend fun signUp(signUpRequestModel: SignUpRequestModel): SignUpResponseModel {
         return httpClient.post("/auth/signup") {
             setBody(signUpRequestModel)
         }.body()

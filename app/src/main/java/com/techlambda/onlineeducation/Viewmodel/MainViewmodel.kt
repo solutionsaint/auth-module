@@ -1,20 +1,8 @@
 package com.techlambda.onlineeducation.Viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.techlambda.onlineeducation.repository.auth.AuthRepositoryImpl
-import com.techlambda.onlineeducation.model.Request.LoginRequestModel
-import com.techlambda.onlineeducation.model.Request.SignupRequestModel
-import com.techlambda.onlineeducation.model.Response.LoginResponseModel
-import com.techlambda.onlineeducation.model.Response.SignupResponseModel
-import com.techlambda.onlineeducation.utils.NetworkResult
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import java.util.regex.Pattern
-import javax.inject.Inject
 
-@HiltViewModel
+
+/*@HiltViewModel
 class MainViewmodel @Inject constructor(private val repository: AuthRepositoryImpl) : ViewModel() {
 
     val loginResult: StateFlow<NetworkResult<LoginResponseModel>?>
@@ -80,4 +68,4 @@ class MainViewmodel @Inject constructor(private val repository: AuthRepositoryIm
         val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
         return Pattern.matches(emailPattern, email)
     }
-}
+}*/
