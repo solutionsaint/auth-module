@@ -1,6 +1,5 @@
 package com.techlambda.onlineeducation.customcanvas
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,19 +33,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.boundsInParent
-import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastAny
-import kotlinx.coroutines.runBlocking
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 data class Shape(
     val id: Int = 0,
@@ -55,7 +48,8 @@ data class Shape(
     val height: Float,
     val rotationDegree: Float,
     val color: Color = Color.Black,
-    val isSelected: Boolean
+    val isSelected: Boolean,
+    val name: String
 )
 
 fun Shape.toDpSize(): DpSize {
@@ -97,9 +91,6 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
     val shapesList = remember {
         mutableStateListOf<Shape>()
     }
-    var selectedShape by remember {
-        mutableStateOf<Shape?>(null)
-    }
 
     var offset by remember {
         mutableStateOf(Offset.Zero)
@@ -115,6 +106,62 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
     }
 
     val mainBoxSize = remember { mutableStateOf(Size(0f, 0f)) }
+
+    var showAddRoomDialog by remember { mutableStateOf(false) }
+    var showEditRoomDialog by remember { mutableStateOf(false) }
+
+    if (showAddRoomDialog) {
+        AddItemDialog(
+            addButtonLabel = "Add",
+            onAddClick = { itemName ->
+                if (shapesList.isNotEmpty()) {
+                    shapesList.replaceAll {
+                        if (it.isSelected) {
+                            it.copy(isSelected = false, color = Color.Black)
+                        } else it
+                    }
+                }
+                val shape = Shape(
+                    id = shapesList.size,
+                    type = ShapeType.ROOM,
+                    offset = Coordinates(0f, 0f),
+                    width = 100f,
+                    height = 100f,
+                    rotationDegree = 0f,
+                    isSelected = true,
+                    color = Color.Green,
+                    name = itemName
+                )
+                offset = shape.offset.toComposeOffset()
+                height = shape.height
+                width = shape.width
+                rotation = shape.rotationDegree
+                shapesList.add(shape)
+                showAddRoomDialog = false
+            },
+            onCancelClick = {
+                showAddRoomDialog = false
+            }
+        )
+    }
+
+    if (showEditRoomDialog) {
+        AddItemDialog(
+            addButtonLabel = "Edit",
+            editTextValue = shapesList.find { it.isSelected }?.name ?: "",
+            onAddClick = { itemName ->
+                shapesList.replaceAll {
+                    if (it.isSelected) {
+                        it.copy(name = itemName)
+                    } else it
+                }
+                showAddRoomDialog = false
+            },
+            onCancelClick = {
+                showAddRoomDialog = false
+            }
+        )
+    }
 
 
     LaunchedEffect(key1 = offset, key2 = height, key3 = width) {
@@ -143,66 +190,69 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
         rotation = selectShape?.rotationDegree ?: 0f
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
             Button(onClick = {
-                if (shapesList.isNotEmpty()) {
-                    shapesList.replaceAll {
-                        if (it.isSelected) {
-                            it.copy(isSelected = false, color = Color.Black)
-                        } else it
-                    }
-                }
-                val shape = Shape(
-                    id = shapesList.size,
-                    type = ShapeType.ROOM,
-                    offset = Coordinates(0f, 0f),
-                    width = 100f,
-                    height = 100f,
-                    rotationDegree = 0f,
-                    isSelected = true,
-                    color = Color.Green
-                )
-                offset = shape.offset.toComposeOffset()
-                height = shape.height
-                width = shape.width
-                rotation = shape.rotationDegree
-                shapesList.add(shape)
+                showAddRoomDialog = true
             }) {
                 Text(text = "Add Room", color = Color.Black)
             }
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text("Width ", color = Color.Black)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .height(30.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Width ", color = Color.Black, modifier = Modifier.padding(0.dp))
             Slider(
                 value = width,
                 onValueChange = {
                     width = it
                 },
-                valueRange = 50f..300f, // Adjust the range as needed
-                modifier = Modifier.weight(1f)
+                valueRange = 10f..400f, // Adjust the range as needed
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(0.dp)
             )
         }
 
         // Height Slider
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .height(30.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text("Height ", color = Color.Black)
             Slider(
                 value = height,
                 onValueChange = {
                     height = it
                 },
-                valueRange = 50f..300f, // Adjust the range as needed
-                modifier = Modifier.weight(1f)
+                valueRange = 10f..700f, // Adjust the range as needed
+                modifier = Modifier.fillMaxWidth(0.8f)
             )
         }
 
         // Rotation Slider
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .height(30.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text("Deg: ${rotation.toInt()}°", color = Color.Black)
             Slider(
                 value = rotation,
@@ -210,9 +260,37 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                     rotation = it
                 },
                 valueRange = 0f..360f, // 0 to 360 degrees
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.fillMaxWidth(0.8f)
             )
         }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(0.9f),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(onClick = {
+                if (shapesList.isNotEmpty()) {
+                    shapesList.removeIf {
+                        it.isSelected
+                    }
+                }
+            }) {
+                Text(text = "Delete Room", color = Color.Black)
+            }
+
+            Button(onClick = {
+                showEditRoomDialog = true
+            }) {
+                Text(text = "Edit Name", color = Color.Black)
+            }
+        }
+
+        Text(
+            text = shapesList.find { it.isSelected }?.name ?: "",
+            modifier = Modifier.padding(10.dp)
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -285,39 +363,6 @@ fun BlueprintDrawer(modifier: Modifier = Modifier.fillMaxSize()) {
                     drawShape(it)
                 }
             }
-                        selectedShape?.let {
-                            Canvas(
-                                modifier = Modifier
-                                    .size(size = it.toDpSize())
-                                    .offset {
-                                        IntOffset(offset.x.toInt(), offset.y.toInt())
-                                    }
-                                    .pointerInput(Unit) {
-                                        detectDragGestures(
-                                        ) { change, dragAmount ->
-                                            change.position
-                                            val newOffset = offset + dragAmount
-
-
-                                            // Boundary Check
-                                            val clampedOffset = Offset(
-                                                x = newOffset.x.coerceIn(
-                                                    0f,
-                                                    mainBoxSize.value.width - width.dp.toPx()
-                                                ),
-                                                y = newOffset.y.coerceIn(
-                                                    0f,
-                                                    mainBoxSize.value.height - height.dp.toPx()
-                                                )
-                                            )
-                                            offset = clampedOffset
-                                        }
-                                    }
-
-                            ) {
-                                drawShape(it)
-                            }
-                        }
         }
     }
 }
