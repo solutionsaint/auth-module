@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,8 +65,38 @@ class SignInViewModel @Inject constructor(
     }
 
     private fun signIn() {
-        // Add your sign-in logic here
-        // You can make network requests using the viewModelScope
+        fun validateSignUp(
+            userName: String,
+            password: String,
+            mobileNumber: String,
+            email: String,
+            confirmPassword: String,
+            termsAndCondition: Boolean
+        ): String{
+            return when {
+                userName.isEmpty() -> "Please enter Name"
+                mobileNumber.isEmpty() && email.isEmpty() -> "Please provide either a Mobile Number or an Email Address"
+                password.isEmpty() -> "Please enter Password"
+                confirmPassword.isEmpty() -> "Please enter Confirm Password"
+                password != confirmPassword -> "Passwords do not match"
+                !termsAndCondition -> "Please accept terms and conditions"
+                else -> "Validated"
+            }
+        }
+
+        fun isValidPhoneNumber(phoneNumber: String): Boolean {
+            val phoneNumberPattern = "^[+]?[0-9]{10,13}\$"
+            return Pattern.matches(phoneNumberPattern, phoneNumber)
+        }
+        fun isPhoneNumber(input: String): Boolean {
+            val numericPattern = "^[0-9]+$"
+            return input.matches(Regex(numericPattern))
+        }
+
+        fun isValidEmail(email: String): Boolean {
+            val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+            return Pattern.matches(emailPattern, email)
+        }
         viewModelScope.launch {
             _uiStates.update {
                 it.copy(isLoading = true)
