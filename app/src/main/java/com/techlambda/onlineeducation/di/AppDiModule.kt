@@ -1,6 +1,10 @@
 package com.techlambda.onlineeducation.di
 
+import AuthApiService
+import com.techlambda.onlineeducation.repository.auth.AuthRepository
+import com.techlambda.onlineeducation.repository.auth.AuthRepositoryImpl
 import com.techlambda.onlineeducation.utils.AppApiRoutes.BASE_URL
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +26,7 @@ class AppDiModule {
     @Singleton
     @Provides
     fun provideKtorHttpClient(): HttpClient {
-        return HttpClient(OkHttp){
+        return HttpClient(OkHttp) {
             install(ContentNegotiation) {
                 json(json = Json {
                     ignoreUnknownKeys = true
@@ -40,5 +44,11 @@ class AppDiModule {
             }
         }
     }
+}
 
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+    @Binds
+    abstract fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 }

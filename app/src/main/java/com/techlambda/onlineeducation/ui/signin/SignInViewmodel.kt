@@ -3,28 +3,37 @@ package com.techlambda.onlineeducation.ui.signin
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.viewModelScope
+import com.techlambda.onlineeducation.model.Request.LoginRequestModel
+import com.techlambda.onlineeducation.repository.auth.AuthRepository
+import com.techlambda.onlineeducation.utils.onError
+import com.techlambda.onlineeducation.utils.onSuccess
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
+import javax.inject.Inject
 
-
-class SignInViewModel : ViewModel() {
+@HiltViewModel
+class SignInViewModel @Inject constructor(
+    val authRepository: AuthRepository
+): ViewModel() {
 
     private val _uiStates = MutableStateFlow(SignInUiState())
     val state = _uiStates.asStateFlow()
 
-    private val _uiEvents = Channel<SignInUiEvents>()
+    private val _uiEvents = Channel<SignUpUiEvents>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
 
     fun onEvent(event: SignInUiActions) {
         when (event) {
-
             is SignInUiActions.NameChanged -> {
-                _uiStates.value = _uiStates.value.copy(name = event.name)
+                _uiStates.update {
+                    it.copy(name = event.name)
+                }
             }
 
             is SignInUiActions.EmailChanged -> {
@@ -51,17 +60,70 @@ class SignInViewModel : ViewModel() {
             is SignInUiActions.SignIn -> {
                 signIn()
             }
+
         }
     }
 
     private fun signIn() {
-        // Add your sign-in logic here
-        // You can make network requests using the viewModelScope
+        fun validateSignUp(
+            userName: String,
+            password: String,
+            mobileNumber: String,
+            email: String,
+            confirmPassword: String,
+            termsAndCondition: Boolean
+        ): String{
+            return when {
+                userName.isEmpty() -> "Please enter Name"
+                mobileNumber.isEmpty() && email.isEmpty() -> "Please provide either a Mobile Number or an Email Address"
+                password.isEmpty() -> "Please enter Password"
+                confirmPassword.isEmpty() -> "Please enter Confirm Password"
+                password != confirmPassword -> "Passwords do not match"
+                !termsAndCondition -> "Please accept terms and conditions"
+                else -> "Validated"
+            }
+        }
+
+        fun isValidPhoneNumber(phoneNumber: String): Boolean {
+            val phoneNumberPattern = "^[+]?[0-9]{10,13}\$"
+            return Pattern.matches(phoneNumberPattern, phoneNumber)
+        }
+        fun isPhoneNumber(input: String): Boolean {
+            val numericPattern = "^[0-9]+$"
+            return input.matches(Regex(numericPattern))
+        }
+
+        fun isValidEmail(email: String): Boolean {
+            val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+            return Pattern.matches(emailPattern, email)
+        }
         viewModelScope.launch {
-            // For example, calling a repository method
-            // repository.signIn(_state.value.email, _state.value.password)
+            _uiStates.update {
+                it.copy(isLoading = true)
+            }
+            authRepository.login(
+                LoginRequestModel(
+                    username = _uiStates.value.name,
+                    password = _uiStates.value.password,
+                    email = _uiStates.value.email,
+                    role = "",
+                )
+            ).onSuccess {
+                _uiEvents.trySend(SignUpUiEvents.SignInSuccess("Success"))
+                _uiStates.update {
+                    it.copy(isLoading = false)
+                }
+            }.onError {
+                _uiEvents.trySend(SignUpUiEvents.OnError(it))
+                _uiStates.update {
+                    it.copy(isLoading = false)
+
+                }
+            }
         }
     }
+
+
 }
 
 data class SignInUiState(
@@ -84,8 +146,8 @@ sealed class SignInUiActions {
     data object SignIn : SignInUiActions()
 }
 
-sealed class SignInUiEvents {
-    data object None : SignInUiEvents()
-    data class SignInSuccess(val message: String) : SignInUiEvents()
-    data class OnError(val message: String) : SignInUiEvents()
+sealed class SignUpUiEvents {
+    data object None : SignUpUiEvents()
+    data class SignInSuccess(val message: String) : SignUpUiEvents()
+    data class OnError(val message: String) : SignUpUiEvents()
 }
