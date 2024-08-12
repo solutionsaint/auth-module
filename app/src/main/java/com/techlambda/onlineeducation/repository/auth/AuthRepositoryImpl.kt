@@ -1,6 +1,6 @@
 package com.techlambda.onlineeducation.repository.auth
 
-import AuthApiService
+import com.techlambda.onlineeducation.network.AuthApiService
 import com.techlambda.onlineeducation.model.Request.LoginRequestModel
 import com.techlambda.onlineeducation.model.Request.SignUpRequestModel
 import com.techlambda.onlineeducation.model.Response.LoginResponseModel

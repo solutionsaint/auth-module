@@ -42,14 +42,14 @@ import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
 fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
     val navHostController = LocalNavigationProvider.current
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
-    val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignInUiEvents.None).value
+    val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
     val context = LocalContext.current
 
    when (uiEvents) {
-        is SignInUiEvents.OnError -> {
+        is SignUpUiEvents.OnError -> {
             Toast.makeText(context, uiEvents.message, Toast.LENGTH_SHORT).show()
         }
-        is SignInUiEvents.SignInSuccess -> {
+        is SignUpUiEvents.SignInSuccess -> {
             navHostController.navigate(AppNavigation.Home)
         }
 

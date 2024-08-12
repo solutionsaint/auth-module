@@ -1,3 +1,5 @@
+package com.techlambda.onlineeducation.network
+
 import com.techlambda.onlineeducation.model.Request.LoginRequestModel
 import com.techlambda.onlineeducation.model.Request.SignUpRequestModel
 import com.techlambda.onlineeducation.model.Response.LoginResponseModel

@@ -1,6 +1,5 @@
 package com.techlambda.onlineeducation.di
 
-import AuthApiService
 import com.techlambda.onlineeducation.repository.auth.AuthRepository
 import com.techlambda.onlineeducation.repository.auth.AuthRepositoryImpl
 import com.techlambda.onlineeducation.utils.AppApiRoutes.BASE_URL
