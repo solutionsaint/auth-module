@@ -30,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,14 +51,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
 import com.techlambda.onlineeducation.R
+import com.techlambda.onlineeducation.model.Request.LoginRequestModel
+import com.techlambda.onlineeducation.model.Request.SignUpRequestModel
+import com.techlambda.onlineeducation.model.Response.LoginResponseModel
+import com.techlambda.onlineeducation.model.Response.SignUpResponseModel
 import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
+import com.techlambda.onlineeducation.repository.auth.AuthRepository
 import com.techlambda.onlineeducation.ui.signin.SignInUiActions
 import com.techlambda.onlineeducation.ui.signin.SignInViewModel
+import com.techlambda.onlineeducation.utils.ApiResponse
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(viewModel: SignInViewModel = hiltViewModel()) {
+fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
     val navHostController = LocalNavigationProvider.current
     val uiState = viewModel.state.collectAsStateWithLifecycle().value
 
@@ -91,7 +99,7 @@ fun SignUpScreen(viewModel: SignInViewModel = hiltViewModel()) {
         }
         OutlinedTextField(
             value = uiState.name,
-            onValueChange = { viewModel.onEvent(SignInUiActions.NameChanged(it)) },
+            onValueChange = { viewModel.onEvent(SignUpUiActions.NameChanged(it)) },
             label = { Text("Name*") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions.Default
@@ -100,18 +108,19 @@ fun SignUpScreen(viewModel: SignInViewModel = hiltViewModel()) {
         OutlinedTextField(
             value = uiState.email,
             onValueChange = {
-                viewModel.onEvent(SignInUiActions.EmailChanged(it))
+                viewModel.onEvent(SignUpUiActions.EmailChanged(it))
             },
             label = { Text("Email*") },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
+                .fillMaxWidth(),
             shape = RoundedCornerShape(10.dp)
         )
 
         OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
             value = uiState.number,
-            onValueChange = { viewModel.onEvent(SignInUiActions.NumberChanged(it)) },
+            onValueChange = { viewModel.onEvent(SignUpUiActions.NumberChanged(it)) },
             label = { Text("Phone No:") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
@@ -149,17 +158,19 @@ fun SignUpScreen(viewModel: SignInViewModel = hiltViewModel()) {
             }
         }
 
-        val passwordVisibility = uiState.isPasswordVisible // You should manage this state properly
+        var passwordVisibility by remember {
+            mutableStateOf(false)
+        }
         OutlinedTextField(
             value = uiState.password,
             onValueChange = {
-                viewModel.onEvent(SignInUiActions.PasswordChanged(it))
+                viewModel.onEvent(SignUpUiActions.PasswordChanged(it))
             },
             label = { Text("Password*") },
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 IconButton(onClick = {
-                    viewModel.onEvent(SignInUiActions.TogglePasswordVisibility)
+                    passwordVisibility = !passwordVisibility
                 }) {
                     Icon(
                         if (passwordVisibility) Icons.Default.Visibility else Icons.Default.VisibilityOff,
@@ -172,21 +183,22 @@ fun SignUpScreen(viewModel: SignInViewModel = hiltViewModel()) {
 
             }
         )
-        val ConfirmPasswordVisibility =
-            uiState.isPasswordVisible // You should manage this state properly
+        var confirmPasswordVisibility by remember {
+            mutableStateOf(false)
+        }
         OutlinedTextField(
             value = uiState.confirmPassword,
             onValueChange = {
-                viewModel.onEvent(SignInUiActions.ConfirmPasswordChanged(it))
+                viewModel.onEvent(SignUpUiActions.ConfirmPasswordChanged(it))
             },
             label = { Text("Confirm Password*") },
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 IconButton(onClick = {
-                    viewModel.onEvent(SignInUiActions.TogglePasswordVisibility)
+                    confirmPasswordVisibility = !confirmPasswordVisibility
                 }) {
                     Icon(
-                        if (ConfirmPasswordVisibility) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        if (confirmPasswordVisibility) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         contentDescription = "Toggle Password Visibility"
                     )
                 }
@@ -229,7 +241,7 @@ fun SignUpScreen(viewModel: SignInViewModel = hiltViewModel()) {
         }*/
         Button(
             onClick = {
-                viewModel.onEvent(SignInUiActions.SignIn)
+                viewModel.onEvent(SignUpUiActions.SignUp)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -256,5 +268,30 @@ fun SignUpScreen(viewModel: SignInViewModel = hiltViewModel()) {
 @Preview(showBackground = true)
 @Composable
 private fun SignupScreenPrev() {
-    SignUpScreen()
+    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
+        SignUpScreen(
+            viewModel = SignUpViewModel(object : AuthRepository {
+                override suspend fun login(loginRequestModel: LoginRequestModel): ApiResponse<LoginResponseModel> {
+                    return ApiResponse.Success(
+                        LoginResponseModel(
+                            "sds"
+                        )
+                    )
+                }
+
+                override suspend fun signUp(signUpRequestModel: SignUpRequestModel): ApiResponse<SignUpResponseModel> {
+                    return ApiResponse.Success(
+                        SignUpResponseModel(
+                            userName = "Reinaldo",
+                            password = "Rasha",
+                            roles = "Tamarah",
+                            _id = 2479,
+                            __v = 3382
+                        )
+                    )
+                }
+
+            })
+        )
+    }
 }

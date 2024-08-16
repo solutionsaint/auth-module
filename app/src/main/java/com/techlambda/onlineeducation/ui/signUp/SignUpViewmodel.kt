@@ -1,4 +1,3 @@
-/*
 package com.techlambda.onlineeducation.ui.signUp
 
 import androidx.lifecycle.ViewModel
@@ -19,8 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    val authRepository: AuthRepository
-): ViewModel() {
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
     private val _uiStates = MutableStateFlow(SignUpUiState())
     val state = _uiStates.asStateFlow()
@@ -29,62 +28,57 @@ class SignUpViewModel @Inject constructor(
     val uiEvents = _uiEvents.receiveAsFlow()
 
 
-    fun onEvent(event: SignInUiActions) {
+    fun onEvent(event: SignUpUiActions) {
         when (event) {
-            is SignInUiActions.NameChanged -> {
+            is SignUpUiActions.NameChanged -> {
                 _uiStates.update {
                     it.copy(name = event.name)
                 }
             }
 
-            is SignInUiActions.EmailChanged -> {
+            is SignUpUiActions.EmailChanged -> {
                 _uiStates.value = _uiStates.value.copy(email = event.email)
             }
 
-            is SignInUiActions.NumberChanged -> {
+            is SignUpUiActions.NumberChanged -> {
                 _uiStates.value = _uiStates.value.copy(number = event.number)
             }
 
-            is SignInUiActions.PasswordChanged -> {
+            is SignUpUiActions.PasswordChanged -> {
                 _uiStates.value = _uiStates.value.copy(password = event.password)
             }
 
-            is SignInUiActions.ConfirmPasswordChanged -> {
+            is SignUpUiActions.ConfirmPasswordChanged -> {
                 _uiStates.value = _uiStates.value.copy(confirmPassword = event.confirmPassword)
             }
 
-            is SignInUiActions.TogglePasswordVisibility -> {
-                _uiStates.value =
-                    _uiStates.value.copy(isPasswordVisible = !_uiStates.value.isPasswordVisible)
-            }
-
-            is SignInUiActions.SignIn -> {
+            is SignUpUiActions.SignUp -> {
                 signIn()
             }
 
         }
     }
 
-    private fun signIn() {
-        fun validateSignUp(
-            userName: String,
-            password: String,
-            mobileNumber: String,
-            email: String,
-            confirmPassword: String,
-            termsAndCondition: Boolean
-        ): String{
-            return when {
-                userName.isEmpty() -> "Please enter Name"
-                mobileNumber.isEmpty() && email.isEmpty() -> "Please provide either a Mobile Number or an Email Address"
-                password.isEmpty() -> "Please enter Password"
-                confirmPassword.isEmpty() -> "Please enter Confirm Password"
-                password != confirmPassword -> "Passwords do not match"
-                !termsAndCondition -> "Please accept terms and conditions"
-                else -> "Validated"
-            }
+    fun validateSignUp(
+        userName: String,
+        password: String,
+        mobileNumber: String,
+        email: String,
+        confirmPassword: String,
+        termsAndCondition: Boolean
+    ): String {
+        return when {
+            userName.isEmpty() -> "Please enter Name"
+            mobileNumber.isEmpty() && email.isEmpty() -> "Please provide either a Mobile Number or an Email Address"
+            password.isEmpty() -> "Please enter Password"
+            confirmPassword.isEmpty() -> "Please enter Confirm Password"
+            password != confirmPassword -> "Passwords do not match"
+            !termsAndCondition -> "Please accept terms and conditions"
+            else -> "Validated"
         }
+    }
 
+    private fun signIn() {
 
         viewModelScope.launch {
             _uiStates.update {
@@ -98,7 +92,7 @@ class SignUpViewModel @Inject constructor(
                     role = "",
                 )
             ).onSuccess {
-                _uiEvents.trySend(SignUpUiEvents.SignInSuccess("Success"))
+                _uiEvents.trySend(SignUpUiEvents.SignUpSuccess("Success"))
                 _uiStates.update {
                     it.copy(isLoading = false)
                 }
@@ -116,6 +110,7 @@ class SignUpViewModel @Inject constructor(
         val phoneNumberPattern = "^[+]?[0-9]{10,13}\$"
         return Pattern.matches(phoneNumberPattern, phoneNumber)
     }
+
     fun isPhoneNumber(input: String): Boolean {
         val numericPattern = "^[0-9]+$"
         return input.matches(Regex(numericPattern))
@@ -145,7 +140,6 @@ sealed class SignUpUiActions {
     data class EmailChanged(val email: String) : SignUpUiActions()
     data class PasswordChanged(val password: String) : SignUpUiActions()
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignUpUiActions()
-    data object TogglePasswordVisibility : SignUpUiActions()
     data object SignUp : SignUpUiActions()
 }
 
@@ -154,4 +148,3 @@ sealed class SignUpUiEvents {
     data class SignUpSuccess(val message: String) : SignUpUiEvents()
     data class OnError(val message: String) : SignUpUiEvents()
 }
-*/
