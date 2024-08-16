@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.techlambda.onlineeducation.navigation.AppNavHost
 import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
-import com.techlambda.onlineeducation.navigation.MainScreen
 import com.techlambda.onlineeducation.ui.theme.VMTheme
 import dagger.hilt.android.AndroidEntryPoint
 

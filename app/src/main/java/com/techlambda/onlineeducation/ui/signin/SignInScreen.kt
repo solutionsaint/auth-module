@@ -37,14 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.techlambda.onlineeducation.model.Request.LoginRequestModel
-import com.techlambda.onlineeducation.model.Request.SignUpRequestModel
-import com.techlambda.onlineeducation.model.Response.LoginResponseModel
-import com.techlambda.onlineeducation.model.Response.SignUpResponseModel
 import com.techlambda.onlineeducation.navigation.AppNavigation
 import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
-import com.techlambda.onlineeducation.repository.auth.AuthRepository
-import com.techlambda.onlineeducation.utils.ApiResponse
 
 @Composable
 fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
@@ -179,28 +173,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
 private fun SignupScreenPrev() {
     CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
         SignInScreen(
-            viewModel = SignInViewModel(object : AuthRepository {
-                override suspend fun login(loginRequestModel: LoginRequestModel): ApiResponse<LoginResponseModel> {
-                    return ApiResponse.Success(
-                        LoginResponseModel(
-                            "sds"
-                        )
-                    )
-                }
-
-                override suspend fun signUp(signUpRequestModel: SignUpRequestModel): ApiResponse<SignUpResponseModel> {
-                    return ApiResponse.Success(
-                        SignUpResponseModel(
-                            userName = "Reinaldo",
-                            password = "Rasha",
-                            roles = "Tamarah",
-                            _id = 2479,
-                            __v = 3382
-                        )
-                    )
-                }
-
-            })
+            viewModel = SignInViewModel()
         )
     }
 }

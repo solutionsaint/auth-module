@@ -7,14 +7,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.techlambda.onlineeducation.ui.signin.SignInScreen
 import com.techlambda.onlineeducation.ui.signUp.SignUpScreen
-import com.techlambda.onlineeducation.customcanvas.BlueprintDrawer
-import com.techlambda.onlineeducation.ui.adminModule.AddFloorSetupScreen
-import com.techlambda.onlineeducation.ui.adminModule.AddInstituteScreen
-import com.techlambda.onlineeducation.ui.adminModule.SetupCompleteScreen
-import com.techlambda.onlineeducation.ui.adminModule.drawLayoutSetupScreen
 import com.techlambda.onlineeducation.ui.signUp.verifyOtp.OtpScreen
+import com.techlambda.onlineeducation.ui.signin.SignInScreen
 import kotlinx.serialization.Serializable
 
 
@@ -42,62 +37,18 @@ fun AppNavHost(modifier: Modifier) {
         }
 
 
-        composable<AppNavigation.AddFloor> {
-            AddFloorSetupScreen()
-        }
-        composable<AppNavigation.AddInstitute> {
-            AddInstituteScreen()
-        }
-        composable<AppNavigation.AddLayout> {
-            drawLayoutSetupScreen()
-        }
-        composable<AppNavigation.SetupComplete> {
-            SetupCompleteScreen()
-        }
-        composable<AppNavigation.AddLayoutDraw> {
-            BlueprintDrawer()
-        }
-        composable<AppNavigation.MyCourse> {}
-        composable<AppNavigation.CourseDetailsScreen> {}
-        composable<AppNavigation.CourseCreateScreen> {}
-        composable<AppNavigation.CourseCreateScreen> {}
-
-
     }
 
 }
 
 @Serializable
 sealed class AppNavigation {
-    @Serializable
-    data object Splash
-
-    @Serializable
-    data object AddFloor
-
-    @Serializable
-    data object AddInstitute
-
-    @Serializable
-    data object AddLayout
-
-    @Serializable
-    data object AddLayoutDraw
-
-    @Serializable
-    data object SetupComplete
 
     @Serializable
     data object SignInScreen
 
     @Serializable
     data object SignUpScreen
-
-    @Serializable
-    data object SignupStudentScreen
-
-    @Serializable
-    data object SignUpInstructorScreen
 
     @Serializable
     data class VerifyOtpScreen(val emailId: String)
@@ -107,17 +58,5 @@ sealed class AppNavigation {
 
     @Serializable
     data object CourseSearch
-
-    @Serializable
-    data object MyCourse
-
-    @Serializable
-    data object MyAccount
-
-    @Serializable
-    data object CourseDetailsScreen
-
-    @Serializable
-    data object CourseCreateScreen
 
 }
