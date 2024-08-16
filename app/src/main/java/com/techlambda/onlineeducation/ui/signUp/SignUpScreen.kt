@@ -57,6 +57,7 @@ import com.techlambda.onlineeducation.model.Request.LoginRequestModel
 import com.techlambda.onlineeducation.model.Request.SignUpRequestModel
 import com.techlambda.onlineeducation.model.Response.LoginResponseModel
 import com.techlambda.onlineeducation.model.Response.SignUpResponseModel
+import com.techlambda.onlineeducation.navigation.AppNavigation
 import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
 import com.techlambda.onlineeducation.repository.auth.AuthRepository
 import com.techlambda.onlineeducation.utils.ApiResponse
@@ -244,7 +245,8 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
         }*/
         Button(
             onClick = {
-                viewModel.onEvent(SignUpUiActions.SignUp)
+                // viewModel.onEvent(SignUpUiActions.SignUp)
+                navHostController.navigate(AppNavigation.VerifyOtpScreen(emailId = "test@gmail.com"))
             },
             modifier = Modifier
                 .fillMaxWidth()
