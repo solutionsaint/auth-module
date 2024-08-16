@@ -59,8 +59,6 @@ import com.techlambda.onlineeducation.model.Response.LoginResponseModel
 import com.techlambda.onlineeducation.model.Response.SignUpResponseModel
 import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
 import com.techlambda.onlineeducation.repository.auth.AuthRepository
-import com.techlambda.onlineeducation.ui.signin.SignInUiActions
-import com.techlambda.onlineeducation.ui.signin.SignInViewModel
 import com.techlambda.onlineeducation.utils.ApiResponse
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,7 +123,12 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
 
-        Text(text = "Select Your Role", modifier = Modifier.padding(start = 10.dp))
+        Text(
+            text = "Select Your Role",
+            modifier = Modifier.padding(top = 20.dp),
+            fontWeight = FontWeight.Bold,
+        )
+
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
