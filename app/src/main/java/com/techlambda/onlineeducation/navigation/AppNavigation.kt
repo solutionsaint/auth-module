@@ -6,13 +6,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.techlambda.onlineeducation.ui.signin.SignInScreen
-import com.techlambda.onlineeducation.ui.signin.SignUpScreen
+import com.techlambda.onlineeducation.ui.signUp.SignUpScreen
 import com.techlambda.onlineeducation.customcanvas.BlueprintDrawer
 import com.techlambda.onlineeducation.ui.adminModule.AddFloorSetupScreen
 import com.techlambda.onlineeducation.ui.adminModule.AddInstituteScreen
 import com.techlambda.onlineeducation.ui.adminModule.SetupCompleteScreen
 import com.techlambda.onlineeducation.ui.adminModule.drawLayoutSetupScreen
+import com.techlambda.onlineeducation.ui.signUp.verifyOtp.OtpScreen
 import kotlinx.serialization.Serializable
 
 
@@ -26,10 +28,22 @@ fun AppNavHost(modifier: Modifier) {
     NavHost(
         modifier = modifier,
         navController = navHostController,
-        startDestination = AppNavigation.AddInstitute,
+        startDestination = AppNavigation.SignInScreen,
     ) {
+        composable<AppNavigation.SignInScreen> {
+            SignInScreen()
+        }
+        composable<AppNavigation.SignUpScreen> {
+            SignUpScreen()
+        }
+        composable<AppNavigation.VerifyOtpScreen> { navigationBackStackEntry ->
+            val argument = navigationBackStackEntry.toRoute<AppNavigation.VerifyOtpScreen>()
+            OtpScreen(email = argument.emailId)
+        }
+
+
         composable<AppNavigation.AddFloor> {
-           AddFloorSetupScreen()
+            AddFloorSetupScreen()
         }
         composable<AppNavigation.AddInstitute> {
             AddInstituteScreen()
@@ -89,7 +103,7 @@ sealed class AppNavigation {
     data object SignUpInstructorScreen
 
     @Serializable
-    data object VerifyOtpScreen
+    data class VerifyOtpScreen(val emailId: String)
 
     @Serializable
     data object Home

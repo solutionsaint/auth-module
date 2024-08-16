@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation.ui.signin
+package com.techlambda.onlineeducation.ui.signUp
 
 
 import androidx.compose.foundation.Image
@@ -52,6 +52,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.techlambda.onlineeducation.R
 import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
+import com.techlambda.onlineeducation.ui.signin.SignInUiActions
+import com.techlambda.onlineeducation.ui.signin.SignInViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +69,9 @@ fun SignUpScreen(viewModel: SignInViewModel = hiltViewModel()) {
         modifier = Modifier
             .fillMaxSize()
             .imePadding()
+            .padding(16.dp)
             .verticalScroll(rememberScrollState())
+
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -75,7 +79,7 @@ fun SignUpScreen(viewModel: SignInViewModel = hiltViewModel()) {
         ) {
 
             Image(
-                painter = painterResource(id = R.mipmap.app_icon),
+                painter = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = "App Icon",
                 Modifier.padding(top = 15.dp)
             )

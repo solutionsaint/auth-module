@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,8 +36,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
+import com.techlambda.onlineeducation.model.Request.LoginRequestModel
+import com.techlambda.onlineeducation.model.Request.SignUpRequestModel
+import com.techlambda.onlineeducation.model.Response.LoginResponseModel
+import com.techlambda.onlineeducation.model.Response.SignUpResponseModel
 import com.techlambda.onlineeducation.navigation.AppNavigation
 import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
+import com.techlambda.onlineeducation.repository.auth.AuthRepository
+import com.techlambda.onlineeducation.utils.ApiResponse
 
 @Composable
 fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
@@ -45,10 +53,11 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
     val context = LocalContext.current
 
-   when (uiEvents) {
+    when (uiEvents) {
         is SignUpUiEvents.OnError -> {
             Toast.makeText(context, uiEvents.message, Toast.LENGTH_SHORT).show()
         }
+
         is SignUpUiEvents.SignInSuccess -> {
             navHostController.navigate(AppNavigation.Home)
         }
@@ -156,7 +165,8 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
-                  // navigate to signup
+                    // navigate to signup
+                    navHostController.navigate(AppNavigation.SignUpScreen)
                 }
             )
         }
@@ -167,5 +177,30 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
 @Preview
 @Composable
 private fun SignupScreenPrev() {
-    SignInScreen()
+    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
+        SignInScreen(
+            viewModel = SignInViewModel(object : AuthRepository {
+                override suspend fun login(loginRequestModel: LoginRequestModel): ApiResponse<LoginResponseModel> {
+                    return ApiResponse.Success(
+                        LoginResponseModel(
+                            "sds"
+                        )
+                    )
+                }
+
+                override suspend fun signUp(signUpRequestModel: SignUpRequestModel): ApiResponse<SignUpResponseModel> {
+                    return ApiResponse.Success(
+                        SignUpResponseModel(
+                            userName = "Reinaldo",
+                            password = "Rasha",
+                            roles = "Tamarah",
+                            _id = 2479,
+                            __v = 3382
+                        )
+                    )
+                }
+
+            })
+        )
+    }
 }
