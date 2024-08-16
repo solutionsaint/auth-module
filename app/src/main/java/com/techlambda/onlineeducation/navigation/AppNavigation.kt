@@ -57,9 +57,6 @@ fun AppNavHost(modifier: Modifier) {
         composable<AppNavigation.AddLayoutDraw> {
             BlueprintDrawer()
         }
-        composable<AppNavigation.VerifyOtpScreen> {
-
-        }
         composable<AppNavigation.MyCourse> {}
         composable<AppNavigation.CourseDetailsScreen> {}
         composable<AppNavigation.CourseCreateScreen> {}

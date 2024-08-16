@@ -20,7 +20,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -77,6 +76,7 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
             .fillMaxSize()
             .imePadding()
             .padding(16.dp)
+            .padding(top = 20.dp)
             .verticalScroll(rememberScrollState())
 
     ) {
@@ -251,14 +251,10 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White,
-                containerColor = Color(0XFF05A8B3)
-            ), shape = RoundedCornerShape(10.dp),
             contentPadding = PaddingValues(10.dp)
         ) {
             Text(
-                text = "Sign In",
+                text = "Sign Up",
 
                 fontWeight = FontWeight(600),
                 fontFamily = FontFamily(Font(R.font.poppins_bold)),

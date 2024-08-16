@@ -68,6 +68,6 @@ data class OtpUiState(
 
 sealed class OtpUiEvent {
     data class OtpChanged(val otp: String) : OtpUiEvent()
-    object VerifyOtp : OtpUiEvent()
-    object ResendOtp : OtpUiEvent()
+    data object VerifyOtp : OtpUiEvent()
+    data object ResendOtp : OtpUiEvent()
 }
