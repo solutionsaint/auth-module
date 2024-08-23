@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Institute App</string>
+
+    <string name="home">Home</string>
+    <string name="course">Course</string>
+    <string name="assignment">Assignment</string>
+    <string name="more">More</string>
+    <string name="about_us">About Us</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="exams">Exams</string>
+    <string name="no_data_found">"No Data Found"</string>
+</resources>

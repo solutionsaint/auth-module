@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation.ui.theme
+package com.techlambda.authlibrary.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

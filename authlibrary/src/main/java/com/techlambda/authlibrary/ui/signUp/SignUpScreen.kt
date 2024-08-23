@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation.ui.signUp
+package com.techlambda.authlibrary.ui.signUp
 
 
 import androidx.compose.foundation.Image
@@ -33,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,15 +48,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
-import com.techlambda.onlineeducation.R
-import com.techlambda.onlineeducation.navigation.AppNavigation
-import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
+import com.techlambda.authlibrary.R
+import com.techlambda.authlibrary.navigation.AppNavigation
+import com.techlambda.authlibrary.navigation.LocalNavigationProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

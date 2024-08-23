@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation.navigation
+package com.techlambda.authlibrary.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -7,11 +7,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.techlambda.onlineeducation.ui.HomeScreen
-import com.techlambda.onlineeducation.ui.signUp.SignUpScreen
-import com.techlambda.onlineeducation.ui.signUp.verifyOtp.OtpScreen
-import com.techlambda.onlineeducation.ui.signin.ResetPasswordScreen
-import com.techlambda.onlineeducation.ui.signin.SignInScreen
+import com.techlambda.authlibrary.ui.QRCodeScreen
+import com.techlambda.authlibrary.ui.signUp.SignUpScreen
+import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpScreen
+import com.techlambda.authlibrary.ui.signin.ResetPasswordScreen
+import com.techlambda.authlibrary.ui.signin.SignInScreen
 import kotlinx.serialization.Serializable
 
 
@@ -37,8 +37,8 @@ fun AppNavHost(modifier: Modifier) {
             val argument = navigationBackStackEntry.toRoute<AppNavigation.VerifyOtpScreen>()
             OtpScreen(email = argument.emailId)
         }
-        composable<AppNavigation.Home> {
-            HomeScreen()
+        composable<AppNavigation.QRCode> {
+            QRCodeScreen()
         }
         composable<AppNavigation.ResetPasswordScreen> {
             ResetPasswordScreen(
@@ -67,6 +67,9 @@ sealed class AppNavigation {
 
     @Serializable
     data object Home
+
+    @Serializable
+    data object QRCode
 
     @Serializable
     data object ResetPasswordScreen

@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation
+package com.techlambda.authlibrary
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,14 +11,14 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.techlambda.onlineeducation.navigation.AppNavHost
-import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
-import com.techlambda.onlineeducation.ui.theme.VMTheme
+import com.techlambda.authlibrary.navigation.AppNavHost
+import com.techlambda.authlibrary.navigation.LocalNavigationProvider
+import com.techlambda.authlibrary.ui.theme.VMTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class AuthMainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

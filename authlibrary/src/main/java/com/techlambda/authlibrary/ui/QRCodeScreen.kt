@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation.ui
+package com.techlambda.authlibrary.ui
 
 import android.app.Activity
 import android.content.Context
@@ -40,14 +40,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.techlambda.onlineeducation.ui.signUp.verifyOtp.OtpViewModel
-import com.techlambda.onlineeducation.ui.signin.SignInViewModel
+import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun QRCodeScreen() {
     val qrCodeBitmap = remember { mutableStateOf<Bitmap?>(null) }
-    val viewModel: OtpViewModel= hiltViewModel()
+    val viewModel: OtpViewModel = hiltViewModel()
     val context = LocalContext.current
     val appName = context.packageName
     // Generate QR code
@@ -116,7 +115,7 @@ fun PreviewQrCodeScreen() {
 @Preview
 @Composable
 fun PreviewHomeScreen() {
-    HomeScreen()
+    QRCodeScreen()
 }
 
 @Composable

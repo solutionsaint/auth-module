@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation
+package com.techlambda.authlibrary
 
 import android.app.Activity
 import android.content.Context

@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation.ui.signUp
+package com.techlambda.authlibrary.ui.signUp
 
 import dagger.Module
 import dagger.Provides

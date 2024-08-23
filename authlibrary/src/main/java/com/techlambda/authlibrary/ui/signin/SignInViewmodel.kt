@@ -1,16 +1,11 @@
-package com.techlambda.onlineeducation.ui.signin
+package com.techlambda.authlibrary.ui.signin
 
-import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.WriterException
-import com.google.zxing.common.BitMatrix
-import com.google.zxing.qrcode.QRCodeWriter
-import com.techlambda.onlineeducation.ui.signUp.ResetPasswordRequest
-import com.techlambda.onlineeducation.ui.signUp.SignInRequest
-import com.techlambda.onlineeducation.ui.signUp.UserRepository
+import com.techlambda.authlibrary.ui.signUp.ResetPasswordRequest
+import com.techlambda.authlibrary.ui.signUp.SignInRequest
+import com.techlambda.authlibrary.ui.signUp.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

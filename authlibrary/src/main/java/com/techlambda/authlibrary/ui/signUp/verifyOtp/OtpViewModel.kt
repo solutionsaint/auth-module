@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation.ui.signUp.verifyOtp
+package com.techlambda.authlibrary.ui.signUp.verifyOtp
 
 import android.graphics.Bitmap
 import android.util.Log
@@ -8,9 +8,9 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.qrcode.QRCodeWriter
-import com.techlambda.onlineeducation.ui.signUp.ApiService
-import com.techlambda.onlineeducation.ui.signUp.OtpRequest
-import com.techlambda.onlineeducation.ui.signUp.UserRepository
+import com.techlambda.authlibrary.ui.signUp.ApiService
+import com.techlambda.authlibrary.ui.signUp.OtpRequest
+import com.techlambda.authlibrary.ui.signUp.UserRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,11 +1,10 @@
-package com.techlambda.onlineeducation.ui.signin
+package com.techlambda.authlibrary.ui.signin
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -19,13 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.techlambda.onlineeducation.navigation.AppNavigation
-import com.techlambda.onlineeducation.ui.signin.SignInViewModel
-import com.techlambda.onlineeducation.ui.signin.SignInUiActions
+import com.techlambda.authlibrary.navigation.AppNavigation
 
 @Composable
 fun ResetPasswordScreen(

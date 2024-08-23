@@ -1,6 +1,5 @@
-package com.techlambda.onlineeducation.ui.signin
+package com.techlambda.authlibrary.ui.signin
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +25,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,13 +35,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
-import com.techlambda.onlineeducation.navigation.AppNavigation
-import com.techlambda.onlineeducation.navigation.LocalNavigationProvider
+import com.techlambda.authlibrary.navigation.AppNavigation
+import com.techlambda.authlibrary.navigation.LocalNavigationProvider
+import com.techlambda.authlibrary.ui.signin.SignInUiActions
+import com.techlambda.authlibrary.ui.signin.SignInViewModel
+import com.techlambda.authlibrary.ui.signin.SignUpUiEvents
 
 @Composable
 fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {

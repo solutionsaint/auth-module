@@ -1,5 +1,11 @@
-package com.techlambda.onlineeducation.ui.signUp
+package com.techlambda.authlibrary.ui.signUp
 
+import com.techlambda.authlibrary.ui.signUp.ApiResponse
+import com.techlambda.authlibrary.ui.signUp.ApiService
+import com.techlambda.authlibrary.ui.signUp.OtpRequest
+import com.techlambda.authlibrary.ui.signUp.ResetPasswordRequest
+import com.techlambda.authlibrary.ui.signUp.SignInRequest
+import com.techlambda.authlibrary.ui.signUp.SignUpRequest
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(

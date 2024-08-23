@@ -1,4 +1,4 @@
-package com.techlambda.onlineeducation.ui.signUp.verifyOtp
+package com.techlambda.authlibrary.ui.signUp.verifyOtp
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
