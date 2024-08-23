@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "VM"
 include(":app")
- 
+include(":authlibrary")
