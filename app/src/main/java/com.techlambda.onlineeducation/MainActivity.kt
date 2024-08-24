@@ -17,6 +17,7 @@ import com.techlambda.onlineeducation.ui.theme.VMTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

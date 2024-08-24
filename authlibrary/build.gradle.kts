@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -12,7 +14,6 @@ android {
 
     defaultConfig {
         minSdk = 24
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -27,12 +28,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        freeCompilerArgs += "-Xdump-declarations-to=dump.txt"
+        jvmTarget = "17"
     }
+}
+
+tasks.withType<KaptGenerateStubsTask> {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
 }
 
 publishing {
@@ -42,11 +48,16 @@ publishing {
                 from(components["release"])
             }
         }
+        // Optionally add a debug publication
+        // register<MavenPublication>("debug") {
+        //     afterEvaluate {
+        //         from(components["debug"])
+        //     }
+        // }
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -59,18 +70,15 @@ dependencies {
     implementation(libs.androidx.material3.icons.extended)
     implementation(libs.androidx.navigation.compose)
 
-    
-    //Hilt
+    // Hilt
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-
     implementation(libs.accompanist.systemuicontroller)
 
-    //Ktor
+    // Ktor
     implementation(libs.ktor.client.core)
-    //Only needed when you want to use Kotlin Serialization
     implementation(libs.ktor.client.serialization)
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.content.negotiation)
@@ -78,13 +86,13 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.android)
 
-    //DataStore
-    implementation (libs.androidx.datastore.preferences)
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
 
-    //Coil
+    // Coil
     implementation(libs.coil.compose)
 
-    //Retrofit
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.retrofit.interceptor)
@@ -95,7 +103,4 @@ dependencies {
     // ZXing
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
-
 }
-
-
