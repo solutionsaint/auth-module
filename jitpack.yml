@@ -1,9 +1,5 @@
-# jitpack.yml
 jdk:
-  - openjdk8
-
-install:
-  - ./gradlew clean build
-
-before_deploy:
-  - ./gradlew publishToMavenLocal
+  - openjdk17
+before_install:
+  - sdk install java 17.0.11-open
+  - sdk use java 17.0.11-open

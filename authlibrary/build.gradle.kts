@@ -35,6 +35,16 @@ android {
     }
 }
 
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -95,16 +105,4 @@ dependencies {
 
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                from(components["release"])
 
-                groupId = "com.github.solutionsaint"
-                artifactId = "auth-module"
-                version = "1.0.3"
-            }
-        }
-    }
-}
