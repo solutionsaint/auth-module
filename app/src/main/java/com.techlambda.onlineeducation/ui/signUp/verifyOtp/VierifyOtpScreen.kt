@@ -35,8 +35,6 @@ fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
         mutableStateOf(false)
     }
 
-    state.otpSentTo=email
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -85,10 +83,10 @@ fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
     }
 }
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//private fun OtpScreenPRev() {
-//    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
-//        OtpScreen(email = "bharat@gmail.com", viewModel = OtpViewModel())
-//    }
-//}
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun OtpScreenPRev() {
+    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
+        OtpScreen(email = "bharat@gmail.com", viewModel = OtpViewModel())
+    }
+}

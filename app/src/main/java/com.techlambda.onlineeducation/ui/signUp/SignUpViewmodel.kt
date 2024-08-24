@@ -1,12 +1,7 @@
 package com.techlambda.onlineeducation.ui.signUp
 
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.WriterException
-import com.google.zxing.common.BitMatrix
-import com.google.zxing.qrcode.QRCodeWriter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +14,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val repository: UserRepository,
-    private val apiService: ApiService
 ) : ViewModel() {
 
     private val _uiStates = MutableStateFlow(SignUpUiState())
@@ -54,60 +47,10 @@ class SignUpViewModel @Inject constructor(
                 _uiStates.value = _uiStates.value.copy(confirmPassword = event.confirmPassword)
             }
 
-            is SignUpUiActions.UserTypeChanged -> {
-                _uiStates.value = _uiStates.value.copy(userType = event.userType)
-            }
-
             is SignUpUiActions.SignUp -> {
-                signUp()
+                signIn()
             }
-            is SignUpUiActions.SendOtp -> {
-                sendOtp(_uiStates.value.email)
-            }
-        }
-    }
 
-
-    private fun signUp() {
-        viewModelScope.launch {
-            val validationMessage = validateSignUp(
-                userName = _uiStates.value.name,
-                password = _uiStates.value.password,
-                mobileNumber = _uiStates.value.number,
-                email = _uiStates.value.email,
-                confirmPassword = _uiStates.value.confirmPassword,
-                userType = _uiStates.value.userType,
-                termsAndCondition = true // Assuming terms and conditions are accepted for simplicity
-            )
-
-            if (validationMessage == "Validated") {
-                try {
-                    val response = repository.signUp(
-                        SignUpRequest(
-                            name = _uiStates.value.name,
-                            phone = _uiStates.value.number,
-                            email = _uiStates.value.email,
-                            password = _uiStates.value.password,
-                            userType = _uiStates.value.userType
-                        )
-                    )
-
-                    if (response.success){
-                        _uiEvents.send(SignUpUiEvents.SignUpSuccess(response.message))
-//                        sendOtp(_uiStates.value.email) // Call sendOtp function here
-                    }else{
-                        _uiEvents.send(SignUpUiEvents.OnError("Failed to sign up."))
-                    }
-
-                }catch (e: Exception) {
-                    _uiEvents.send(SignUpUiEvents.OnError("An error occurred during signup: ${e.message}"))
-                }
-
-            } else {
-                viewModelScope.launch {
-                    _uiEvents.send(SignUpUiEvents.OnError(validationMessage))
-                }
-            }
         }
     }
 
@@ -117,7 +60,6 @@ class SignUpViewModel @Inject constructor(
         mobileNumber: String,
         email: String,
         confirmPassword: String,
-        userType: String,
         termsAndCondition: Boolean
     ): String {
         return when {
@@ -131,22 +73,14 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun sendOtp(email: String) {
+    private fun signIn() {
+
         viewModelScope.launch {
-            try{
-                val otpResponse = apiService.sendOtp(OtpRequest(email))
-                if (otpResponse.success){
-                    _uiEvents.send(SignUpUiEvents.SignUpSuccess(otpResponse.message))
-                }else{
-                    _uiEvents.send(SignUpUiEvents.OnError("Failed to send OTP."))
-                }
-            }catch (e: Exception) {
-                _uiEvents.send(SignUpUiEvents.OnError("An error occurred while sending OTP: ${e.message}"))
+            _uiStates.update {
+                it.copy(isLoading = true)
             }
         }
     }
-
-
 
     fun isValidPhoneNumber(phoneNumber: String): Boolean {
         val phoneNumberPattern = "^[+]?[0-9]{10,13}\$"
@@ -173,8 +107,7 @@ data class SignUpUiState(
     val password: String = "",
     val confirmPassword: String = "",
     val isPasswordVisible: Boolean = false,
-    val isLoading: Boolean = false,
-    val userType:String = ""
+    val isLoading: Boolean = false
 )
 
 sealed class SignUpUiActions {
@@ -184,8 +117,6 @@ sealed class SignUpUiActions {
     data class PasswordChanged(val password: String) : SignUpUiActions()
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignUpUiActions()
     data object SignUp : SignUpUiActions()
-    data object SendOtp : SignUpUiActions()
-    data class UserTypeChanged(val userType: String) : SignUpUiActions()
 }
 
 sealed class SignUpUiEvents {

@@ -18,7 +18,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,10 +26,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -52,13 +47,9 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
     val context = LocalContext.current
 
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-
     when (uiEvents) {
         is SignUpUiEvents.OnError -> {
-            errorMessage = uiEvents.message
-            showErrorDialog = true
+            Toast.makeText(context, uiEvents.message, Toast.LENGTH_SHORT).show()
         }
 
         is SignUpUiEvents.SignInSuccess -> {
@@ -67,23 +58,6 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
 
         else -> {}
     }
-
-    if (showErrorDialog) {
-        AlertDialog(
-            onDismissRequest = { showErrorDialog = false },
-            title = { Text(text = "Login Error") },
-            text = { Text(text = errorMessage) },
-            confirmButton = {
-                Button(onClick = {
-                    showErrorDialog = false
-                    viewModel.onEvent(SignInUiActions.ClearError)
-                }) {
-                    Text("Try Again")
-                }
-            }
-        )
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -123,7 +97,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
         Spacer(modifier = Modifier.height(8.dp))
 
         // Password Input
-        val passwordVisibility = uiStates.isPasswordVisible
+        val passwordVisibility = uiStates.isPasswordVisible // You should manage this state properly
         OutlinedTextField(
             value = uiStates.password,
             onValueChange = {
@@ -141,7 +115,10 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
                     )
                 }
             },
-            visualTransformation = if (passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None
+            visualTransformation = if (passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None,
+            supportingText = {
+
+            }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -152,9 +129,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .align(Alignment.End)
-                .clickable {
-                    navHostController.navigate(AppNavigation.ResetPasswordScreen)
-                }
+                .clickable { /* Handle click */ }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -184,6 +159,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
+                    // navigate to signup
                     navHostController.navigate(AppNavigation.SignUpScreen)
                 }
             )
@@ -192,12 +168,12 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
 }
 
 
-//@Preview(showBackground = true)
-//@Composable
-//private fun SignupScreenPrev() {
-//    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
-//        SignInScreen(
-//            viewModel = SignInViewModel()
-//        )
-//    }
-//}
+@Preview
+@Composable
+private fun SignupScreenPrev() {
+    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
+        SignInScreen(
+            viewModel = SignInViewModel()
+        )
+    }
+}

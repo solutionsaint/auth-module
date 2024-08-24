@@ -7,10 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.techlambda.onlineeducation.ui.HomeScreen
 import com.techlambda.onlineeducation.ui.signUp.SignUpScreen
 import com.techlambda.onlineeducation.ui.signUp.verifyOtp.OtpScreen
-import com.techlambda.onlineeducation.ui.signin.ResetPasswordScreen
 import com.techlambda.onlineeducation.ui.signin.SignInScreen
 import kotlinx.serialization.Serializable
 
@@ -25,7 +23,7 @@ fun AppNavHost(modifier: Modifier) {
     NavHost(
         modifier = modifier,
         navController = navHostController,
-        startDestination = AppNavigation.SignUpScreen
+        startDestination = AppNavigation.SignInScreen,
     ) {
         composable<AppNavigation.SignInScreen> {
             SignInScreen()
@@ -37,17 +35,7 @@ fun AppNavHost(modifier: Modifier) {
             val argument = navigationBackStackEntry.toRoute<AppNavigation.VerifyOtpScreen>()
             OtpScreen(email = argument.emailId)
         }
-        composable<AppNavigation.Home> {
-            HomeScreen()
-        }
-        composable<AppNavigation.ResetPasswordScreen> {
-            ResetPasswordScreen(
-                navHostController = navHostController,
-                onPasswordReset = {
-                    navHostController.navigate(AppNavigation.SignInScreen) // Navigate back to SignIn screen
-                }
-            )
-        }
+
 
     }
 
@@ -67,9 +55,6 @@ sealed class AppNavigation {
 
     @Serializable
     data object Home
-
-    @Serializable
-    data object ResetPasswordScreen
 
     @Serializable
     data object CourseSearch

@@ -2,12 +2,9 @@ package com.techlambda.onlineeducation.ui.signUp
 
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +26,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -134,9 +130,7 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
         ) {
             OutlinedTextField(
                 value = selectedRole,
-                onValueChange = {
-                    selectedRole = it
-                    viewModel.onEvent(SignUpUiActions.UserTypeChanged(it)) },
+                onValueChange = { selectedRole = it },
                 readOnly = true,
                 label = { Text("Please Select Your Role") },
                 trailingIcon = {
@@ -245,9 +239,8 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
         }*/
         Button(
             onClick = {
-                 viewModel.onEvent(SignUpUiActions.SignUp)
-                viewModel.onEvent(SignUpUiActions.SendOtp)
-                navHostController.navigate(AppNavigation.VerifyOtpScreen(emailId = uiState.email))
+                // viewModel.onEvent(SignUpUiActions.SignUp)
+                navHostController.navigate(AppNavigation.VerifyOtpScreen(emailId = "test@gmail.com"))
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -262,35 +255,17 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
                 fontSize = 18.sp
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Already have an account?", style = MaterialTheme.typography.bodyMedium)
-            Text(
-                text = "   Sign In",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.clickable {
-                    // navigate to signup
-                    navHostController.navigate(AppNavigation.SignInScreen)
-                }
-            )
-        }
 
     }
 
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//private fun SignupScreenPrev() {
-//    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
-//        SignUpScreen(
-//            viewModel = SignUpViewModel(repository = UserRepository())
-//        )
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+private fun SignupScreenPrev() {
+    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
+        SignUpScreen(
+            viewModel = SignUpViewModel()
+        )
+    }
+}
