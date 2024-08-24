@@ -244,7 +244,7 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
             onClick = {
                  viewModel.onEvent(SignUpUiActions.SignUp)
                 viewModel.onEvent(SignUpUiActions.SendOtp)
-                navHostController.navigate(AppNavigation.VerifyOtpScreen(emailId = uiState.email))
+                navHostController.navigate("${AppNavigation.VerifyOtpScreen::class.toString()}/${uiState.email}")
             },
             modifier = Modifier
                 .fillMaxWidth()

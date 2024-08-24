@@ -35,7 +35,7 @@ fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
         mutableStateOf(false)
     }
 
-    state.otpSentTo=email
+    state.otpSentTo = email
 
     Column(
         modifier = Modifier
@@ -52,7 +52,6 @@ fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Replace with your existing OTP field
         OtpInputField(otpText = state.otp) { otp, isComplete ->
             viewModel.onEvent(OtpUiEvent.OtpChanged(otp))
             isVerifyButtonEnabled = isComplete
@@ -63,7 +62,7 @@ fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
         Button(
             onClick = {
                 viewModel.onEvent(OtpUiEvent.VerifyOtp)
-                navigation.navigate(AppNavigation.Home)
+                navigation.navigate(AppNavigation.Home::class.toString())
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = isVerifyButtonEnabled
@@ -84,11 +83,3 @@ fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
         }
     }
 }
-
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//private fun OtpScreenPRev() {
-//    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
-//        OtpScreen(email = "bharat@gmail.com", viewModel = OtpViewModel())
-//    }
-//}
