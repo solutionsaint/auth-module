@@ -106,15 +106,5 @@ afterEvaluate {
                 version = "1.0"
             }
         }
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/solutionsaint/online-education/tree/qrapi")
-                credentials {
-                    username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-                    password = project.findProperty("gpr.token") as String? ?: System.getenv("TOKEN")
-                }
-            }
-        }
     }
 }
