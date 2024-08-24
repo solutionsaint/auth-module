@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.techlambda.onlineeducation"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.techlambda.onlineeducation"
