@@ -103,7 +103,7 @@ afterEvaluate {
 
                 groupId = "com.github.solutionsaint"
                 artifactId = "auth-module"
-                version = "1.0.0"
+                version = "1.0.3"
             }
         }
     }
