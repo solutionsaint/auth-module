@@ -7,3 +7,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.android.library) apply false
 }
+
+buildscript {
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.5.2") // Use a valid version
+    }
+}
+
