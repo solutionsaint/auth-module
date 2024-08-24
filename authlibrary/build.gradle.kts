@@ -93,6 +93,8 @@ dependencies {
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
+    implementation("androidx.compose.runtime:runtime:1.4.0") // Update to the latest version
+
 }
 
 afterEvaluate {
@@ -102,8 +104,8 @@ afterEvaluate {
                 from(components["release"])
 
                 groupId = "com.github.solutionsaint"
-                artifactId = "onlineeducationauth"
-                version = "1.0"
+                artifactId = "authlibrary"
+                version = "1.0.0"
             }
         }
     }

@@ -25,56 +25,47 @@ fun AppNavHost(modifier: Modifier) {
     NavHost(
         modifier = modifier,
         navController = navHostController,
-        startDestination = AppNavigation.SignUpScreen
+        startDestination = AppNavigation.SignUpScreen::class.toString()
     ) {
-        composable<AppNavigation.SignInScreen> {
+        composable(AppNavigation.SignInScreen::class.toString()) {
             SignInScreen()
         }
-        composable<AppNavigation.SignUpScreen> {
+        composable(AppNavigation.SignUpScreen::class.toString()) {
             SignUpScreen()
         }
-        composable<AppNavigation.VerifyOtpScreen> { navigationBackStackEntry ->
-            val argument = navigationBackStackEntry.toRoute<AppNavigation.VerifyOtpScreen>()
-            OtpScreen(email = argument.emailId)
+        composable(AppNavigation.VerifyOtpScreen::class.toString()) { navigationBackStackEntry ->
+            val emailId = navigationBackStackEntry.arguments?.getString("emailId") ?: ""
+            OtpScreen(email = emailId)
         }
-        composable<AppNavigation.QRCode> {
+        composable(AppNavigation.QRCode::class.toString()) {
             QRCodeScreen()
         }
-        composable<AppNavigation.ResetPasswordScreen> {
+        composable(AppNavigation.ResetPasswordScreen::class.toString()) {
             ResetPasswordScreen(
                 navHostController = navHostController,
                 onPasswordReset = {
-                    navHostController.navigate(AppNavigation.SignInScreen) // Navigate back to SignIn screen
+                    navHostController.navigate(AppNavigation.SignInScreen::class.toString()) // Navigate back to SignIn screen
                 }
             )
         }
-
     }
-
 }
 
-@Serializable
 sealed class AppNavigation {
 
-    @Serializable
     data object SignInScreen
 
-    @Serializable
     data object SignUpScreen
 
-    @Serializable
     data class VerifyOtpScreen(val emailId: String)
 
-    @Serializable
     data object Home
 
-    @Serializable
     data object QRCode
 
-    @Serializable
     data object ResetPasswordScreen
 
-    @Serializable
+
     data object CourseSearch
 
 }
