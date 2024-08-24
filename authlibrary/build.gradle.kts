@@ -106,15 +106,5 @@ afterEvaluate {
                 version = "1.0"
             }
         }
-        repositories {
-            maven {
-                name = "JitPack"
-                url = uri("https://jitpack.io")
-                credentials {
-                    username = "solutionsaint"
-                    password = "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"
-                }
-            }
-        }
     }
 }
