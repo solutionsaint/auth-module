@@ -1,6 +1,9 @@
+import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.org.apache.commons.logging.LogFactory.release
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.dagger.hilt.android")
     alias(libs.plugins.jetbrains.kotlin.kapt)
     alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
@@ -27,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
@@ -48,6 +51,7 @@ dependencies {
     implementation(libs.androidx.material3.icons)
     implementation(libs.androidx.material3.icons.extended)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,18 +66,6 @@ dependencies {
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-
-    implementation(libs.accompanist.systemuicontroller)
-
-    //Ktor
-    implementation(libs.ktor.client.core)
-    //Only needed when you want to use Kotlin Serialization
-    implementation(libs.ktor.client.serialization)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.client.auth)
-    implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.ktor.client.android)
 
     //DataStore
     implementation (libs.androidx.datastore.preferences)
@@ -95,17 +87,18 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime:1.4.0") // Update to the latest version
 
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.25")
 }
+
 
 afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-
                 groupId = "com.github.solutionsaint"
                 artifactId = "authlibrary"
-                version = "1.0.0"
+                version = "1.0.7"
             }
         }
     }

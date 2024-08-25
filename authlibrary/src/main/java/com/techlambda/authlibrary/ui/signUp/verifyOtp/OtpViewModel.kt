@@ -97,31 +97,9 @@ class OtpViewModel @Inject constructor(
             }
         }
     }
-    fun generateQrCode(appName: String = "com.android.chrome", callback: (Bitmap?) -> Unit) {
-        val url = "https://play.google.com/store/apps/details?id=$appName"
-        val bitmap = createQrCodeBitmap(url)
-        callback(bitmap)
-    }
 
-    private fun createQrCodeBitmap(url: String): Bitmap? {
-        val size = 512 // Size of the QR code
-        val qrCodeWriter = QRCodeWriter()
-        return try {
-            val bitMatrix: BitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, size, size)
-            val width = bitMatrix.width
-            val height = bitMatrix.height
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
-            for (x in 0 until width) {
-                for (y in 0 until height) {
-                    bitmap.setPixel(x, y, if (bitMatrix.get(x, y)) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
-                }
-            }
-            bitmap
-        } catch (e: WriterException) {
-            e.printStackTrace()
-            null
-        }
-    }
+
+
 }
 
 
