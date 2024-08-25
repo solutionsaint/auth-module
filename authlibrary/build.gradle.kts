@@ -121,7 +121,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.solutionsaint"
                 artifactId = "authlibrary"
-                version = "1.0.11"
+                version = "1.0.12"
             }
         }
     }
