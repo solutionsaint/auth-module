@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.compose.rememberNavController
 import com.techlambda.authlibrary.di.OptionalInjectCheck
+import com.techlambda.authlibrary.navigation.AppNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.migration.OptionalInject
@@ -23,6 +24,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+            AppNavigation()
         }
 
         if (OptionalInjectCheck.wasInjectedByHilt(this)) {
