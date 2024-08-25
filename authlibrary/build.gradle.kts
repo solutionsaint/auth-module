@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.org.apache.commo
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.jetbrains.kotlin.kapt)
     alias(libs.plugins.kotlin.serialization)
@@ -20,6 +21,9 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    kapt {
+        correctErrorTypes = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -109,7 +113,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.solutionsaint"
                 artifactId = "authlibrary"
-                version = "1.0.7"
+                version = "1.0.10"
             }
         }
     }
