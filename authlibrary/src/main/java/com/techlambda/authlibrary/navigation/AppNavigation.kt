@@ -19,7 +19,9 @@ val LocalNavigationProvider = staticCompositionLocalOf<NavHostController> {
 }
 
 @Composable
-fun AppNavHost(modifier: Modifier) {
+fun AppNavHost(modifier: Modifier,
+               navigationActions: NavigationActions
+) {
     val navHostController = LocalNavigationProvider.current
     NavHost(
         modifier = modifier,
@@ -27,7 +29,9 @@ fun AppNavHost(modifier: Modifier) {
         startDestination = AppNavigation.SignUpScreen
     ) {
         composable<AppNavigation.SignInScreen> {
-            SignInScreen()
+            SignInScreen {
+                navigationActions.navigateToHome(navHostController)
+            }
         }
         composable<AppNavigation.SignUpScreen> {
             SignUpScreen()

@@ -45,7 +45,8 @@ import com.techlambda.authlibrary.ui.signin.SignInViewModel
 import com.techlambda.authlibrary.ui.signin.SignUpUiEvents
 
 @Composable
-fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
+fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(),
+                 onSignInSuccess: () -> Unit) {
     val navHostController = LocalNavigationProvider.current
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
