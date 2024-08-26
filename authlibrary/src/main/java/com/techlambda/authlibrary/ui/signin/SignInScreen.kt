@@ -1,5 +1,6 @@
 package com.techlambda.authlibrary.ui.signin
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,14 +42,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.techlambda.authlibrary.navigation.AppNavigation
 import com.techlambda.authlibrary.navigation.LocalNavigationProvider
-import com.techlambda.authlibrary.navigation.NavigationCallback
 import com.techlambda.authlibrary.ui.signin.SignInUiActions
 import com.techlambda.authlibrary.ui.signin.SignInViewModel
 import com.techlambda.authlibrary.ui.signin.SignUpUiEvents
 
 @Composable
 fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(),
-                 navigationCallback: NavigationCallback
+                 onSignInSuccess: () -> Unit
 ) {
     val navHostController = LocalNavigationProvider.current
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
@@ -57,17 +58,19 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(),
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    when (uiEvents) {
-        is SignUpUiEvents.OnError -> {
-            errorMessage = uiEvents.message
-            showErrorDialog = true
+    LaunchedEffect(Unit) {
+        viewModel.uiEvents.collect { event ->
+            when (event) {
+                is SignUpUiEvents.SignInSuccess -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    onSignInSuccess()
+                }
+                is SignUpUiEvents.OnError -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> Unit
+            }
         }
-
-        is SignUpUiEvents.SignInSuccess -> {
-            navigationCallback.onSignInSuccess()
-        }
-
-        else -> {}
     }
 
     if (showErrorDialog) {

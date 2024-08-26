@@ -63,7 +63,7 @@ fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
         Button(
             onClick = {
                 viewModel.onEvent(OtpUiEvent.VerifyOtp)
-                navigation.navigate(AppNavigation.Home)
+                navigation.navigate(AppNavigation.QRCode)
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = isVerifyButtonEnabled
