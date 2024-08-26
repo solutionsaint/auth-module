@@ -30,7 +30,9 @@ fun AppNavHost(modifier: Modifier,
     ) {
         composable<AppNavigation.SignInScreen> {
             SignInScreen(
-                navigationActions = navigationActions
+                onSignInSuccess = {
+                    navigationActions.navigateToHome(navHostController)
+                }
             )
         }
         composable<AppNavigation.SignUpScreen> {

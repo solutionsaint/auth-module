@@ -77,6 +77,7 @@ class SignInViewModel @Inject constructor(
                 )
                 Log.d("SignInViewModel", "API Response: $response")
                 if (response.statusCode == 200) {
+                    _uiStates.update { it.copy(isSignedIn = true) } // Update this line
                     _uiEvents.send(SignUpUiEvents.SignInSuccess("Sign-in successful!"))
                 } else {
                     _uiEvents.send(SignUpUiEvents.OnError("No such user registered"))
@@ -156,7 +157,8 @@ data class SignInUiState(
     val isLoading: Boolean = false,
     val otp: String = "",
     var isPasswordReset: Boolean = false,
-    var isOtpSent: Boolean = false
+    var isOtpSent: Boolean = false,
+    var isSignedIn: Boolean = false // Add this line
 )
 
 sealed class SignInUiActions {

@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,10 +47,8 @@ import com.techlambda.authlibrary.ui.signin.SignInViewModel
 import com.techlambda.authlibrary.ui.signin.SignUpUiEvents
 
 @Composable
-fun SignInScreen(
-    viewModel: SignInViewModel = hiltViewModel(),
-    navigationActions: NavigationActions
-) {
+fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(),
+                 onSignInSuccess: () -> Unit) {
     val navHostController = LocalNavigationProvider.current
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
@@ -58,6 +57,11 @@ fun SignInScreen(
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
+    LaunchedEffect(uiStates.isSignedIn) {
+        if (uiStates.isSignedIn) {
+            onSignInSuccess()
+        }
+    }
 
     when (uiEvents) {
         is SignUpUiEvents.OnError -> {
@@ -66,7 +70,7 @@ fun SignInScreen(
         }
 
         is SignUpUiEvents.SignInSuccess -> {
-            navigationActions.navigateToHome(navHostController)
+            navHostController.navigate(AppNavigation.Home)
         }
 
         else -> {}
@@ -194,7 +198,6 @@ fun SignInScreen(
         }
     }
 }
-
 
 //@Preview(showBackground = true)
 //@Composable
