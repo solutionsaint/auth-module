@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.techlambda.authlibrary.navigation.AppNavigation
 
 @Composable
 fun ResetPasswordScreen(
@@ -111,7 +112,7 @@ fun ResetPasswordScreen(
             Button(
                 onClick = {
                     viewModel.onEvent(SignInUiActions.ResetPassword)
-                    navHostController.navigate("SignInScreen")
+                    navHostController.navigate(AppNavigation.SignInScreen)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

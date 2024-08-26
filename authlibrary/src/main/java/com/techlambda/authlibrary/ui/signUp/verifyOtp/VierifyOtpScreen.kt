@@ -21,21 +21,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import com.techlambda.authlibrary.navigation.AppNavigation
+import com.techlambda.authlibrary.navigation.LocalNavigationProvider
+import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpInputField
+import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpUiEvent
+import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpViewModel
 
 @Composable
-fun OtpScreen(
-    viewModel: OtpViewModel = hiltViewModel(),
-    email: String,
-    navHostController: NavHostController
-) {
-    //val navigation = LocalNavigationProvider.current
+fun OtpScreen(viewModel: OtpViewModel = hiltViewModel(), email: String) {
+    val navigation = LocalNavigationProvider.current
     val state by viewModel.state.collectAsState()
     var isVerifyButtonEnabled by remember {
         mutableStateOf(false)
     }
 
-    state.otpSentTo = email
+    state.otpSentTo=email
 
     Column(
         modifier = Modifier
@@ -52,6 +52,7 @@ fun OtpScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Replace with your existing OTP field
         OtpInputField(otpText = state.otp) { otp, isComplete ->
             viewModel.onEvent(OtpUiEvent.OtpChanged(otp))
             isVerifyButtonEnabled = isComplete
@@ -62,7 +63,7 @@ fun OtpScreen(
         Button(
             onClick = {
                 viewModel.onEvent(OtpUiEvent.VerifyOtp)
-                navHostController.navigate("QRCode")
+                navigation.navigate(AppNavigation.Home)
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = isVerifyButtonEnabled
@@ -83,3 +84,11 @@ fun OtpScreen(
         }
     }
 }
+
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//private fun OtpScreenPRev() {
+//    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
+//        OtpScreen(email = "bharat@gmail.com", viewModel = OtpViewModel())
+//    }
+//}

@@ -78,6 +78,15 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
 
+    implementation(libs.accompanist.systemuicontroller)
+    // Ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.android) // Android client only
+
     //DataStore
     implementation (libs.androidx.datastore.preferences)
 

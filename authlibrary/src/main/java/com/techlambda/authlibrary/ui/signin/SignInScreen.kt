@@ -38,11 +38,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
+import com.techlambda.authlibrary.navigation.AppNavigation
+import com.techlambda.authlibrary.navigation.LocalNavigationProvider
+import com.techlambda.authlibrary.ui.signin.SignInUiActions
+import com.techlambda.authlibrary.ui.signin.SignInViewModel
+import com.techlambda.authlibrary.ui.signin.SignUpUiEvents
 
 @Composable
-fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), navHostController: NavHostController) {
-    //val navHostController = LocalNavigationProvider.current
+fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
+    val navHostController = LocalNavigationProvider.current
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
     val context = LocalContext.current
@@ -57,7 +61,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), navHostController
         }
 
         is SignUpUiEvents.SignInSuccess -> {
-            navHostController.navigate("QRCode")
+            navHostController.navigate(AppNavigation.Home)
         }
 
         else -> {}
@@ -148,7 +152,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), navHostController
             modifier = Modifier
                 .align(Alignment.End)
                 .clickable {
-                    navHostController.navigate("ResetPasswordScreen")
+                    navHostController.navigate(AppNavigation.ResetPasswordScreen)
                 }
         )
 
@@ -179,7 +183,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), navHostController
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
-                    navHostController.navigate("SignUpScreen")
+                    navHostController.navigate(AppNavigation.SignUpScreen)
                 }
             )
         }

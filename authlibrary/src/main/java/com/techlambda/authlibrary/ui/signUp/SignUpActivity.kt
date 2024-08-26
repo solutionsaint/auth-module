@@ -2,36 +2,47 @@
 package com.techlambda.authlibrary.ui.signUp
 
 import android.os.Bundle
-import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.techlambda.authlibrary.di.OptionalInjectCheck
-import com.techlambda.authlibrary.navigation.AppNavigation
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.techlambda.authlibrary.navigation.AppNavHost
+import com.techlambda.authlibrary.navigation.LocalNavigationProvider
+import com.techlambda.authlibrary.ui.theme.VMTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.migration.OptionalInject
-import javax.inject.Inject
 
-@OptionalInject
+
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
-class SignUpActivity : AppCompatActivity() {
-
-    @Inject
-    lateinit var viewModel: HiltViewModel
-
+class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
-            AppNavigation()
-        }
+            VMTheme {
+                val systemUiController = rememberSystemUiController()
+                val useDarkIcons = !isSystemInDarkTheme()
+                val primaryColor = MaterialTheme.colorScheme.primary
 
-        if (OptionalInjectCheck.wasInjectedByHilt(this)) {
-            Log.d("SignUpActivity", "Hilt injected the dependencies")
-        } else {
-            Log.e("SignUpActivity", "Hilt did not inject the dependencies")
-        // Handle the case where Hilt did not inject the dependencies
+                SideEffect {
+                    systemUiController.setSystemBarsColor(
+                        color = primaryColor,
+                        darkIcons = useDarkIcons
+                    )
+                }
+                val navController = rememberNavController()
+                CompositionLocalProvider(value = LocalNavigationProvider provides navController) {
+                    Surface(color = MaterialTheme.colorScheme.background) {
+                        AppNavHost(modifier = Modifier)
+                    }
+                }
+
+            }
         }
     }
 }
