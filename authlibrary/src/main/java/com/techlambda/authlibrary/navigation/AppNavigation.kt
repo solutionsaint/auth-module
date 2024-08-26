@@ -29,9 +29,9 @@ fun AppNavHost(modifier: Modifier,
         startDestination = AppNavigation.SignUpScreen
     ) {
         composable<AppNavigation.SignInScreen> {
-            SignInScreen {
-                navigationActions.navigateToHome(navHostController)
-            }
+            SignInScreen(
+                navigationActions = navigationActions
+            )
         }
         composable<AppNavigation.SignUpScreen> {
             SignUpScreen()

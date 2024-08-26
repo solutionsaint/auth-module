@@ -40,13 +40,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.techlambda.authlibrary.navigation.AppNavigation
 import com.techlambda.authlibrary.navigation.LocalNavigationProvider
+import com.techlambda.authlibrary.navigation.NavigationActions
 import com.techlambda.authlibrary.ui.signin.SignInUiActions
 import com.techlambda.authlibrary.ui.signin.SignInViewModel
 import com.techlambda.authlibrary.ui.signin.SignUpUiEvents
 
 @Composable
-fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(),
-                 onSignInSuccess: () -> Unit) {
+fun SignInScreen(
+    viewModel: SignInViewModel = hiltViewModel(),
+    navigationActions: NavigationActions
+) {
     val navHostController = LocalNavigationProvider.current
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
@@ -55,6 +58,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(),
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
+
     when (uiEvents) {
         is SignUpUiEvents.OnError -> {
             errorMessage = uiEvents.message
@@ -62,7 +66,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(),
         }
 
         is SignUpUiEvents.SignInSuccess -> {
-            navHostController.navigate(AppNavigation.Home)
+            navigationActions.navigateToHome(navHostController)
         }
 
         else -> {}
