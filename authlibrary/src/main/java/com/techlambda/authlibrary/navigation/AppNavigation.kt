@@ -45,7 +45,7 @@ fun AppNavHost(modifier: Modifier,
             val argument = navigationBackStackEntry.toRoute<AppNavigation.VerifyOtpScreen>()
             OtpScreen(email = argument.emailId)
         }
-        composable<AppNavigation.QRCode> {
+        composable<AppNavigation.Home> {
             QRCodeScreen()
         }
         composable<AppNavigation.ResetPasswordScreen> {
