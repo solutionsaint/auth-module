@@ -27,7 +27,11 @@ fun AppNavHost(modifier: Modifier) {
         startDestination = AppNavigation.SignUpScreen
     ) {
         composable<AppNavigation.SignInScreen> {
-            SignInScreen()
+            SignInScreen(navigationCallback = object : NavigationCallback {
+                override fun onSignInSuccess() {
+                    navHostController.navigate(AppNavigation.QRCode)
+                }
+            })
         }
         composable<AppNavigation.SignUpScreen> {
             SignUpScreen()
@@ -77,3 +81,5 @@ sealed class AppNavigation {
     data object CourseSearch
 
 }
+
+
