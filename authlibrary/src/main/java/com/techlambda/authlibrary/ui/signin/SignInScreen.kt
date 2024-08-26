@@ -48,7 +48,7 @@ import com.techlambda.authlibrary.ui.signin.SignUpUiEvents
 @Composable
 fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel(),
-    navigationActions: NavigationActions
+    navigationCallback: NavigationCallback
 ) {
     val navHostController = LocalNavigationProvider.current
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
@@ -66,7 +66,7 @@ fun SignInScreen(
         }
 
         is SignUpUiEvents.SignInSuccess -> {
-            navigationActions.navigateToHome(navHostController)
+            navigationCallback.navigateToHome()
         }
 
         else -> {}

@@ -178,3 +178,8 @@ sealed class SignUpUiEvents {
     data class SignInSuccess(val message: String) : SignUpUiEvents()
     data class OnError(val message: String) : SignUpUiEvents()
 }
+
+
+interface NavigationCallback {
+    fun navigateToHome()
+}

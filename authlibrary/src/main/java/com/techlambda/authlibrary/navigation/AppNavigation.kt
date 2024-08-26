@@ -10,6 +10,7 @@ import androidx.navigation.toRoute
 import com.techlambda.authlibrary.ui.QRCodeScreen
 import com.techlambda.authlibrary.ui.signUp.SignUpScreen
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpScreen
+import com.techlambda.authlibrary.ui.signin.NavigationCallback
 import com.techlambda.authlibrary.ui.signin.ResetPasswordScreen
 import com.techlambda.authlibrary.ui.signin.SignInScreen
 import kotlinx.serialization.Serializable
@@ -30,7 +31,11 @@ fun AppNavHost(modifier: Modifier,
     ) {
         composable<AppNavigation.SignInScreen> {
             SignInScreen(
-                navigationActions = navigationActions
+                navigationCallback = object : NavigationCallback {
+                    override fun navigateToHome() {
+                        navigationActions.navigateToHome(navHostController)
+                    }
+                }
             )
         }
         composable<AppNavigation.SignUpScreen> {
