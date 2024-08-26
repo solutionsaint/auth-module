@@ -24,15 +24,13 @@ import com.techlambda.authlibrary.navigation.AppNavigation
 
 @Composable
 fun ResetPasswordScreen(
-    onPasswordReset: () -> Unit,
+    navController: NavHostController,
     viewModel: SignInViewModel = hiltViewModel(),
-    navHostController: NavHostController
+    onPasswordReset: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
-    state.isPasswordReset =false
-    var otpSent by remember{
-        mutableStateOf(false)
-    }
+    state.isPasswordReset = false
+    var otpSent by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -112,7 +110,7 @@ fun ResetPasswordScreen(
             Button(
                 onClick = {
                     viewModel.onEvent(SignInUiActions.ResetPassword)
-                    navHostController.navigate(AppNavigation.SignInScreen)
+                    navController.navigate(AppNavigation.SignInScreen.route)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

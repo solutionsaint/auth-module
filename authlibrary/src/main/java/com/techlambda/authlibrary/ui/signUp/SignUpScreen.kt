@@ -1,6 +1,5 @@
 package com.techlambda.authlibrary.ui.signUp
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -52,14 +51,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.techlambda.authlibrary.R
 import com.techlambda.authlibrary.navigation.AppNavigation
-import com.techlambda.authlibrary.navigation.LocalNavigationProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
-    val navHostController = LocalNavigationProvider.current
+fun SignUpScreen(
+    navController: NavHostController,
+    viewModel: SignUpViewModel = hiltViewModel(),
+    onSignUpSuccess: () -> Unit
+) {
     val uiState = viewModel.state.collectAsStateWithLifecycle().value
 
     var expanded by remember { mutableStateOf(false) }
@@ -73,13 +75,11 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
             .padding(16.dp)
             .padding(top = 20.dp)
             .verticalScroll(rememberScrollState())
-
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = "App Icon",
@@ -231,20 +231,11 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
 
             }
         }
-        /*CheckBox(
-            checked = termsAndConditionState,
-            text = termsAndCondition,
-            onTextClicked = {
-                navigateToTermsAndConditionScreen()
-            }
-        ) {
-            viewiewModel.updateTermsAndCondition(it)
-        }*/
         Button(
             onClick = {
-                 viewModel.onEvent(SignUpUiActions.SignUp)
+                viewModel.onEvent(SignUpUiActions.SignUp)
                 viewModel.onEvent(SignUpUiActions.SendOtp)
-                navHostController.navigate(AppNavigation.VerifyOtpScreen(emailId = uiState.email))
+                navController.navigate(AppNavigation.VerifyOtpScreen.route)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -253,7 +244,6 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
         ) {
             Text(
                 text = "Sign Up",
-
                 fontWeight = FontWeight(600),
                 fontFamily = FontFamily(Font(R.font.poppins_bold)),
                 fontSize = 18.sp
@@ -272,22 +262,9 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
-                    // navigate to signup
-                    navHostController.navigate(AppNavigation.SignInScreen)
+                    navController.navigate(AppNavigation.SignInScreen.route)
                 }
             )
         }
-
     }
-
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//private fun SignupScreenPrev() {
-//    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
-//        SignUpScreen(
-//            viewModel = SignUpViewModel(repository = UserRepository())
-//        )
-//    }
-//}

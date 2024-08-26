@@ -38,12 +38,15 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.techlambda.authlibrary.navigation.AppNavigation
-import com.techlambda.authlibrary.navigation.LocalNavigationProvider
 
 @Composable
-fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
-    val navHostController = LocalNavigationProvider.current
+fun SignInScreen(
+    navController: NavHostController,
+    viewModel: SignInViewModel = hiltViewModel(),
+    onSignInSuccess: () -> Unit
+) {
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
     val context = LocalContext.current
@@ -58,7 +61,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
         }
 
         is SignUpUiEvents.SignInSuccess -> {
-            navHostController.navigate(AppNavigation.Home)
+            onSignInSuccess()
         }
 
         else -> {}
@@ -149,7 +152,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
             modifier = Modifier
                 .align(Alignment.End)
                 .clickable {
-                    navHostController.navigate(AppNavigation.ResetPasswordScreen)
+                    navController.navigate(AppNavigation.ResetPasswordScreen.route)
                 }
         )
 
@@ -180,20 +183,9 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
-                    navHostController.navigate(AppNavigation.SignUpScreen)
+                    navController.navigate(AppNavigation.SignUpScreen.route)
                 }
             )
         }
     }
 }
-
-
-//@Preview(showBackground = true)
-//@Composable
-//private fun SignupScreenPrev() {
-//    CompositionLocalProvider(value = LocalNavigationProvider provides rememberNavController()) {
-//        SignInScreen(
-//            viewModel = SignInViewModel()
-//        )
-//    }
-//}
