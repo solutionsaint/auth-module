@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.techlambda.authlibrary.ui.HomeScreen
 import com.techlambda.authlibrary.ui.QRCodeScreen
 import com.techlambda.authlibrary.ui.signUp.SignUpScreen
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpScreen
@@ -46,6 +47,9 @@ fun AppNavHost(modifier: Modifier) {
                     navHostController.navigate(AppNavigation.SignInScreen) // Navigate back to SignIn screen
                 }
             )
+        }
+        composable<AppNavigation.Home>{
+            HomeScreen()
         }
 
     }
