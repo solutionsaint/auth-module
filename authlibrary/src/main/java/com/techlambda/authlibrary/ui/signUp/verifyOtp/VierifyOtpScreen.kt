@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,18 +22,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import com.techlambda.authlibrary.navigation.AppNavigation
 
 @Composable
-fun OtpScreen(
-    navController: NavHostController,
+fun VerifyOtpScreen(
     email: String,
     viewModel: OtpViewModel = hiltViewModel(),
     onOtpVerified: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     var isVerifyButtonEnabled by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(OtpUiEvent.SendOtp(email))
+    }
+
+    LaunchedEffect(state) {
+        if (state.isOtpVerified)
+        {
+            onOtpVerified()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -58,8 +67,7 @@ fun OtpScreen(
 
         Button(
             onClick = {
-                viewModel.onEvent(OtpUiEvent.VerifyOtp)
-                navController.navigate(AppNavigation.QRCode.route)
+                viewModel.onEvent(OtpUiEvent.VerifyOtp(email))
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = isVerifyButtonEnabled

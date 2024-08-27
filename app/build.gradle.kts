@@ -111,6 +111,8 @@ dependencies {
     // Google ML Kit
     implementation("com.google.mlkit:barcode-scanning:17.0.2")
 
+    implementation(project(":authlibrary"))
+
     // ZXing
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")

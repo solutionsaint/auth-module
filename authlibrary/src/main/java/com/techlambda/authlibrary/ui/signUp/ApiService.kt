@@ -1,9 +1,16 @@
 package com.techlambda.authlibrary.ui.signUp
 
+import com.techlambda.authlibrary.ui.models.ApiResponse
+import com.techlambda.authlibrary.ui.models.OtpRequest
+import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
+import com.techlambda.authlibrary.ui.models.SignInRequest
+import com.techlambda.authlibrary.ui.models.SignUpRequest
+import com.techlambda.authlibrary.ui.models.SignUpResponse
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -13,22 +20,22 @@ import javax.inject.Singleton
 interface ApiService {
 
     @POST("auth/signup")
-    suspend fun signUp(@Body signUpRequest: SignUpRequest): ApiResponse<Any>
+    suspend fun signUp(@Body signUpRequest: SignUpRequest): Response<ApiResponse<SignUpResponse>>
 
     @POST("auth/signin")
-    suspend fun signIn(@Body signInRequest: SignInRequest): ApiResponse<Any>
+    suspend fun signIn(@Body signInRequest: SignInRequest):  Response<ApiResponse<SignUpResponse>>
 
     @POST("otp/send")
-    suspend fun sendOtp(@Body sendOtpRequest: OtpRequest): ApiResponse<Any>
+    suspend fun sendOtp(@Body sendOtpRequest: OtpRequest): Response<ApiResponse<Any>>
 
     @POST("otp/resend")
-    suspend fun resendOtp(@Body resendOtpRequest: OtpRequest): ApiResponse<Any>
+    suspend fun resendOtp(@Body resendOtpRequest: OtpRequest): Response<ApiResponse<Any>>
 
     @POST("otp/verify")
-    suspend fun verifyOtp(@Body verifyOtpRequest: OtpRequest): ApiResponse<Any>
+    suspend fun verifyOtp(@Body verifyOtpRequest: OtpRequest): Response<ApiResponse<Any>>
 
     @POST("auth/reset-password")
-    suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): ApiResponse<Any>
+    suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<ApiResponse<Any>>
 }
 
 @Module

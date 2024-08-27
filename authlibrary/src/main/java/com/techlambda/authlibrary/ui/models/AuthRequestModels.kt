@@ -1,4 +1,4 @@
-package com.techlambda.authlibrary.ui.signUp
+package com.techlambda.authlibrary.ui.models
 
 data class SignUpRequest(
     val name: String,

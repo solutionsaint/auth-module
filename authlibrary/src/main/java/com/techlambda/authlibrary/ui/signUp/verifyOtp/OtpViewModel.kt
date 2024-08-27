@@ -1,28 +1,26 @@
 package com.techlambda.authlibrary.ui.signUp.verifyOtp
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.qrcode.QRCodeWriter
-import com.techlambda.authlibrary.ui.signUp.ApiService
-import com.techlambda.authlibrary.ui.signUp.OtpRequest
+import com.techlambda.authlibrary.ui.models.OtpRequest
 import com.techlambda.authlibrary.ui.signUp.UserRepository
+import com.techlambda.authlibrary.ui.utils.NetworkResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class OtpViewModel @Inject constructor(
     private val repository: UserRepository,
-    private val apiService: ApiService
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OtpUiState())
@@ -47,30 +45,45 @@ class OtpViewModel @Inject constructor(
             is OtpUiEvent.OtpChanged -> {
                 _state.value = _state.value.copy(otp = event.otp)
             }
+
             is OtpUiEvent.VerifyOtp -> {
-                verifyOtp()
+                verifyOtp(email = event.email)
             }
+
             is OtpUiEvent.ResendOtp -> {
                 resendOtp(_state.value.otpSentTo ?: "")
+            }
+
+            is OtpUiEvent.SendOtp -> {
+                sendOtp(event.email)
             }
         }
     }
 
-    private fun verifyOtp() {
+    private fun verifyOtp(email: String) {
         // Add verification logic here
         viewModelScope.launch {
             try {
-                val response = apiService.verifyOtp(
-                    OtpRequest(otp = _state.value.otp)
+                val response = repository.verifyOtp(
+                    OtpRequest(otp = _state.value.otp, email = email)
                 )
-                if (response.success) {
-                    Log.d("OtpViewModel", "OTP verification successful")
-                    _state.value = _state.value.copy(isOtpVerified = true, error = null)
-                } else {
-                    _state.value = _state.value.copy(isOtpVerified = false, error = "Verification failed: ${response.message}")
+                when (response) {
+                    is NetworkResult.Error -> {
+                        _state.value = _state.value.copy(
+                            isOtpVerified = false,
+                            error = "Verification failed: ${response.message}"
+                        )
+                    }
+
+                    is NetworkResult.Success -> {
+                        _state.value = _state.value.copy(isOtpVerified = true, error = null)
+                    }
                 }
             } catch (e: Exception) {
-                _state.value = _state.value.copy(isOtpVerified = false, error = "Verification error: ${e.message}")
+                _state.value = _state.value.copy(
+                    isOtpVerified = false,
+                    error = "Verification error: ${e.message}"
+                )
             }
         }
     }
@@ -84,19 +97,47 @@ class OtpViewModel @Inject constructor(
             )
             startTimer()
             try {
-                val response = apiService.resendOtp(
-                    OtpRequest(email=email)  // Adjust according to your actual request needs
+                val response = repository.resendOtp(
+                    OtpRequest(email = email)  // Adjust according to your actual request needs
                 )
-                if (response.success) {
-                    _state.value = _state.value.copy(isOtpSent = true, error = null)
-                } else {
-                    _state.value = _state.value.copy(isOtpSent = false, error = "Resend failed: ${response.message}")
+                when (response) {
+                    is NetworkResult.Error -> {
+                        _state.value = _state.value.copy(
+                            isOtpSent = false,
+                            error = "Resend failed: ${response.message}"
+                        )
+                    }
+
+                    is NetworkResult.Success -> {
+                        _state.value = _state.value.copy(isOtpSent = true, error = null)
+                    }
                 }
             } catch (e: Exception) {
-                _state.value = _state.value.copy(isOtpSent = false, error = "Resend error: ${e.message}")
+                _state.value =
+                    _state.value.copy(isOtpSent = false, error = "Resend error: ${e.message}")
             }
         }
     }
+
+    private fun sendOtp(email: String) {
+        viewModelScope.launch {
+            try {
+                val otpResponse = repository.sendOtp(OtpRequest(email))
+                when (otpResponse) {
+                    is NetworkResult.Error -> {
+                        //    _uiEvents.send(SignUpUiEvents.OnError("An error occurred during signup: ${otpResponse.message}"))
+                    }
+
+                    is NetworkResult.Success -> {
+                        // _uiEvents.send(SignUpUiEvents.SignUpSuccess(otpResponse.message?:""))
+                    }
+                }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(error = "Resend error: ${e.message}")
+            }
+        }
+    }
+
     fun generateQrCode(appName: String = "com.android.chrome", callback: (Bitmap?) -> Unit) {
         val url = "https://play.google.com/store/apps/details?id=$appName"
         val bitmap = createQrCodeBitmap(url)
@@ -113,7 +154,15 @@ class OtpViewModel @Inject constructor(
             val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
             for (x in 0 until width) {
                 for (y in 0 until height) {
-                    bitmap.setPixel(x, y, if (bitMatrix.get(x, y)) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+                    bitmap.setPixel(
+                        x,
+                        y,
+                        if (bitMatrix.get(
+                                x,
+                                y
+                            )
+                        ) android.graphics.Color.BLACK else android.graphics.Color.WHITE
+                    )
                 }
             }
             bitmap
@@ -123,7 +172,6 @@ class OtpViewModel @Inject constructor(
         }
     }
 }
-
 
 
 data class OtpUiState(
@@ -138,6 +186,7 @@ data class OtpUiState(
 
 sealed class OtpUiEvent {
     data class OtpChanged(val otp: String) : OtpUiEvent()
-    data object VerifyOtp : OtpUiEvent()
+    data class VerifyOtp(val email: String) : OtpUiEvent()
     data object ResendOtp : OtpUiEvent()
+    data class SendOtp(val email: String) : OtpUiEvent()
 }

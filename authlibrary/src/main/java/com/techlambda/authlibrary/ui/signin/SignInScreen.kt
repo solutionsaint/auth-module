@@ -39,13 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.techlambda.authlibrary.navigation.AppNavigation
 
 @Composable
 fun SignInScreen(
-    navController: NavHostController,
     viewModel: SignInViewModel = hiltViewModel(),
-    onSignInSuccess: () -> Unit
+    onSignInSuccess: () -> Unit,
+    onSignUpClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
 ) {
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
@@ -152,7 +152,7 @@ fun SignInScreen(
             modifier = Modifier
                 .align(Alignment.End)
                 .clickable {
-                    navController.navigate(AppNavigation.ResetPasswordScreen.route)
+                  onForgotPasswordClick()
                 }
         )
 
@@ -183,7 +183,7 @@ fun SignInScreen(
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
-                    navController.navigate(AppNavigation.SignUpScreen.route)
+                   onSignUpClick()
                 }
             )
         }

@@ -3,9 +3,10 @@ package com.techlambda.authlibrary.ui.signin
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.techlambda.authlibrary.ui.signUp.ResetPasswordRequest
-import com.techlambda.authlibrary.ui.signUp.SignInRequest
+import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
+import com.techlambda.authlibrary.ui.models.SignInRequest
 import com.techlambda.authlibrary.ui.signUp.UserRepository
+import com.techlambda.authlibrary.ui.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,33 +32,43 @@ class SignInViewModel @Inject constructor(
             is SignInUiActions.NameChanged -> {
                 _uiStates.update { it.copy(name = event.name) }
             }
+
             is SignInUiActions.EmailChanged -> {
                 _uiStates.update { it.copy(email = event.email) }
             }
+
             is SignInUiActions.NumberChanged -> {
                 _uiStates.update { it.copy(number = event.number) }
             }
+
             is SignInUiActions.PasswordChanged -> {
                 _uiStates.update { it.copy(password = event.password) }
             }
+
             is SignInUiActions.ConfirmPasswordChanged -> {
                 _uiStates.update { it.copy(confirmPassword = event.confirmPassword) }
             }
+
             is SignInUiActions.TogglePasswordVisibility -> {
                 _uiStates.update { it.copy(isPasswordVisible = !_uiStates.value.isPasswordVisible) }
             }
+
             is SignInUiActions.OtpChanged -> {
                 _uiStates.update { it.copy(otp = event.otp) }
             }
+
             is SignInUiActions.SignIn -> {
                 signIn()
             }
+
             is SignInUiActions.SendOtpForReset -> {
                 sendOtpForReset()
             }
+
             is SignInUiActions.ResetPassword -> {
                 resetPassword()
             }
+
             is SignInUiActions.ClearError -> {
                 clearError()
             }
@@ -76,10 +87,14 @@ class SignInViewModel @Inject constructor(
                     )
                 )
                 Log.d("SignInViewModel", "API Response: $response")
-                if (response.statusCode == 200) {
-                    _uiEvents.send(SignUpUiEvents.SignInSuccess("Sign-in successful!"))
-                } else {
-                    _uiEvents.send(SignUpUiEvents.OnError("No such user registered"))
+                when (response) {
+                    is NetworkResult.Error -> {
+                        _uiEvents.send(SignUpUiEvents.OnError(response.message?:""))
+                    }
+
+                    is NetworkResult.Success -> {
+                        _uiEvents.send(SignUpUiEvents.SignInSuccess("Sign-in successful!"))
+                    }
                 }
             } catch (e: Exception) {
                 _uiEvents.send(SignUpUiEvents.OnError("Sign-in error: ${e.message}"))
@@ -100,10 +115,14 @@ class SignInViewModel @Inject constructor(
                         type = "send-otp"
                     )
                 )
-                if (response.success) {
-                    _uiStates.update { it.copy(isOtpSent = true) }
-                } else {
-                    _uiEvents.send(SignUpUiEvents.OnError("Password reset failed: ${response.message}"))
+                when (response) {
+                    is NetworkResult.Error -> {
+                        _uiEvents.send(SignUpUiEvents.OnError("Password reset failed: ${response.message}"))
+                    }
+
+                    is NetworkResult.Success -> {
+                        _uiStates.update { it.copy(isOtpSent = true) }
+                    }
                 }
             } catch (e: Exception) {
                 _uiEvents.send(SignUpUiEvents.OnError("Password reset error: ${e.message}"))
@@ -126,10 +145,14 @@ class SignInViewModel @Inject constructor(
                         password = _uiStates.value.password
                     )
                 )
-                if (response.success) {
-                    _uiStates.update { it.copy(isPasswordReset = true) }
-                } else {
-                    _uiEvents.send(SignUpUiEvents.OnError("Password reset failed: ${response.message}"))
+                when (response) {
+                    is NetworkResult.Error -> {
+                        _uiEvents.send(SignUpUiEvents.OnError("Password reset failed: ${response.message}"))
+                    }
+
+                    is NetworkResult.Success -> {
+                        _uiStates.update { it.copy(isPasswordReset = true) }
+                    }
                 }
             } catch (e: Exception) {
                 _uiEvents.send(SignUpUiEvents.OnError("Password reset error: ${e.message}"))

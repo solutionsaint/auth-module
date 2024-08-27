@@ -18,13 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.techlambda.authlibrary.navigation.AppNavigation
 
 @Composable
 fun ResetPasswordScreen(
-    navController: NavHostController,
     viewModel: SignInViewModel = hiltViewModel(),
     onPasswordReset: () -> Unit
 ) {
@@ -110,7 +108,6 @@ fun ResetPasswordScreen(
             Button(
                 onClick = {
                     viewModel.onEvent(SignInUiActions.ResetPassword)
-                    navController.navigate(AppNavigation.SignInScreen.route)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -123,5 +120,13 @@ fun ResetPasswordScreen(
         if (state.isPasswordReset) {
             onPasswordReset()
         }
+    }
+}
+
+@Preview
+@Composable
+fun ResetPasswordPrev(modifier: Modifier = Modifier) {
+    ResetPasswordScreen {
+
     }
 }

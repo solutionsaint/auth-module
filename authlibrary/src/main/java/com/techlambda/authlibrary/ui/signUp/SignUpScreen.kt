@@ -32,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,20 +54,36 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.techlambda.authlibrary.R
-import com.techlambda.authlibrary.navigation.AppNavigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
-    navController: NavHostController,
     viewModel: SignUpViewModel = hiltViewModel(),
-    onSignUpSuccess: () -> Unit
+    onSignUpSuccess: (email: String) -> Unit,
+    onSignInClick: () -> Unit
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle().value
+    val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
 
     var expanded by remember { mutableStateOf(false) }
     var selectedRole by remember { mutableStateOf("") }
     val roles = listOf("Student", "Admin")
+
+    LaunchedEffect(key1 = uiEvents) {
+        when (uiEvents) {
+            SignUpUiEvents.None -> {
+
+            }
+
+            is SignUpUiEvents.OnError -> {
+
+            }
+
+            is SignUpUiEvents.SignUpSuccess -> {
+                onSignUpSuccess(uiState.email)
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -133,7 +150,8 @@ fun SignUpScreen(
                 value = selectedRole,
                 onValueChange = {
                     selectedRole = it
-                    viewModel.onEvent(SignUpUiActions.UserTypeChanged(it)) },
+                    viewModel.onEvent(SignUpUiActions.UserTypeChanged(it))
+                },
                 readOnly = true,
                 label = { Text("Please Select Your Role") },
                 trailingIcon = {
@@ -231,11 +249,10 @@ fun SignUpScreen(
 
             }
         }
+
         Button(
             onClick = {
                 viewModel.onEvent(SignUpUiActions.SignUp)
-                viewModel.onEvent(SignUpUiActions.SendOtp)
-                navController.navigate(AppNavigation.VerifyOtpScreen.route)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -249,6 +266,7 @@ fun SignUpScreen(
                 fontSize = 18.sp
             )
         }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
@@ -262,7 +280,7 @@ fun SignUpScreen(
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
-                    navController.navigate(AppNavigation.SignInScreen.route)
+                    onSignInClick()
                 }
             )
         }
