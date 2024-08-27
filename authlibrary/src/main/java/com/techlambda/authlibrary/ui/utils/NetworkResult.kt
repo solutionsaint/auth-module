@@ -12,6 +12,7 @@ suspend fun <Req, Res> makeApiCall(apiCall: suspend (Req) -> Response<Res>, requ
     return try {
         val response = apiCall(request)
         if (response.isSuccessful) {
+            //asd
             response.body()?.let {
                 NetworkResult.Success(it)
             } ?: NetworkResult.Error("Empty response body")
