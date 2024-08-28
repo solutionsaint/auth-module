@@ -66,6 +66,7 @@ fun SignUpScreen(
     onSignUpSuccess: (email: String) -> Unit,
     onSignInClick: () -> Unit
 ) {
+
     val uiState = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
 
