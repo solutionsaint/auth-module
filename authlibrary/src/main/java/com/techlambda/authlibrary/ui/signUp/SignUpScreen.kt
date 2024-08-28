@@ -3,6 +3,8 @@ package com.techlambda.authlibrary.ui.signUp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -59,6 +62,7 @@ import com.techlambda.authlibrary.R
 @Composable
 fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
+    appLogo: @Composable BoxScope.() -> Unit,
     onSignUpSuccess: (email: String) -> Unit,
     onSignInClick: () -> Unit
 ) {
@@ -97,11 +101,13 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = "App Icon",
-                Modifier.padding(top = 15.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(100.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                appLogo()
+            }
             Text(text = "Sign Up", modifier = Modifier.padding(top = 20.dp))
             Text(
                 text = "Enter your details to register",

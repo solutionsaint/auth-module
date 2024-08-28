@@ -77,29 +77,23 @@ class SignInViewModel @Inject constructor(
 
     private fun signIn() {
         viewModelScope.launch {
-            _uiStates.update { it.copy(isLoading = true) }
-            try {
-                val response = repository.signIn(
-                    SignInRequest(
-                        email = _uiStates.value.email,
-                        password = _uiStates.value.password,
-                        type = "email"
-                    )
+         //   _uiStates.update { it.copy(isLoading = true) }
+            val response = repository.signIn(
+                SignInRequest(
+                    email = _uiStates.value.email,
+                    password = _uiStates.value.password,
+                    type = "email"
                 )
-                Log.d("SignInViewModel", "API Response: $response")
-                when (response) {
-                    is NetworkResult.Error -> {
-                        _uiEvents.send(SignUpUiEvents.OnError(response.message?:""))
-                    }
-
-                    is NetworkResult.Success -> {
-                        _uiEvents.send(SignUpUiEvents.SignInSuccess("Sign-in successful!"))
-                    }
+            )
+            Log.d("SignInViewModel", "API Response: $response")
+            when (response) {
+                is NetworkResult.Error -> {
+                    _uiEvents.send(SignUpUiEvents.OnError(response.message ?: ""))
                 }
-            } catch (e: Exception) {
-                _uiEvents.send(SignUpUiEvents.OnError("Sign-in error: ${e.message}"))
-            } finally {
-                _uiStates.update { it.copy(isLoading = false) }
+
+                is NetworkResult.Success -> {
+                    _uiEvents.send(SignUpUiEvents.SignInSuccess("Sign-in successful!"))
+                }
             }
         }
     }

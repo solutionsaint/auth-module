@@ -1,9 +1,11 @@
 package com.techlambda.authlibrary.ui.signin
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,6 +46,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel(),
+    appLogo: @Composable BoxScope.() -> Unit,
     onSignInSuccess: () -> Unit,
     onSignUpClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
@@ -54,7 +57,7 @@ fun SignInScreen(
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    LaunchedEffect(uiEvents) {
+
         when (uiEvents) {
             is SignUpUiEvents.OnError -> {
                 errorMessage = uiEvents.message
@@ -62,13 +65,16 @@ fun SignInScreen(
             }
 
             is SignUpUiEvents.SignInSuccess -> {
-                delay(200)
-                onSignInSuccess()
+                Log.d("TAG", "SignInScreen: Call 1")
+                LaunchedEffect(Unit) {
+                    Log.d("TAG", "SignInScreen: Call 2")
+                    onSignInSuccess()
+                }
             }
 
             else -> {}
         }
-    }
+
 
 
     if (showErrorDialog) {
@@ -103,11 +109,10 @@ fun SignInScreen(
         // Profile Icon Placeholder
         Box(
             modifier = Modifier
-                .size(100.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape),
+                .size(100.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Online App Logo", style = MaterialTheme.typography.bodyMedium)
+            appLogo()
         }
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -44,6 +44,9 @@ fun AppNavHost(modifier: Modifier) {
                 onSignUpSuccess = { email ->
                     navHostController.navigate(AppNavigation.VerifyOtpScreen(email))
                 },
+                appLogo = {
+
+                },
                 onSignInClick = {
                     navHostController.navigate(AppNavigation.SignInScreen)
                 }
@@ -59,6 +62,9 @@ fun AppNavHost(modifier: Modifier) {
                 },
                 onForgotPasswordClick = {
                     navHostController.navigate(AppNavigation.ForgotPasswordScreen)
+                },
+                appLogo = {
+
                 },
                 onSignUpClick = {
                     navHostController.navigate(AppNavigation.SignUpScreen)
