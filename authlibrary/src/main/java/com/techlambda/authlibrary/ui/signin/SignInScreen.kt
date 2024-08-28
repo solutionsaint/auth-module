@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +39,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
+import kotlinx.coroutines.delay
 
 @Composable
 fun SignInScreen(
@@ -49,23 +50,26 @@ fun SignInScreen(
 ) {
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
-    val context = LocalContext.current
 
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    when (uiEvents) {
-        is SignUpUiEvents.OnError -> {
-            errorMessage = uiEvents.message
-            showErrorDialog = true
-        }
+    LaunchedEffect(uiEvents) {
+        when (uiEvents) {
+            is SignUpUiEvents.OnError -> {
+                errorMessage = uiEvents.message
+                showErrorDialog = true
+            }
 
-        is SignUpUiEvents.SignInSuccess -> {
-            onSignInSuccess()
-        }
+            is SignUpUiEvents.SignInSuccess -> {
+                delay(200)
+                onSignInSuccess()
+            }
 
-        else -> {}
+            else -> {}
+        }
     }
+
 
     if (showErrorDialog) {
         AlertDialog(
@@ -152,7 +156,7 @@ fun SignInScreen(
             modifier = Modifier
                 .align(Alignment.End)
                 .clickable {
-                  onForgotPasswordClick()
+                    onForgotPasswordClick()
                 }
         )
 
@@ -183,7 +187,7 @@ fun SignInScreen(
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
-                   onSignUpClick()
+                    onSignUpClick()
                 }
             )
         }
