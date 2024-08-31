@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
 import com.techlambda.authlibrary.ui.models.SignInRequest
+import com.techlambda.authlibrary.ui.models.SignUpResponse
 import com.techlambda.authlibrary.ui.signUp.UserRepository
 import com.techlambda.authlibrary.ui.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -92,7 +93,9 @@ class SignInViewModel @Inject constructor(
                 }
 
                 is NetworkResult.Success -> {
-                    _uiEvents.send(SignUpUiEvents.SignInSuccess("Sign-in successful!"))
+                    response.data?.data?.let {
+                        _uiEvents.send(SignUpUiEvents.SignInSuccess(it))
+                    }
                 }
             }
         }
@@ -192,6 +195,6 @@ sealed class SignInUiActions {
 
 sealed class SignUpUiEvents {
     object None : SignUpUiEvents()
-    data class SignInSuccess(val message: String) : SignUpUiEvents()
+    data class SignInSuccess(val signUpResponse: SignUpResponse) : SignUpUiEvents()
     data class OnError(val message: String) : SignUpUiEvents()
 }
