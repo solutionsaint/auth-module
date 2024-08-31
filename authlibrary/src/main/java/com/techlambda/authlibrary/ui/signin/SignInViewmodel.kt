@@ -93,7 +93,7 @@ class SignInViewModel @Inject constructor(
                 }
 
                 is NetworkResult.Success -> {
-                    response.data?.data?.let {
+                    response.data?.result?.let {
                         _uiEvents.send(SignUpUiEvents.SignInSuccess(it))
                     }
                 }
