@@ -15,11 +15,11 @@ private val DarkColorScheme = darkColorScheme(
     primary = blue,
     secondary = blue_light,
     tertiary = blue_dark,
-
-background = background_dark,
-surfaceContainer = Color.Black,
-secondaryContainer = Color.Black
+    background = background_dark,
+    surfaceContainer = Color.Black,
+    secondaryContainer = Color.Black
 )
+
 private val LightColorScheme = lightColorScheme(
     primary = blue,
     secondary = blue_light,
