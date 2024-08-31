@@ -186,15 +186,15 @@ sealed class SignInUiActions {
     data class PasswordChanged(val password: String) : SignInUiActions()
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignInUiActions()
     data class OtpChanged(val otp: String) : SignInUiActions()
-    object TogglePasswordVisibility : SignInUiActions()
-    object SignIn : SignInUiActions()
-    object ResetPassword : SignInUiActions()
-    object SendOtpForReset : SignInUiActions()
-    object ClearError : SignInUiActions()
+    data object TogglePasswordVisibility : SignInUiActions()
+    data object SignIn : SignInUiActions()
+    data object ResetPassword : SignInUiActions()
+    data object SendOtpForReset : SignInUiActions()
+    data object ClearError : SignInUiActions()
 }
 
 sealed class SignUpUiEvents {
-    object None : SignUpUiEvents()
+    data object None : SignUpUiEvents()
     data class SignInSuccess(val signUpResponse: SignUpResponse) : SignUpUiEvents()
     data class OnError(val message: String) : SignUpUiEvents()
 }
