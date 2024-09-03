@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,6 +32,8 @@ fun VerifyOtpScreen(
 ) {
     val state by viewModel.state.collectAsState()
     var isVerifyButtonEnabled by remember { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(OtpUiEvent.SendOtp(email))
@@ -41,6 +44,21 @@ fun VerifyOtpScreen(
         {
             onOtpVerified()
         }
+    }
+
+    if (showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { showErrorDialog = false },
+            title = { Text(text = "Signup Error") },
+            text = { Text(text = errorMessage) },
+            confirmButton = {
+                Button(onClick = {
+                    showErrorDialog = false
+                }) {
+                    Text("Try Again")
+                }
+            }
+        )
     }
 
     Column(

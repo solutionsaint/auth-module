@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,6 +58,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.techlambda.authlibrary.R
+import com.techlambda.authlibrary.ui.signin.SignInUiActions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,6 +75,13 @@ fun SignUpScreen(
     var expanded by remember { mutableStateOf(false) }
     var selectedRole by remember { mutableStateOf("") }
     val roles = listOf("Student", "Admin")
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+
+    LaunchedEffect(selectedRole) {
+        viewModel.onEvent(SignUpUiActions.UserTypeChanged(selectedRole))
+    }
 
     LaunchedEffect(key1 = uiEvents) {
         when (uiEvents) {
@@ -81,13 +90,29 @@ fun SignUpScreen(
             }
 
             is SignUpUiEvents.OnError -> {
-
+                errorMessage = uiEvents.message
+                showErrorDialog = true
             }
 
             is SignUpUiEvents.SignUpSuccess -> {
                 onSignUpSuccess(uiState.email)
             }
         }
+    }
+
+    if (showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { showErrorDialog = false },
+            title = { Text(text = "Signup Error") },
+            text = { Text(text = errorMessage) },
+            confirmButton = {
+                Button(onClick = {
+                    showErrorDialog = false
+                }) {
+                    Text("Try Again")
+                }
+            }
+        )
     }
 
     Column(
@@ -157,7 +182,6 @@ fun SignUpScreen(
                 value = selectedRole,
                 onValueChange = {
                     selectedRole = it
-                    viewModel.onEvent(SignUpUiActions.UserTypeChanged(it))
                 },
                 readOnly = true,
                 label = { Text("Please Select Your Role") },

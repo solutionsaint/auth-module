@@ -29,6 +29,6 @@ data class ResetPasswordRequest(
 
 data class ApiResponse<T>(
     val message: String,
-    val result: T? = null,
+    val data: T? = null,
     val statusCode: Int
 )

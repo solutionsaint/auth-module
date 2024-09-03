@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.techlambda.authlibrary.ui.models.SignUpResponse
+import com.techlambda.authlibrary.ui.utils.LoaderDialog
+import com.techlambda.authlibrary.ui.utils.LoaderManager
 
 @Composable
 fun SignInScreen(
@@ -50,6 +52,7 @@ fun SignInScreen(
 ) {
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
+    val isLoading by LoaderManager.isLoading
 
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
@@ -70,6 +73,8 @@ fun SignInScreen(
 
         else -> {}
     }
+
+    LoaderDialog(isLoading = isLoading)
 
 
 

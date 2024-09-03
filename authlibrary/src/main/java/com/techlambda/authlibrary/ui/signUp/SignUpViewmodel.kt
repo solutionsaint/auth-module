@@ -1,5 +1,6 @@
 package com.techlambda.authlibrary.ui.signUp
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techlambda.authlibrary.ui.models.OtpRequest
@@ -78,14 +79,16 @@ class SignUpViewModel @Inject constructor(
             )
 
             if (validationMessage == "Validated") {
+                val req = SignUpRequest(
+                    name = _uiStates.value.name,
+                    phone = _uiStates.value.number,
+                    email = _uiStates.value.email,
+                    password = _uiStates.value.password,
+                    userType = _uiStates.value.userType
+                )
+                Log.d("TAG", "signUp: $req")
                 val response = repository.signUp(
-                    SignUpRequest(
-                        name = _uiStates.value.name,
-                        phone = _uiStates.value.number,
-                        email = _uiStates.value.email,
-                        password = _uiStates.value.password,
-                        userType = _uiStates.value.userType
-                    )
+                   req
                 )
 
                 when (response) {

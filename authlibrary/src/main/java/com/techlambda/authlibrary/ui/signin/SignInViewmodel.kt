@@ -8,6 +8,7 @@ import com.techlambda.authlibrary.ui.models.SignInRequest
 import com.techlambda.authlibrary.ui.models.SignUpResponse
 import com.techlambda.authlibrary.ui.signUp.UserRepository
 import com.techlambda.authlibrary.ui.utils.NetworkResult
+import com.techlambda.authlibrary.ui.utils.setLoading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -79,6 +80,7 @@ class SignInViewModel @Inject constructor(
     private fun signIn() {
         viewModelScope.launch {
          //   _uiStates.update { it.copy(isLoading = true) }
+            setLoading(true)
             val response = repository.signIn(
                 SignInRequest(
                     email = _uiStates.value.email,
@@ -89,11 +91,13 @@ class SignInViewModel @Inject constructor(
             Log.d("SignInViewModel", "API Response: $response")
             when (response) {
                 is NetworkResult.Error -> {
+                    setLoading(false)
                     _uiEvents.send(SignUpUiEvents.OnError(response.message ?: ""))
                 }
 
                 is NetworkResult.Success -> {
-                    response.data?.result?.let {
+                    setLoading(false)
+                    response.data?.data?.let {
                         _uiEvents.send(SignUpUiEvents.SignInSuccess(it))
                     }
                 }
@@ -103,6 +107,7 @@ class SignInViewModel @Inject constructor(
 
     private fun sendOtpForReset() {
         viewModelScope.launch {
+            setLoading(true)
             _uiStates.update { it.copy(isLoading = true) }
             try {
                 val response = repository.resetPassword(
@@ -124,6 +129,7 @@ class SignInViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiEvents.send(SignUpUiEvents.OnError("Password reset error: ${e.message}"))
             } finally {
+                setLoading(false)
                 _uiStates.update { it.copy(isLoading = false) }
             }
         }

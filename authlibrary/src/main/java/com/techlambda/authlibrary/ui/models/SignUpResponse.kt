@@ -2,7 +2,6 @@ package com.techlambda.authlibrary.ui.models
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
-
 @Serializable
 data class SignUpResponse(
     @SerializedName("name") val name: String,
@@ -12,7 +11,8 @@ data class SignUpResponse(
     @SerializedName("password") val password: String,
     @SerializedName("userType") val userType: String,
     @SerializedName("isDeleted") val isDeleted: Boolean,
-   // @SerializedName("instituteList") val instituteList: List<S>,
+    @SerializedName("uniqueId") val uniqueId: Boolean,
+    // @SerializedName("instituteList") val instituteList: List<S>,
     // Not used now
     @SerializedName("_id") val id: String,
     @SerializedName("createdAt") val createdAt: String,
