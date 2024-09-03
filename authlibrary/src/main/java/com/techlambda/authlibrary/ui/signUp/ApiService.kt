@@ -1,6 +1,8 @@
 package com.techlambda.authlibrary.ui.signUp
 
 import com.techlambda.authlibrary.ui.models.ApiResponse
+import com.techlambda.authlibrary.ui.models.CodeVerificationRequest
+import com.techlambda.authlibrary.ui.models.CodeVerificationResponse
 import com.techlambda.authlibrary.ui.models.OtpRequest
 import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
 import com.techlambda.authlibrary.ui.models.SignInRequest
@@ -36,6 +38,9 @@ interface ApiService {
 
     @POST("auth/reset-password")
     suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<ApiResponse<Any>>
+
+    @POST("/users/update-clinic-id")
+    suspend fun verifyCode(@Body codeVerificationRequest: CodeVerificationRequest): Response<ApiResponse<CodeVerificationResponse>>
 }
 
 @Module

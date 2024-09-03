@@ -1,6 +1,8 @@
 package com.techlambda.authlibrary.ui.signUp
 
 import com.techlambda.authlibrary.ui.models.ApiResponse
+import com.techlambda.authlibrary.ui.models.CodeVerificationRequest
+import com.techlambda.authlibrary.ui.models.CodeVerificationResponse
 import com.techlambda.authlibrary.ui.models.OtpRequest
 import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
 import com.techlambda.authlibrary.ui.models.SignInRequest
@@ -36,5 +38,8 @@ class UserRepository @Inject constructor(
 
     suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): NetworkResult<ApiResponse<Any>> {
         return makeApiCall({ api.resetPassword(resetPasswordRequest) }, resetPasswordRequest)
+    }
+    suspend fun verifyCode(codeVerificationRequest: CodeVerificationRequest): NetworkResult<ApiResponse<CodeVerificationResponse>> {
+        return makeApiCall({ api.verifyCode(codeVerificationRequest) }, codeVerificationRequest)
     }
 }
