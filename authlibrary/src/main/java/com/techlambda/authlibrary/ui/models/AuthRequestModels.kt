@@ -27,6 +27,11 @@ data class ResetPasswordRequest(
     val password: String? = null
 )
 
+data class CodeVerificationRequest(
+    val userId: String,
+    val code: String
+)
+
 data class ApiResponse<T>(
     val message: String,
     val data: T? = null,

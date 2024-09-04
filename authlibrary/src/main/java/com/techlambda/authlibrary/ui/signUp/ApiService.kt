@@ -1,6 +1,8 @@
 package com.techlambda.authlibrary.ui.signUp
 
 import com.techlambda.authlibrary.ui.models.ApiResponse
+import com.techlambda.authlibrary.ui.models.CodeVerificationRequest
+import com.techlambda.authlibrary.ui.models.CodeVerificationResponse
 import com.techlambda.authlibrary.ui.models.OtpRequest
 import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
 import com.techlambda.authlibrary.ui.models.SignInRequest
@@ -14,7 +16,9 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import javax.inject.Singleton
 
 interface ApiService {
@@ -36,6 +40,9 @@ interface ApiService {
 
     @POST("auth/reset-password")
     suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<ApiResponse<Any>>
+
+    @GET("/users/{uniqueId}/exists")
+    suspend fun verifyCode(@Path("uniqueId") uniqueId: String): Response<ApiResponse<CodeVerificationResponse>>
 }
 
 @Module
