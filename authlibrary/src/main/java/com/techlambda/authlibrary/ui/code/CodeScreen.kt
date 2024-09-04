@@ -41,6 +41,7 @@ fun CodeScreen(
     appLogo: @Composable ColumnScope.() -> Unit,
     headerText: String
 ) {
+    //as
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(CodeScreenUiEvents.None).value
     val isLoading by LoaderManager.isLoading
