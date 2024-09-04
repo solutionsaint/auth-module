@@ -12,8 +12,8 @@ data class SignUpResponse(
     @SerializedName("userType") val userType: String,
     @SerializedName("isDeleted") val isDeleted: Boolean,
     @SerializedName("uniqueId") val uniqueId: String,
-    // @SerializedName("instituteList") val instituteList: List<S>,
     // Not used now
+    // @SerializedName("instituteList") val instituteList: List<S>,
     @SerializedName("_id") val id: String,
     @SerializedName("createdAt") val createdAt: String,
     @SerializedName("updatedAt") val updatedAt: String,
