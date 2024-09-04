@@ -127,8 +127,7 @@ fun AppNavHost(modifier: Modifier) {
                         contentDescription = "Logo"
                     )
                 },
-                headerText = "Enter Code",
-                userId = ""
+                headerText = "Enter Code"
             )
         }
 

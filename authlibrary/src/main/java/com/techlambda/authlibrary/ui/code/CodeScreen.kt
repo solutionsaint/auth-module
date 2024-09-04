@@ -39,8 +39,7 @@ fun CodeScreen(
     onCodeSuccess: (String) -> Unit,
     navigateToSignInScreen: () -> Unit,
     appLogo: @Composable ColumnScope.() -> Unit,
-    headerText: String,
-    userId: String
+    headerText: String
 ) {
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(CodeScreenUiEvents.None).value
@@ -48,10 +47,6 @@ fun CodeScreen(
 
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
-    LaunchedEffect(Unit){
-        viewModel.onEvent(CodeScreenUiActions.UserIdChanged(userId = userId))
-    }
 
     when (uiEvents) {
         is CodeScreenUiEvents.OnError -> {
@@ -62,7 +57,12 @@ fun CodeScreen(
         is CodeScreenUiEvents.CodeValidationSuccess -> {
             LaunchedEffect(Unit) {
                 Log.d("TAG", "CodeScreen: Success")
-                onCodeSuccess(uiStates.code)
+                if(uiEvents.codeVerificationResponse.exists) {
+                    onCodeSuccess(uiStates.code)
+                }else {
+                    showErrorDialog = true
+                    errorMessage = "Code does not exist."
+                }
             }
         }
 

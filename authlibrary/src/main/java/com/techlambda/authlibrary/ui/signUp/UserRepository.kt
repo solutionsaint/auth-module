@@ -39,7 +39,7 @@ class UserRepository @Inject constructor(
     suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): NetworkResult<ApiResponse<Any>> {
         return makeApiCall({ api.resetPassword(resetPasswordRequest) }, resetPasswordRequest)
     }
-    suspend fun verifyCode(codeVerificationRequest: CodeVerificationRequest): NetworkResult<ApiResponse<CodeVerificationResponse>> {
-        return makeApiCall({ api.verifyCode(codeVerificationRequest) }, codeVerificationRequest)
+    suspend fun verifyCode(uniqueId: String): NetworkResult<ApiResponse<CodeVerificationResponse>> {
+        return makeApiCall({ api.verifyCode(uniqueId) }, uniqueId)
     }
 }

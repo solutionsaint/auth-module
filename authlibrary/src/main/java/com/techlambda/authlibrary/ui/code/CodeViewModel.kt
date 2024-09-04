@@ -3,7 +3,6 @@ package com.techlambda.authlibrary.ui.code
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.techlambda.authlibrary.ui.models.CodeVerificationRequest
 import com.techlambda.authlibrary.ui.models.CodeVerificationResponse
 import com.techlambda.authlibrary.ui.signUp.UserRepository
 import com.techlambda.authlibrary.ui.utils.NetworkResult
@@ -33,9 +32,6 @@ class CodeViewModel @Inject constructor(
             is CodeScreenUiActions.CodeChanged -> {
                 _uiStates.update { it.copy(code = events.code) }
             }
-            is CodeScreenUiActions.UserIdChanged -> {
-                _uiStates.update { it.copy(userId = events.userId) }
-            }
             is CodeScreenUiActions.Submit -> {
                 submit()
             }
@@ -49,10 +45,7 @@ class CodeViewModel @Inject constructor(
         viewModelScope.launch {
             setLoading(true)
             val response = repository.verifyCode(
-                CodeVerificationRequest(
-                    userId = _uiStates.value.userId,
-                    code = _uiStates.value.code
-                )
+                uniqueId = _uiStates.value.code
             )
             Log.d("CodeViewModel", "API Response: $response")
             when (response) {
@@ -79,9 +72,7 @@ class CodeViewModel @Inject constructor(
 }
 
 data class CodeScreenUiState(
-    val code: String = "",
-    val userId: String = "",
-    val isLoading: Boolean = false
+    val code: String = ""
 )
 
 sealed class CodeScreenUiEvents {
@@ -92,7 +83,6 @@ sealed class CodeScreenUiEvents {
 
 sealed class CodeScreenUiActions{
     data class CodeChanged(val code: String) : CodeScreenUiActions()
-    data class UserIdChanged(val userId: String) : CodeScreenUiActions()
     data object Submit : CodeScreenUiActions()
     data object ClearError : CodeScreenUiActions()
 }

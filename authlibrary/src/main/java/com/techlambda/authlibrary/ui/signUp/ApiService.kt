@@ -16,7 +16,9 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import javax.inject.Singleton
 
 interface ApiService {
@@ -39,8 +41,8 @@ interface ApiService {
     @POST("auth/reset-password")
     suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<ApiResponse<Any>>
 
-    @POST("/users/update-clinic-id")
-    suspend fun verifyCode(@Body codeVerificationRequest: CodeVerificationRequest): Response<ApiResponse<CodeVerificationResponse>>
+    @GET("/users/{uniqueId}/exists")
+    suspend fun verifyCode(@Path("uniqueId") uniqueId: String): Response<ApiResponse<CodeVerificationResponse>>
 }
 
 @Module

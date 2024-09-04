@@ -11,7 +11,7 @@ data class SignUpResponse(
     @SerializedName("password") val password: String,
     @SerializedName("userType") val userType: String,
     @SerializedName("isDeleted") val isDeleted: Boolean,
-    @SerializedName("uniqueId") val uniqueId: Boolean,
+    @SerializedName("uniqueId") val uniqueId: String,
     // @SerializedName("instituteList") val instituteList: List<S>,
     // Not used now
     @SerializedName("_id") val id: String,
