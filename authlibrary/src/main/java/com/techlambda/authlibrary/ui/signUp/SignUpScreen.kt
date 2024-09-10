@@ -74,7 +74,7 @@ fun SignUpScreen(
 
     var expanded by remember { mutableStateOf(false) }
     var selectedRole by remember { mutableStateOf("") }
-    val roles = listOf("Student", "Admin")
+    val roles = listOf("User", "Admin")
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
