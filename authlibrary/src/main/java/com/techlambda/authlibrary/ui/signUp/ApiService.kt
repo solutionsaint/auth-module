@@ -1,7 +1,6 @@
 package com.techlambda.authlibrary.ui.signUp
 
 import com.techlambda.authlibrary.ui.models.ApiResponse
-import com.techlambda.authlibrary.ui.models.CodeVerificationRequest
 import com.techlambda.authlibrary.ui.models.CodeVerificationResponse
 import com.techlambda.authlibrary.ui.models.OtpRequest
 import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
@@ -53,7 +52,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://techlambda.com:9000/")  // Replace with your actual base URL
+            .baseUrl("http://techlambda.com:9001/")  // Replace with your actual base URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
