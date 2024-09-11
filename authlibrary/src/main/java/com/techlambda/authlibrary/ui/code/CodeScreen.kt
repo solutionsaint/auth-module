@@ -3,6 +3,8 @@ package com.techlambda.authlibrary.ui.code
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -38,7 +41,7 @@ fun CodeScreen(
     viewModel: CodeViewModel = hiltViewModel(),
     onCodeSuccess: (String) -> Unit,
     navigateToSignInScreen: () -> Unit,
-    appLogo: @Composable ColumnScope.() -> Unit,
+    appLogo: @Composable BoxScope.() -> Unit,
     headerText: String
 ) {
     //as
@@ -100,7 +103,13 @@ fun CodeScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            appLogo()
+            Box(
+                modifier = Modifier
+                    .size(100.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                appLogo()
+            }
             Text(
                 text = headerText,
                 modifier = Modifier.padding(top = 20.dp),

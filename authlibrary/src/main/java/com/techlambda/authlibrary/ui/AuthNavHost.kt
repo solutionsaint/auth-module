@@ -1,21 +1,20 @@
 package com.techlambda.authlibrary.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.techlambda.authlibrary.R
 import com.techlambda.authlibrary.ui.code.CodeScreen
 import com.techlambda.authlibrary.ui.code.CodeViewModel
 import com.techlambda.authlibrary.ui.data.AuthPrefManager
+import com.techlambda.authlibrary.ui.data.UserData
 import com.techlambda.authlibrary.ui.data.toUserData
 import com.techlambda.authlibrary.ui.models.SignUpResponse
 import com.techlambda.authlibrary.ui.signUp.SignUpScreen
@@ -78,9 +77,9 @@ fun AuthNavHost(
                     coroutine.launch {
                         dataStore.saveUserData(signInResponse.toUserData())
                     }
-                    if (signInResponse.userType.lowercase() == "admin"){
+                    if (signInResponse.userType.lowercase() == "admin") {
                         onSignInSuccess(signInResponse)
-                    }else {
+                    } else {
                         navHostController.navigate(AppNavigation.CodeScreen)
                     }
                 },
@@ -107,11 +106,11 @@ fun AuthNavHost(
                 })
         }
 
-        composable<AppNavigation.ForgotPasswordScreen>{
+        composable<AppNavigation.ForgotPasswordScreen> {
             val signInViewModel: SignInViewModel = hiltViewModel()
-            ResetPasswordScreen (
+            ResetPasswordScreen(
                 viewModel = signInViewModel
-            ){
+            ) {
                 navHostController.navigate(AppNavigation.SignInScreen)
             }
         }
@@ -120,19 +119,30 @@ fun AuthNavHost(
             val codeViewModel: CodeViewModel = hiltViewModel()
             CodeScreen(
                 viewModel = codeViewModel,
-                onCodeSuccess = {
-                    onCodeSuccess()
+                onCodeSuccess = {code->
+                    val userData = dataStore.getUserData()
+                    if (userData != null) {
+                        dataStore.saveUserData(
+                            UserData(
+                                isAdmin = userData.isAdmin,
+                                username = userData.username,
+                                phone = userData.phone,
+                                uniqueId = code,
+                                name = userData.name,
+                                email = userData.email,
+                                userId = userData.userId
+                            )
+                        )
+                        onCodeSuccess()
+                    } else {
+                        Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show()
+                    }
                 },
                 navigateToSignInScreen = {
                     navHostController.navigate(AppNavigation.SignInScreen)
                 },
-                appLogo = {
-                    Icon(
-                        painter = painterResource( R.drawable.ic_flag ),
-                        contentDescription = "Logo"
-                    )
-                },
-                headerText = "Enter Code"
+                appLogo = appLogo,
+                headerText = "Enter 6-digit Unique Code"
             )
         }
 
