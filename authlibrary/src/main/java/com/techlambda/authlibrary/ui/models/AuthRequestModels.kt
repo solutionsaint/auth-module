@@ -15,7 +15,7 @@ data class SignInRequest(
 )
 
 data class OtpRequest(
-    val email: String?=null,
+    val _id: String?=null,
     val otp: String? = null
 )
 

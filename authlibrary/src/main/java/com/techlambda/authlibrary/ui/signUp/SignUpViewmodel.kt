@@ -59,10 +59,6 @@ class SignUpViewModel @Inject constructor(
             is SignUpUiActions.SignUp -> {
                 signUp()
             }
-
-            is SignUpUiActions.SendOtp -> {
-                sendOtp(_uiStates.value.email)
-            }
         }
     }
 
@@ -97,7 +93,7 @@ class SignUpViewModel @Inject constructor(
                     }
 
                     is NetworkResult.Success -> {
-                        _uiEvents.send(SignUpUiEvents.SignUpSuccess(response.message ?: ""))
+                        _uiEvents.send(SignUpUiEvents.SignUpSuccess(response.data?.data?.id ?: ""))
                     }
                 }
             } else {
@@ -126,26 +122,6 @@ class SignUpViewModel @Inject constructor(
             else -> "Validated"
         }
     }
-
-    private fun sendOtp(email: String) {
-        viewModelScope.launch {
-            try {
-                val otpResponse = repository.sendOtp(OtpRequest(email))
-                when(otpResponse){
-                    is NetworkResult.Error -> {
-                        _uiEvents.send(SignUpUiEvents.OnError("An error occurred during signup: ${otpResponse.message}"))
-                    }
-
-                    is NetworkResult.Success -> {
-                        _uiEvents.send(SignUpUiEvents.SignUpSuccess(otpResponse.message?:""))
-                    }
-                }
-            } catch (e: Exception) {
-                _uiEvents.send(SignUpUiEvents.OnError("An error occurred while sending OTP: ${e.message}"))
-            }
-        }
-    }
-
 
     fun isValidPhoneNumber(phoneNumber: String): Boolean {
         val phoneNumberPattern = "^[+]?[0-9]{10,13}\$"
@@ -183,7 +159,6 @@ sealed class SignUpUiActions {
     data class PasswordChanged(val password: String) : SignUpUiActions()
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignUpUiActions()
     data object SignUp : SignUpUiActions()
-    data object SendOtp : SignUpUiActions()
     data class UserTypeChanged(val userType: String) : SignUpUiActions()
 }
 

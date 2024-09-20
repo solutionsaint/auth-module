@@ -30,7 +30,7 @@ interface ApiService {
     @POST("auth/signin")
     suspend fun signIn(@Body signInRequest: SignInRequest):  Response<ApiResponse<SignUpResponse>>
 
-    @POST("otp/send")
+    @POST("otp/generate")
     suspend fun sendOtp(@Body sendOtpRequest: OtpRequest): Response<ApiResponse<Any>>
 
     @POST("otp/resend")

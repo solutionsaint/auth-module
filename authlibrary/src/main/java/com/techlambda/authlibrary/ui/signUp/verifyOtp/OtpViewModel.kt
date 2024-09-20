@@ -47,25 +47,25 @@ class OtpViewModel @Inject constructor(
             }
 
             is OtpUiEvent.VerifyOtp -> {
-                verifyOtp(email = event.email)
+                verifyOtp(id = event.id)
             }
 
             is OtpUiEvent.ResendOtp -> {
-                resendOtp(_state.value.otpSentTo ?: "")
+                resendOtp(id = event.id)
             }
 
             is OtpUiEvent.SendOtp -> {
-                sendOtp(event.email)
+                sendOtp(event.id)
             }
         }
     }
 
-    private fun verifyOtp(email: String) {
+    private fun verifyOtp(id: String) {
         // Add verification logic here
         viewModelScope.launch {
             try {
                 val response = repository.verifyOtp(
-                    OtpRequest(otp = _state.value.otp, email = email)
+                    OtpRequest(otp = _state.value.otp, _id = id)
                 )
                 when (response) {
                     is NetworkResult.Error -> {
@@ -88,7 +88,7 @@ class OtpViewModel @Inject constructor(
         }
     }
 
-    private fun resendOtp(email: String) {
+    private fun resendOtp(id: String) {
         viewModelScope.launch {
             _state.value = _state.value.copy(
                 otp = "",
@@ -98,7 +98,7 @@ class OtpViewModel @Inject constructor(
             startTimer()
             try {
                 val response = repository.resendOtp(
-                    OtpRequest(email = email)  // Adjust according to your actual request needs
+                    OtpRequest(_id = id)  // Adjust according to your actual request needs
                 )
                 when (response) {
                     is NetworkResult.Error -> {
@@ -119,21 +119,27 @@ class OtpViewModel @Inject constructor(
         }
     }
 
-    private fun sendOtp(email: String) {
+    private fun sendOtp(id: String) {
         viewModelScope.launch {
             try {
-                val otpResponse = repository.sendOtp(OtpRequest(email))
+                val otpResponse = repository.sendOtp(OtpRequest(_id = id))
                 when (otpResponse) {
                     is NetworkResult.Error -> {
-                        //    _uiEvents.send(SignUpUiEvents.OnError("An error occurred during signup: ${otpResponse.message}"))
+                        _state.value = _state.value.copy(
+                            isOtpSent = false,
+                            error = "Otp Sent failed: ${otpResponse.message}"
+                        )
                     }
 
                     is NetworkResult.Success -> {
-                        // _uiEvents.send(SignUpUiEvents.SignUpSuccess(otpResponse.message?:""))
+                        _state.value = _state.value.copy(
+                            isOtpSent = true,
+                            error = null
+                        )
                     }
                 }
             } catch (e: Exception) {
-                _state.value = _state.value.copy(error = "Resend error: ${e.message}")
+                _state.value = _state.value.copy(error = "Otp Send error: ${e.message}")
             }
         }
     }
@@ -179,14 +185,13 @@ data class OtpUiState(
     val timer: Int = 30,
     val isResendButtonVisible: Boolean = false,
     val isOtpSent: Boolean = false,
-    var otpSentTo: String? = null,
     val isOtpVerified: Boolean = false,
     val error: String? = null
 )
 
 sealed class OtpUiEvent {
     data class OtpChanged(val otp: String) : OtpUiEvent()
-    data class VerifyOtp(val email: String) : OtpUiEvent()
-    data object ResendOtp : OtpUiEvent()
-    data class SendOtp(val email: String) : OtpUiEvent()
+    data class VerifyOtp(val id: String) : OtpUiEvent()
+    data class ResendOtp(val id: String) : OtpUiEvent()
+    data class SendOtp(val id: String) : OtpUiEvent()
 }

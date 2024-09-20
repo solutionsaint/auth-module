@@ -23,12 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 
 @Composable
 fun VerifyOtpScreen(
     email: String,
+    id: String,
     viewModel: OtpViewModel = hiltViewModel(),
-    onOtpVerified: () -> Unit
+    onOtpVerified: () -> Unit,
+    navHostController: NavHostController
 ) {
     val state by viewModel.state.collectAsState()
     var isVerifyButtonEnabled by remember { mutableStateOf(false) }
@@ -36,24 +39,31 @@ fun VerifyOtpScreen(
     var errorMessage by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        viewModel.onEvent(OtpUiEvent.SendOtp(email))
+        viewModel.onEvent(OtpUiEvent.SendOtp(id))
     }
 
     LaunchedEffect(state) {
-        if (state.isOtpVerified)
-        {
+        if (state.isOtpVerified) {
             onOtpVerified()
         }
+    }
+    if(!state.isOtpSent && state.error != null){
+        showErrorDialog = true
+        errorMessage = state.error ?: "Something went wrong..."
     }
 
     if (showErrorDialog) {
         AlertDialog(
-            onDismissRequest = { showErrorDialog = false },
-            title = { Text(text = "Signup Error") },
-            text = { Text(text = errorMessage) },
+            onDismissRequest = {
+                showErrorDialog = false
+                navHostController.popBackStack()
+            },
+            title = { Text(text = "Error") },
+            text = { Text(text = errorMessage ?: "") },
             confirmButton = {
                 Button(onClick = {
                     showErrorDialog = false
+                    navHostController.popBackStack()
                 }) {
                     Text("Try Again")
                 }
@@ -85,7 +95,7 @@ fun VerifyOtpScreen(
 
         Button(
             onClick = {
-                viewModel.onEvent(OtpUiEvent.VerifyOtp(email))
+                viewModel.onEvent(OtpUiEvent.VerifyOtp(id))
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = isVerifyButtonEnabled
@@ -99,7 +109,7 @@ fun VerifyOtpScreen(
             Text(text = "Resend OTP in: ${state.timer}")
         } else if (state.isResendButtonVisible) {
             TextButton(
-                onClick = { viewModel.onEvent(OtpUiEvent.ResendOtp) }
+                onClick = { viewModel.onEvent(OtpUiEvent.ResendOtp(id)) }
             ) {
                 Text(text = "Re-Send OTP", color = MaterialTheme.colorScheme.primary)
             }
