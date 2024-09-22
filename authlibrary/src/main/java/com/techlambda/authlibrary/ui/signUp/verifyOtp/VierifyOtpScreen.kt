@@ -28,7 +28,6 @@ import androidx.navigation.NavHostController
 @Composable
 fun VerifyOtpScreen(
     email: String,
-    id: String,
     viewModel: OtpViewModel = hiltViewModel(),
     onOtpVerified: () -> Unit,
     navHostController: NavHostController
@@ -39,7 +38,7 @@ fun VerifyOtpScreen(
     var errorMessage by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        viewModel.onEvent(OtpUiEvent.SendOtp(id))
+        viewModel.onEvent(OtpUiEvent.SendOtp(email = email))
     }
 
     LaunchedEffect(state) {
@@ -95,7 +94,7 @@ fun VerifyOtpScreen(
 
         Button(
             onClick = {
-                viewModel.onEvent(OtpUiEvent.VerifyOtp(id))
+                viewModel.onEvent(OtpUiEvent.VerifyOtp(email = email))
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = isVerifyButtonEnabled
@@ -109,7 +108,7 @@ fun VerifyOtpScreen(
             Text(text = "Resend OTP in: ${state.timer}")
         } else if (state.isResendButtonVisible) {
             TextButton(
-                onClick = { viewModel.onEvent(OtpUiEvent.ResendOtp(id)) }
+                onClick = { viewModel.onEvent(OtpUiEvent.ResendOtp(email = email)) }
             ) {
                 Text(text = "Re-Send OTP", color = MaterialTheme.colorScheme.primary)
             }

@@ -47,25 +47,25 @@ class OtpViewModel @Inject constructor(
             }
 
             is OtpUiEvent.VerifyOtp -> {
-                verifyOtp(id = event.id)
+                verifyOtp(email = event.email)
             }
 
             is OtpUiEvent.ResendOtp -> {
-                resendOtp(id = event.id)
+                resendOtp(email = event.email)
             }
 
             is OtpUiEvent.SendOtp -> {
-                sendOtp(event.id)
+                sendOtp(event.email)
             }
         }
     }
 
-    private fun verifyOtp(id: String) {
+    private fun verifyOtp(email: String) {
         // Add verification logic here
         viewModelScope.launch {
             try {
                 val response = repository.verifyOtp(
-                    OtpRequest(otp = _state.value.otp, _id = id)
+                    OtpRequest(otp = _state.value.otp, email = email)
                 )
                 when (response) {
                     is NetworkResult.Error -> {
@@ -88,7 +88,7 @@ class OtpViewModel @Inject constructor(
         }
     }
 
-    private fun resendOtp(id: String) {
+    private fun resendOtp(email: String) {
         viewModelScope.launch {
             _state.value = _state.value.copy(
                 otp = "",
@@ -98,7 +98,7 @@ class OtpViewModel @Inject constructor(
             startTimer()
             try {
                 val response = repository.resendOtp(
-                    OtpRequest(_id = id)  // Adjust according to your actual request needs
+                    OtpRequest(email = email)  // Adjust according to your actual request needs
                 )
                 when (response) {
                     is NetworkResult.Error -> {
@@ -119,10 +119,10 @@ class OtpViewModel @Inject constructor(
         }
     }
 
-    private fun sendOtp(id: String) {
+    private fun sendOtp(email: String) {
         viewModelScope.launch {
             try {
-                val otpResponse = repository.sendOtp(OtpRequest(_id = id))
+                val otpResponse = repository.sendOtp(OtpRequest(email = email))
                 when (otpResponse) {
                     is NetworkResult.Error -> {
                         _state.value = _state.value.copy(
@@ -191,7 +191,7 @@ data class OtpUiState(
 
 sealed class OtpUiEvent {
     data class OtpChanged(val otp: String) : OtpUiEvent()
-    data class VerifyOtp(val id: String) : OtpUiEvent()
-    data class ResendOtp(val id: String) : OtpUiEvent()
-    data class SendOtp(val id: String) : OtpUiEvent()
+    data class VerifyOtp(val email: String) : OtpUiEvent()
+    data class ResendOtp(val email: String) : OtpUiEvent()
+    data class SendOtp(val email: String) : OtpUiEvent()
 }

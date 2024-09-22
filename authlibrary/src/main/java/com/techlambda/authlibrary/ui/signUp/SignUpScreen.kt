@@ -62,7 +62,7 @@ import com.techlambda.authlibrary.R
 fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
     appLogo: @Composable BoxScope.() -> Unit,
-    onSignUpSuccess: (email: String, id: String) -> Unit,
+    onSignUpSuccess: (email: String) -> Unit,
     onSignInClick: () -> Unit
 ) {
 
@@ -92,7 +92,7 @@ fun SignUpScreen(
             }
 
             is SignUpUiEvents.SignUpSuccess -> {
-                onSignUpSuccess(uiState.email, uiEvents.message)
+                onSignUpSuccess(uiState.email)
             }
         }
     }

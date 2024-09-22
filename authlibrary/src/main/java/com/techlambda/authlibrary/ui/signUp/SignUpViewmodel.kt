@@ -93,7 +93,7 @@ class SignUpViewModel @Inject constructor(
                     }
 
                     is NetworkResult.Success -> {
-                        _uiEvents.send(SignUpUiEvents.SignUpSuccess(response.data?.data?.id ?: ""))
+                        _uiEvents.send(SignUpUiEvents.SignUpSuccess(response.message ?: ""))
                     }
                 }
             } else {

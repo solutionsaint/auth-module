@@ -57,8 +57,8 @@ fun AuthNavHost(
             val signUpViewModel: SignUpViewModel = hiltViewModel()
             SignUpScreen(
                 viewModel = signUpViewModel,
-                onSignUpSuccess = { email, id ->
-                    navHostController.navigate(AppNavigation.VerifyOtpScreen(email, id))
+                onSignUpSuccess = { email ->
+                    navHostController.navigate(AppNavigation.VerifyOtpScreen(email))
                 },
                 appLogo = {
                     appLogo()
@@ -100,7 +100,6 @@ fun AuthNavHost(
             val argument = navigationBackStackEntry.toRoute<AppNavigation.VerifyOtpScreen>()
             VerifyOtpScreen(
                 email = argument.emailId,
-                id = argument.userId,
                 viewModel = otpInViewModel,
                 onOtpVerified = {
                     navHostController.navigate(AppNavigation.SignInScreen)
@@ -165,7 +164,7 @@ sealed class AppNavigation {
     data object SignUpScreen
 
     @Serializable
-    data class VerifyOtpScreen(val emailId: String, val userId: String)
+    data class VerifyOtpScreen(val emailId: String)
 
     @Serializable
     data object ForgotPasswordScreen
