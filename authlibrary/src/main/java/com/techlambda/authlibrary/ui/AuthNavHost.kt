@@ -14,6 +14,7 @@ import androidx.navigation.toRoute
 import com.techlambda.authlibrary.ui.code.CodeScreen
 import com.techlambda.authlibrary.ui.code.CodeViewModel
 import com.techlambda.authlibrary.ui.data.AuthPrefManager
+import com.techlambda.authlibrary.ui.data.TokenManager
 import com.techlambda.authlibrary.ui.data.UserData
 import com.techlambda.authlibrary.ui.data.toUserData
 import com.techlambda.authlibrary.ui.models.SignUpResponse
@@ -21,6 +22,7 @@ import com.techlambda.authlibrary.ui.signUp.SignUpScreen
 import com.techlambda.authlibrary.ui.signUp.SignUpViewModel
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpViewModel
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.VerifyOtpScreen
+import com.techlambda.authlibrary.ui.signUp.verifyOtp.VerifyUserScreen
 import com.techlambda.authlibrary.ui.signin.ResetPasswordScreen
 import com.techlambda.authlibrary.ui.signin.SignInScreen
 import com.techlambda.authlibrary.ui.signin.SignInViewModel
@@ -32,11 +34,13 @@ fun AuthNavHost(
     modifier: Modifier,
     navHostController: NavHostController,
     onSignInSuccess: (SignUpResponse) -> Unit,
+    projectId: String,
     appLogo: @Composable BoxScope.() -> Unit,
     onCodeSuccess: () -> Unit
 ) {
     val context = LocalContext.current
     val dataStore = AuthPrefManager(context)
+    val tokenStore = TokenManager(context)
     val coroutine = rememberCoroutineScope()
     NavHost(
         modifier = modifier,
@@ -49,6 +53,7 @@ fun AuthNavHost(
                 authPrefManager = dataStore,
                 navHostController = navHostController,
                 appLogo = appLogo,
+                projectId = projectId,
                 navigateToHomeScreen = onCodeSuccess
             )
         }
@@ -58,7 +63,8 @@ fun AuthNavHost(
             SignUpScreen(
                 viewModel = signUpViewModel,
                 onSignUpSuccess = { email ->
-                    navHostController.navigate(AppNavigation.VerifyOtpScreen(email))
+//                    navHostController.navigate(AppNavigation.VerifyOtpScreen(email))
+                    navHostController.navigate(AppNavigation.VerifyUserScreen(email))
                 },
                 appLogo = {
                     appLogo()
@@ -76,6 +82,13 @@ fun AuthNavHost(
                 onSignInSuccess = { signInResponse ->
                     coroutine.launch {
                         dataStore.saveUserData(signInResponse.toUserData())
+                    }
+                    coroutine.launch {
+                        if(signInResponse.accessToken != null) {
+                            tokenStore.saveTokens(
+                                accessToken = signInResponse.accessToken
+                            )
+                        }
                     }
                     if (signInResponse.userType.lowercase() == "admin") {
                         onSignInSuccess(signInResponse)
@@ -105,6 +118,34 @@ fun AuthNavHost(
                     navHostController.navigate(AppNavigation.SignInScreen)
                 },
                 navHostController = navHostController)
+        }
+        composable<AppNavigation.VerifyUserScreen> { navigationBackStackEntry ->
+            val argument = navigationBackStackEntry.toRoute<AppNavigation.VerifyOtpScreen>()
+            VerifyUserScreen (
+                emailId = argument.emailId,
+                navHostController = navHostController,
+                onUserVerified = { response ->
+                    /* Should be uncommented when backend add token in response of verify user */
+                     /* if(response != null) {
+                        coroutine.launch {
+                            dataStore.saveUserData(response.toUserData())
+                        }
+                    }
+                    coroutine.launch {
+                        if(response?.accessToken != null) {
+                            tokenStore.saveTokens(
+                                accessToken = response.accessToken
+                            )
+                        }
+                    }
+                    if (response != null && response.userType.lowercase() == "admin") {
+                        onSignInSuccess(response)
+                    } else {
+                        navHostController.navigate(AppNavigation.CodeScreen)
+                    }*/
+                    navHostController.navigate(AppNavigation.SignInScreen)
+                }
+            )
         }
 
         composable<AppNavigation.ForgotPasswordScreen> {
@@ -165,6 +206,9 @@ sealed class AppNavigation {
 
     @Serializable
     data class VerifyOtpScreen(val emailId: String)
+
+    @Serializable
+    data class VerifyUserScreen(val emailId: String)
 
     @Serializable
     data object ForgotPasswordScreen

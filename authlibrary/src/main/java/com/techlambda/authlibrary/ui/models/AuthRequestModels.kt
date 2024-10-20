@@ -37,3 +37,7 @@ data class ApiResponse<T>(
     val data: T? = null,
     val statusCode: Int
 )
+
+data class VerifyUser(
+    val emailId: String
+)

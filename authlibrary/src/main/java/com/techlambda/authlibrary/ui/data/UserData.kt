@@ -16,7 +16,7 @@ data class UserData(
 
 fun SignUpResponse.toUserData(): UserData {
     return UserData(
-        userId = id,
+        userId = userId,
         name = name,
         username = username,
         email = email,

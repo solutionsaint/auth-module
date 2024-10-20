@@ -3,24 +3,19 @@ package com.techlambda.authlibrary.ui.signUp
 import com.techlambda.authlibrary.ui.models.ApiResponse
 import com.techlambda.authlibrary.ui.models.CodeVerificationResponse
 import com.techlambda.authlibrary.ui.models.OtpRequest
+import com.techlambda.authlibrary.ui.models.ProjectIdResponse
+import com.techlambda.authlibrary.ui.models.RefreshResponse
 import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
 import com.techlambda.authlibrary.ui.models.SignInRequest
 import com.techlambda.authlibrary.ui.models.SignUpRequest
 import com.techlambda.authlibrary.ui.models.SignUpResponse
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import com.techlambda.authlibrary.ui.models.VerifyUser
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import javax.inject.Singleton
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -44,35 +39,13 @@ interface ApiService {
 
     @GET("/users/{uniqueId}/exists")
     suspend fun verifyCode(@Path("uniqueId") uniqueId: String): Response<ApiResponse<CodeVerificationResponse>>
-}
 
-@Module
-@InstallIn(SingletonComponent::class)  // Ensure it's available across the app
-object NetworkModule {
+    @POST("/users/emailId")
+    suspend fun verifyUser(@Body verifyUser: VerifyUser): Response<ApiResponse<SignUpResponse>>
 
-    @Provides
-    @Singleton
-    fun provideRetrofit(): Retrofit {
+    @GET("/auth/{userId}")
+    suspend fun refreshToken(@Path("userId") userId: String): Response<ApiResponse<RefreshResponse>>
 
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        // Create OkHttpClient and add the logging interceptor
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
-
-        return Retrofit.Builder()
-            .baseUrl("http://techlambda.com:9001/")  // Replace with your actual base URL
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
-    }
+    @GET("/firebase/config")
+    suspend fun sendProjectId(@Query("projectId") projectId: String): Response<ProjectIdResponse>
 }

@@ -12,6 +12,9 @@ data class SignUpResponse(
     @SerializedName("userType") val userType: String,
     @SerializedName("isDeleted") val isDeleted: Boolean,
     @SerializedName("referenceId") val referenceId: String,
+    @SerializedName("userId") val userId: String,
+    @SerializedName("token") val accessToken: String? = null,
+    @SerializedName("isOtpVerified") val isUserVerified: Boolean = false,
     // Not used now
     // @SerializedName("instituteList") val instituteList: List<S>,
     @SerializedName("_id") val id: String,
