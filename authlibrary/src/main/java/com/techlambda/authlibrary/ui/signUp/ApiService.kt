@@ -45,7 +45,4 @@ interface ApiService {
 
     @GET("/auth/{userId}")
     suspend fun refreshToken(@Path("userId") userId: String): Response<ApiResponse<RefreshResponse>>
-
-    @GET("/firebase/config")
-    suspend fun sendProjectId(@Query("projectId") projectId: String): Response<ProjectIdResponse>
 }

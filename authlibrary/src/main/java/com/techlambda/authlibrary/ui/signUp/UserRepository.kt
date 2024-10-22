@@ -46,7 +46,4 @@ class UserRepository @Inject constructor(
     suspend fun verifyUser(emailId: String): NetworkResult<ApiResponse<SignUpResponse>> {
         return makeApiCall({ api.verifyUser(VerifyUser(emailId)) }, VerifyUser(emailId))
     }
-    suspend fun sendProjectId(projectId: String): NetworkResult<ProjectIdResponse> {
-        return makeApiCall({ api.sendProjectId(projectId) }, projectId)
-    }
 }

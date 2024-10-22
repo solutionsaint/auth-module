@@ -59,7 +59,6 @@ class MainActivity : ComponentActivity() {
                                 onCodeSuccess = {
                                     showDashboard = true
                                 },
-                                projectId = "server-handover-app",
                                 navHostController = navController,
                                 onSignInSuccess = {
                                     showDashboard = true

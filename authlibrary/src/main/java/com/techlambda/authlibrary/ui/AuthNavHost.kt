@@ -34,7 +34,6 @@ fun AuthNavHost(
     modifier: Modifier,
     navHostController: NavHostController,
     onSignInSuccess: (SignUpResponse) -> Unit,
-    projectId: String,
     appLogo: @Composable BoxScope.() -> Unit,
     onCodeSuccess: () -> Unit
 ) {
@@ -53,7 +52,6 @@ fun AuthNavHost(
                 authPrefManager = dataStore,
                 navHostController = navHostController,
                 appLogo = appLogo,
-                projectId = projectId,
                 navigateToHomeScreen = onCodeSuccess
             )
         }
