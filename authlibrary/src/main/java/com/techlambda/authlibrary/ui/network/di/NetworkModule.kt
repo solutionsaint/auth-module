@@ -1,5 +1,6 @@
 package com.techlambda.authlibrary.ui.network.di
 
+import com.techlambda.authlibrary.BuildConfig
 import com.techlambda.authlibrary.ui.data.AuthPrefManager
 import com.techlambda.authlibrary.ui.data.TokenManager
 import com.techlambda.authlibrary.ui.network.interceptor.AuthInterceptor
@@ -49,7 +50,7 @@ object NetworkModule {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl("http://techlambda.com:9002/")  // Replace with your actual base URL
+            .baseUrl(BuildConfig.BASE_URL)  // Replace with your actual base URL
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

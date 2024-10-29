@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.org.apache.commons.logging.LogFactory.release
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -38,9 +36,22 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            buildConfigField("String", "BASE_URL", "\"http://techlambda.com:9002/\"")
+        }
+
+        create("prod") {
+            dimension = "environment"
+            buildConfigField("String", "BASE_URL", "\"http://techlambda.com:9001/\"")
+        }
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
     packaging {
         resources {
@@ -108,16 +119,24 @@ dependencies {
     implementation("androidx.compose.runtime:runtime:1.4.0") // Update to the latest version
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.25")
+
+    implementation ("com.github.solutionsaint:common-library:1.0.2")
 }
 
 
 afterEvaluate {
     publishing {
         publications {
-            create<MavenPublication>("release") {
-                from(components["release"])
+            create<MavenPublication>("prodRelease") {
+                from(components["prodRelease"])
                 groupId = "com.github.solutionsaint"
-                artifactId = "authlibrary"
+                artifactId = "authlibrary-prod"
+                version = "1.0.7"
+            }
+            create<MavenPublication>("devRelease") {
+                from(components["devRelease"])
+                groupId = "com.github.solutionsaint"
+                artifactId = "authlibrary-dev"
                 version = "1.0.7"
             }
         }

@@ -3,7 +3,6 @@ package com.techlambda.authlibrary.ui.signUp
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.techlambda.authlibrary.ui.models.OtpRequest
 import com.techlambda.authlibrary.ui.models.SignUpRequest
 import com.techlambda.authlibrary.ui.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel

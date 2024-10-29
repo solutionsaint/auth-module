@@ -3,11 +3,11 @@ package com.techlambda.authlibrary.ui.signUp
 import com.techlambda.authlibrary.ui.models.ApiResponse
 import com.techlambda.authlibrary.ui.models.CodeVerificationResponse
 import com.techlambda.authlibrary.ui.models.OtpRequest
-import com.techlambda.authlibrary.ui.models.ProjectIdResponse
 import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
 import com.techlambda.authlibrary.ui.models.SignInRequest
 import com.techlambda.authlibrary.ui.models.SignUpRequest
 import com.techlambda.authlibrary.ui.models.SignUpResponse
+import com.techlambda.authlibrary.ui.models.UpdateProfileRequest
 import com.techlambda.authlibrary.ui.models.VerifyUser
 import com.techlambda.authlibrary.ui.utils.NetworkResult
 import com.techlambda.authlibrary.ui.utils.makeApiCall
@@ -45,5 +45,8 @@ class UserRepository @Inject constructor(
     }
     suspend fun verifyUser(emailId: String): NetworkResult<ApiResponse<SignUpResponse>> {
         return makeApiCall({ api.verifyUser(VerifyUser(emailId)) }, VerifyUser(emailId))
+    }
+    suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest): NetworkResult<SignUpResponse> {
+        return makeApiCall({ api.updateProfile(updateProfileRequest, updateProfileRequest.id) }, updateProfileRequest)
     }
 }

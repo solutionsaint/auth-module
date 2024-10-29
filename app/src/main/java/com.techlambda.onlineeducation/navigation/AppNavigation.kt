@@ -2,6 +2,7 @@ package com.techlambda.onlineeducation.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -12,6 +13,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.techlambda.authlibrary.ui.profile.ProfileScreen
+import com.techlambda.authlibrary.ui.profile.SettingsScreen
 import kotlinx.serialization.Serializable
 
 
@@ -20,7 +23,7 @@ val LocalNavigationProvider = staticCompositionLocalOf<NavHostController> {
 }
 
 @Composable
-fun AppNavHost(modifier: Modifier) {
+fun AppNavHost(modifier: Modifier, navigateToWelcomeScreen : () -> Unit) {
     val navHostController = LocalNavigationProvider.current
     NavHost(
         modifier = modifier,
@@ -38,6 +41,29 @@ fun AppNavHost(modifier: Modifier) {
                     fontSize = 30.sp,
                     fontWeight = FontWeight.SemiBold
                 )
+                Button(onClick = {
+                    navHostController.navigate(AppNavigation.Settings)
+                }) {
+                    Text("Open Settings")
+                }
+            }
+        }
+
+        composable<AppNavigation.Settings> {
+            SettingsScreen(
+                navigateToProfileScreen = {
+                    navHostController.navigate(AppNavigation.Profile)
+                },
+                navigateToChangePasswordScreen = {},
+                navigateToTermsAndCondition = {}
+            ) {
+                navigateToWelcomeScreen()
+            }
+        }
+
+        composable<AppNavigation.Profile> {
+            ProfileScreen {
+                navHostController.popBackStack()
             }
         }
 
@@ -50,4 +76,10 @@ sealed class AppNavigation {
 
     @Serializable
     data object Home
+
+    @Serializable
+    data object Settings
+
+    @Serializable
+    data object Profile
 }

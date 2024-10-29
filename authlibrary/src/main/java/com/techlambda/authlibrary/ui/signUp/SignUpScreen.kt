@@ -1,5 +1,6 @@
 package com.techlambda.authlibrary.ui.signUp
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,8 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -45,6 +48,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -277,10 +285,54 @@ fun SignUpScreen(
 
             }
         }
-
+        val termsAndCondition: AnnotatedString = buildAnnotatedString {
+            append("I agree with the terms and conditions*")
+            addStyle(
+                style = SpanStyle(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                ), start = 17, end = 38
+            )
+            addStringAnnotation(
+                tag = "",
+                annotation = "",
+                start = 17,
+                end = 38
+            )
+        }
+        var termsAndConditionState by remember { mutableStateOf(true) }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = termsAndConditionState,
+                onCheckedChange = {
+                    termsAndConditionState = it
+                },
+                modifier = Modifier
+                    .padding(top = 2.dp, start = 4.dp),
+                colors = CheckboxDefaults.colors(checkedColor = Color(0XFF05A8B3))
+            )
+            Text(
+                modifier = Modifier
+                    .padding(top = 16.dp, end = 12.dp, bottom = 10.dp)
+                    .clickable {
+                        //TODO: Navigate to TnC Screen
+                    },
+                text = termsAndCondition,
+                style = TextStyle(fontSize = 18.sp)
+            )
+        }
+        val context = LocalContext.current
         Button(
             onClick = {
-                viewModel.onEvent(SignUpUiActions.SignUp)
+                if(termsAndConditionState) {
+                    viewModel.onEvent(SignUpUiActions.SignUp)
+                }else {
+                    Toast.makeText(context, "Please accept the terms and conditions", Toast.LENGTH_SHORT).show()
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()

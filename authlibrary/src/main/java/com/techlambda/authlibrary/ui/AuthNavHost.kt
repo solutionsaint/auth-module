@@ -170,7 +170,8 @@ fun AuthNavHost(
                                 uniqueId = code,
                                 name = userData.name,
                                 email = userData.email,
-                                userId = userData.userId
+                                userId = userData.userId,
+                                id = userData.id
                             )
                         )
                         onCodeSuccess()

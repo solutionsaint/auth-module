@@ -3,7 +3,6 @@ package com.techlambda.authlibrary.ui.network.interceptor
 import com.techlambda.authlibrary.ui.data.AuthPrefManager
 import com.techlambda.authlibrary.ui.data.TokenManager
 import com.techlambda.authlibrary.ui.signUp.ApiService
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -33,7 +32,7 @@ class TokenAuthenticator @Inject constructor(
                 if (refreshResponse.isSuccessful) {
                     refreshResponse.body()?.data?.let { refreshResponseBody ->
                         tokenManager.saveTokens(
-                            refreshResponseBody.accessToken
+                            refreshResponseBody
                         )
                         refreshResponseBody
                     }
@@ -46,7 +45,7 @@ class TokenAuthenticator @Inject constructor(
         return if (newTokens != null) {
             // Retry the request with the new access token
             response.request.newBuilder()
-                .header("Authorization", "Bearer ${newTokens.accessToken}")
+                .header("Authorization", "Bearer $newTokens")
                 .build()
         } else {
             // Refresh failed, clear tokens and return null

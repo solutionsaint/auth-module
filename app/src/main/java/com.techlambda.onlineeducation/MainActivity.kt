@@ -46,7 +46,9 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(value = LocalNavigationProvider provides navController) {
                     Surface(color = MaterialTheme.colorScheme.background) {
                         if(showDashboard) {
-                            AppNavHost(modifier = Modifier)
+                            AppNavHost(modifier = Modifier) {
+                                showDashboard = false
+                            }
                         }else {
                             AuthNavHost(
                                 modifier = Modifier,

@@ -1,6 +1,5 @@
 package com.techlambda.authlibrary.ui.signUp.verifyOtp
 
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techlambda.authlibrary.ui.models.OtpRequest

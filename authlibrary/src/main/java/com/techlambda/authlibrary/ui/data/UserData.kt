@@ -11,7 +11,8 @@ data class UserData(
     val email: String,
     val phone: String,
     val isAdmin: Boolean,
-    val uniqueId: String?
+    val uniqueId: String?,
+    val id: String
 )
 
 fun SignUpResponse.toUserData(): UserData {
@@ -22,6 +23,7 @@ fun SignUpResponse.toUserData(): UserData {
         email = email,
         phone = phone,
         isAdmin = userType.contains("admin", ignoreCase = true),
-        uniqueId = referenceId
+        uniqueId = referenceId,
+        id = id
     )
 }
