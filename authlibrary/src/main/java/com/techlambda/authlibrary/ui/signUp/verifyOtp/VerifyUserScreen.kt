@@ -31,6 +31,7 @@ import com.techlambda.authlibrary.ui.models.SignUpResponse
 @Composable
 fun VerifyUserScreen(
     emailId: String,
+    isResetPassword: Boolean,
     navHostController: NavHostController,
     viewModel: VerifyUserViewModel = hiltViewModel(),
     onUserVerified: (response: SignUpResponse?) -> Unit

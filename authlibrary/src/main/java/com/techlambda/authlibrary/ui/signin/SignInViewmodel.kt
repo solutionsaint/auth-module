@@ -112,9 +112,7 @@ class SignInViewModel @Inject constructor(
             try {
                 val response = repository.resetPassword(
                     ResetPasswordRequest(
-                        email = _uiStates.value.email,
-                        username = _uiStates.value.name,
-                        type = "send-otp"
+                        email = _uiStates.value.email
                     )
                 )
                 when (response) {
@@ -142,10 +140,7 @@ class SignInViewModel @Inject constructor(
                 val response = repository.resetPassword(
                     ResetPasswordRequest(
                         email = _uiStates.value.email,
-                        type = "verify-otp",
-                        username = _uiStates.value.name,
-                        otp = _uiStates.value.otp,
-                        password = _uiStates.value.password
+                        newPassword = _uiStates.value.password
                     )
                 )
                 when (response) {

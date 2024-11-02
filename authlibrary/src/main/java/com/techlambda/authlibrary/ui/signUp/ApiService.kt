@@ -47,4 +47,7 @@ interface ApiService {
 
     @POST("/auth/{userId}")
     suspend fun refreshToken(@Path("userId") userId: String): Response<ApiResponse<String>>
+
+    @GET("/tandc/key")
+    suspend fun termsAndCondition(): Response<ApiResponse<String>>
 }

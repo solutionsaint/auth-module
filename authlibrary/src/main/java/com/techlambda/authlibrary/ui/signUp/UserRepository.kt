@@ -49,4 +49,7 @@ class UserRepository @Inject constructor(
     suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest): NetworkResult<SignUpResponse> {
         return makeApiCall({ api.updateProfile(updateProfileRequest, updateProfileRequest.id) }, updateProfileRequest)
     }
+    suspend fun termsAndCondition(): NetworkResult<ApiResponse<String>> {
+        return makeApiCall({ api.termsAndCondition() }, null)
+    }
 }

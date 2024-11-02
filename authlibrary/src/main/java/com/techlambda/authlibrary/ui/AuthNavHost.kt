@@ -23,9 +23,10 @@ import com.techlambda.authlibrary.ui.signUp.SignUpViewModel
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpViewModel
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.VerifyOtpScreen
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.VerifyUserScreen
-import com.techlambda.authlibrary.ui.signin.ResetPasswordScreen
+import com.techlambda.authlibrary.ui.signin.resetPassword.ResetPasswordScreen
 import com.techlambda.authlibrary.ui.signin.SignInScreen
 import com.techlambda.authlibrary.ui.signin.SignInViewModel
+import com.techlambda.authlibrary.ui.signin.resetPassword.ForgotPasswordScreen
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -61,8 +62,7 @@ fun AuthNavHost(
             SignUpScreen(
                 viewModel = signUpViewModel,
                 onSignUpSuccess = { email ->
-//                    navHostController.navigate(AppNavigation.VerifyOtpScreen(email))
-                    navHostController.navigate(AppNavigation.VerifyUserScreen(email))
+                    navHostController.navigate(AppNavigation.VerifyUserScreen(email, isResetPassword = false))
                 },
                 appLogo = {
                     appLogo()
@@ -118,9 +118,10 @@ fun AuthNavHost(
                 navHostController = navHostController)
         }
         composable<AppNavigation.VerifyUserScreen> { navigationBackStackEntry ->
-            val argument = navigationBackStackEntry.toRoute<AppNavigation.VerifyOtpScreen>()
+            val argument = navigationBackStackEntry.toRoute<AppNavigation.VerifyUserScreen>()
             VerifyUserScreen (
                 emailId = argument.emailId,
+                isResetPassword = argument.isResetPassword,
                 navHostController = navHostController,
                 onUserVerified = { response ->
                     /* Should be uncommented when backend add token in response of verify user */
@@ -141,17 +142,28 @@ fun AuthNavHost(
                     } else {
                         navHostController.navigate(AppNavigation.CodeScreen)
                     }*/
-                    navHostController.navigate(AppNavigation.SignInScreen)
+                    if (argument.isResetPassword) {
+                        navHostController.navigate(AppNavigation.ResetPasswordScreen(emailId = argument.emailId))
+                    }else {
+                        navHostController.navigate(AppNavigation.SignInScreen)
+                    }
                 }
             )
         }
 
-        composable<AppNavigation.ForgotPasswordScreen> {
+        composable<AppNavigation.ResetPasswordScreen> { navigationBackStackEntry ->
             val signInViewModel: SignInViewModel = hiltViewModel()
+            val argument = navigationBackStackEntry.toRoute<AppNavigation.ResetPasswordScreen>()
             ResetPasswordScreen(
+                email = argument.emailId,
                 viewModel = signInViewModel
             ) {
                 navHostController.navigate(AppNavigation.SignInScreen)
+            }
+        }
+        composable<AppNavigation.ForgotPasswordScreen> {
+            ForgotPasswordScreen {
+                navHostController.navigate(AppNavigation.VerifyUserScreen(emailId = it, isResetPassword = true))
             }
         }
 
@@ -207,7 +219,10 @@ sealed class AppNavigation {
     data class VerifyOtpScreen(val emailId: String)
 
     @Serializable
-    data class VerifyUserScreen(val emailId: String)
+    data class VerifyUserScreen(val emailId: String, val isResetPassword: Boolean)
+
+    @Serializable
+    data class ResetPasswordScreen(val emailId: String)
 
     @Serializable
     data object ForgotPasswordScreen

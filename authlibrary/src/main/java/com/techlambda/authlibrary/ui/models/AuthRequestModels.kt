@@ -21,10 +21,7 @@ data class OtpRequest(
 
 data class ResetPasswordRequest(
     val email: String,
-    val type: String,
-    val username: String? = null,
-    val otp: String? = null,
-    val password: String? = null
+    val newPassword: String? = null
 )
 
 data class CodeVerificationRequest(
@@ -33,9 +30,9 @@ data class CodeVerificationRequest(
 )
 
 data class ApiResponse<T>(
-    val message: String,
+    val message: String? = null,
     val data: T? = null,
-    val statusCode: Int
+    val statusCode: Int? = null
 )
 
 data class VerifyUser(

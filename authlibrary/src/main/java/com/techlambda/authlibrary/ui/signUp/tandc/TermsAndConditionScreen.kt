@@ -1,4 +1,4 @@
-package com.techlambda.authlibrary.ui.signUp
+package com.techlambda.authlibrary.ui.signUp.tandc
 
 import android.text.Html
 import android.widget.TextView
@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.techlambda.common.ui.CommonButton
 import kotlinx.coroutines.launch
 
@@ -21,6 +24,12 @@ import kotlinx.coroutines.launch
 fun TermsAndCondition(isSignUp: Boolean) {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
+    val viewModel: TermsAndConditionViewModel = hiltViewModel()
+    val uiState = viewModel.state.collectAsStateWithLifecycle().value
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(TermsAndConditionUiActions.SignUpStatusChanged(isSignUp))
+    }
     Column(
         modifier = Modifier
             .verticalScroll(scrollState)
@@ -34,7 +43,7 @@ fun TermsAndCondition(isSignUp: Boolean) {
         AndroidView(factory = { context ->
             TextView(context).apply {
                 text = Html.fromHtml(
-                    "",
+                    uiState.termsAndCondition,
                     Html.FROM_HTML_MODE_LEGACY
                 )
             }
