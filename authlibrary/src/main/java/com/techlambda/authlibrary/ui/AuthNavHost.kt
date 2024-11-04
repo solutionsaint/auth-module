@@ -20,6 +20,7 @@ import com.techlambda.authlibrary.ui.data.toUserData
 import com.techlambda.authlibrary.ui.models.SignUpResponse
 import com.techlambda.authlibrary.ui.signUp.SignUpScreen
 import com.techlambda.authlibrary.ui.signUp.SignUpViewModel
+import com.techlambda.authlibrary.ui.signUp.tandc.TermsAndCondition
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpViewModel
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.VerifyOtpScreen
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.VerifyUserScreen
@@ -69,7 +70,8 @@ fun AuthNavHost(
                 },
                 onSignInClick = {
                     navHostController.navigate(AppNavigation.SignInScreen)
-                }
+                },
+                navController = navHostController
             )
         }
 
@@ -166,6 +168,9 @@ fun AuthNavHost(
                 navHostController.navigate(AppNavigation.VerifyUserScreen(emailId = it, isResetPassword = true))
             }
         }
+        composable<AppNavigation.TermsAndConditionScreen> {
+            TermsAndCondition(true, navHostController)
+        }
 
         composable<AppNavigation.CodeScreen> {
             val codeViewModel: CodeViewModel = hiltViewModel()
@@ -226,6 +231,9 @@ sealed class AppNavigation {
 
     @Serializable
     data object ForgotPasswordScreen
+
+    @Serializable
+    data object TermsAndConditionScreen
 
     @Serializable
     data object CodeScreen

@@ -28,19 +28,7 @@ class TermsAndConditionViewModel @Inject constructor(
     private val _uiEvents = Channel<TermsAndConditionUiEvents>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
-
-    fun onEvent(event: TermsAndConditionUiActions) {
-        when (event) {
-            is TermsAndConditionUiActions.SignUpStatusChanged -> _uiStates.update {
-                _uiStates.value.copy(
-                    isSignUp = event.status
-                )
-            }
-        }
-    }
-
-
-    private fun signUp() {
+    fun getTermsAndCondition() {
         viewModelScope.launch {
             val response = repository.termsAndCondition()
 
@@ -50,7 +38,7 @@ class TermsAndConditionViewModel @Inject constructor(
                 }
 
                 is NetworkResult.Success -> {
-                    _uiStates.update { _uiStates.value.copy(termsAndCondition = response.data?.data) }
+                    _uiStates.update { _uiStates.value.copy(termsAndCondition = response.data?.data?.discription) }
                 }
             }
         }
@@ -59,16 +47,10 @@ class TermsAndConditionViewModel @Inject constructor(
 
 data class TermsAndConditionUiState(
     val termsAndCondition: String? = "",
-    val isAccepted: Boolean = false,
-    val isSignUp: Boolean = true
 )
 
-sealed class TermsAndConditionUiActions {
-    data class SignUpStatusChanged(val status: Boolean) : TermsAndConditionUiActions()
-}
 
 sealed class TermsAndConditionUiEvents {
     data object None : TermsAndConditionUiEvents()
-    data object Accept : TermsAndConditionUiEvents()
     data class OnError(val message: String) : TermsAndConditionUiEvents()
 }

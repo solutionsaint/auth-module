@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +37,7 @@ import com.techlambda.authlibrary.ui.signUp.SignUpUiActions
 import com.techlambda.authlibrary.ui.signin.SignInUiActions
 import com.techlambda.authlibrary.ui.signin.SignInViewModel
 import com.techlambda.authlibrary.ui.signin.SignUpUiEvents
+import com.techlambda.common.utils.showToast
 
 @Composable
 fun ResetPasswordScreen(
@@ -108,10 +110,14 @@ fun ResetPasswordScreen(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-
+        val context = LocalContext.current
         Button(
             onClick = {
-                viewModel.onEvent(SignInUiActions.ResetPassword)
+                if (state.password != state.confirmPassword){
+                    context.showToast("Password does not match")
+                }else {
+                    viewModel.onEvent(SignInUiActions.ResetPassword)
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {

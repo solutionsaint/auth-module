@@ -7,6 +7,7 @@ import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
 import com.techlambda.authlibrary.ui.models.SignInRequest
 import com.techlambda.authlibrary.ui.models.SignUpRequest
 import com.techlambda.authlibrary.ui.models.SignUpResponse
+import com.techlambda.authlibrary.ui.models.TermsAndConditionResponse
 import com.techlambda.authlibrary.ui.models.UpdateProfileRequest
 import com.techlambda.authlibrary.ui.models.VerifyUser
 import retrofit2.Response
@@ -49,5 +50,5 @@ interface ApiService {
     suspend fun refreshToken(@Path("userId") userId: String): Response<ApiResponse<String>>
 
     @GET("/tandc/key")
-    suspend fun termsAndCondition(): Response<ApiResponse<String>>
+    suspend fun termsAndCondition(): Response<ApiResponse<TermsAndConditionResponse>>
 }

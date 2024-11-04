@@ -62,8 +62,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.techlambda.authlibrary.R
+import com.techlambda.authlibrary.ui.AppNavigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,6 +74,7 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
     appLogo: @Composable BoxScope.() -> Unit,
     onSignUpSuccess: (email: String) -> Unit,
+    navController: NavController,
     onSignInClick: () -> Unit
 ) {
 
@@ -82,8 +86,11 @@ fun SignUpScreen(
     val roles = listOf("User", "Admin")
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
-
+    var termsAndConditionState by remember { mutableStateOf(true) }
+    navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("isTermsAccepted")
+        ?.observe(LocalLifecycleOwner.current) { accepted ->
+            termsAndConditionState = accepted
+        }
     LaunchedEffect(selectedRole) {
         viewModel.onEvent(SignUpUiActions.UserTypeChanged(selectedRole))
     }
@@ -301,7 +308,6 @@ fun SignUpScreen(
                 end = 38
             )
         }
-        var termsAndConditionState by remember { mutableStateOf(true) }
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -319,7 +325,7 @@ fun SignUpScreen(
                 modifier = Modifier
                     .padding(top = 16.dp, end = 12.dp, bottom = 10.dp)
                     .clickable {
-                        //TODO: Navigate to TnC Screen
+                        navController.navigate(AppNavigation.TermsAndConditionScreen)
                     },
                 text = termsAndCondition,
                 style = TextStyle(fontSize = 18.sp)

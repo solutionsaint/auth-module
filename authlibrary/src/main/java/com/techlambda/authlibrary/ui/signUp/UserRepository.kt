@@ -7,6 +7,7 @@ import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
 import com.techlambda.authlibrary.ui.models.SignInRequest
 import com.techlambda.authlibrary.ui.models.SignUpRequest
 import com.techlambda.authlibrary.ui.models.SignUpResponse
+import com.techlambda.authlibrary.ui.models.TermsAndConditionResponse
 import com.techlambda.authlibrary.ui.models.UpdateProfileRequest
 import com.techlambda.authlibrary.ui.models.VerifyUser
 import com.techlambda.authlibrary.ui.utils.NetworkResult
@@ -49,7 +50,7 @@ class UserRepository @Inject constructor(
     suspend fun updateProfile(updateProfileRequest: UpdateProfileRequest): NetworkResult<SignUpResponse> {
         return makeApiCall({ api.updateProfile(updateProfileRequest, updateProfileRequest.id) }, updateProfileRequest)
     }
-    suspend fun termsAndCondition(): NetworkResult<ApiResponse<String>> {
+    suspend fun termsAndCondition(): NetworkResult<ApiResponse<TermsAndConditionResponse>> {
         return makeApiCall({ api.termsAndCondition() }, null)
     }
 }

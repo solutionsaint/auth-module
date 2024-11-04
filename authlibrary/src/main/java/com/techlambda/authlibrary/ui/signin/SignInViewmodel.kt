@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -81,54 +82,93 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch {
          //   _uiStates.update { it.copy(isLoading = true) }
             setLoading(true)
-            val response = repository.signIn(
-                SignInRequest(
-                    email = _uiStates.value.email,
-                    password = _uiStates.value.password,
-                    type = "email"
+            val validateMessage = validateSignIn(email = _uiStates.value.email, password = _uiStates.value.password)
+            if (validateMessage == "Validated") {
+                val response = repository.signIn(
+                    SignInRequest(
+                        email = _uiStates.value.email,
+                        password = _uiStates.value.password,
+                        type = "email"
+                    )
                 )
-            )
-            Log.d("SignInViewModel", "API Response: $response")
-            when (response) {
-                is NetworkResult.Error -> {
-                    setLoading(false)
-                    _uiEvents.send(SignUpUiEvents.OnError(response.message ?: ""))
-                }
+                Log.d("SignInViewModel", "API Response: $response")
+                when (response) {
+                    is NetworkResult.Error -> {
+                        setLoading(false)
+                        _uiEvents.send(SignUpUiEvents.OnError(response.message ?: ""))
+                    }
 
-                is NetworkResult.Success -> {
-                    setLoading(false)
-                    response.data?.data?.let {
-                        _uiEvents.send(SignUpUiEvents.SignInSuccess(it))
+                    is NetworkResult.Success -> {
+                        setLoading(false)
+                        response.data?.data?.let {
+                            _uiEvents.send(SignUpUiEvents.SignInSuccess(it))
+                        }
                     }
                 }
+            } else {
+                setLoading(false)
+                _uiEvents.send(SignUpUiEvents.OnError(validateMessage))
             }
         }
+    }
+
+    fun validateSignIn(
+        password: String,
+        email: String
+    ): String {
+        return when {
+            email.isEmpty() -> "Please enter Email"
+            !isValidEmail(email) -> "Please enter valid Email"
+            password.isEmpty() -> "Please enter Password"
+            else -> "Validated"
+        }
+    }
+    fun validateReset(
+        email: String
+    ): String {
+        return when {
+            email.isEmpty() -> "Please enter Email"
+            !isValidEmail(email) -> "Please enter valid Email"
+            else -> "Validated"
+        }
+    }
+
+    fun isValidEmail(email: String): Boolean {
+        val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+        return Pattern.matches(emailPattern, email)
     }
 
     private fun sendOtpForReset() {
         viewModelScope.launch {
             setLoading(true)
             _uiStates.update { it.copy(isLoading = true) }
-            try {
-                val response = repository.resetPassword(
-                    ResetPasswordRequest(
-                        email = _uiStates.value.email
+            val validateMessage = validateReset(email = _uiStates.value.email)
+            if (validateMessage == "Validated") {
+                try {
+                    val response = repository.resetPassword(
+                        ResetPasswordRequest(
+                            email = _uiStates.value.email
+                        )
                     )
-                )
-                when (response) {
-                    is NetworkResult.Error -> {
-                        _uiEvents.send(SignUpUiEvents.OnError("Password reset failed: ${response.message}"))
-                    }
+                    when (response) {
+                        is NetworkResult.Error -> {
+                            _uiEvents.send(SignUpUiEvents.OnError("Password reset failed: ${response.message}"))
+                        }
 
-                    is NetworkResult.Success -> {
-                        _uiStates.update { it.copy(isOtpSent = true) }
+                        is NetworkResult.Success -> {
+                            _uiStates.update { it.copy(isOtpSent = true) }
+                        }
                     }
+                } catch (e: Exception) {
+                    _uiEvents.send(SignUpUiEvents.OnError("Password reset error: ${e.message}"))
+                } finally {
+                    setLoading(false)
+                    _uiStates.update { it.copy(isLoading = false) }
                 }
-            } catch (e: Exception) {
-                _uiEvents.send(SignUpUiEvents.OnError("Password reset error: ${e.message}"))
-            } finally {
+            } else {
                 setLoading(false)
                 _uiStates.update { it.copy(isLoading = false) }
+                _uiEvents.send(SignUpUiEvents.OnError(validateMessage))
             }
         }
     }
