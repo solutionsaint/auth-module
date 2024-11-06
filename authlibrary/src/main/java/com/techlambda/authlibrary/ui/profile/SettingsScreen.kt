@@ -100,10 +100,10 @@ val settingsOptions = listOf(
         text = "Profile",
         icon = Icons.Default.Person
     ),
-    SettingsOptionData(
+    /*SettingsOptionData(
         text = "Change Password",
         icon = Icons.Default.Lock
-    ),
+    ), */
     SettingsOptionData(
         text = "Terms and Conditions",
         icon = Icons.Default.Info

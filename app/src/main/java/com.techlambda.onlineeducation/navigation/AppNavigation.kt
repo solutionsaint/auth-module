@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.techlambda.authlibrary.ui.profile.ProfileScreen
 import com.techlambda.authlibrary.ui.profile.SettingsScreen
+import com.techlambda.authlibrary.ui.signUp.tandc.TermsAndCondition
 import kotlinx.serialization.Serializable
 
 
@@ -55,7 +56,9 @@ fun AppNavHost(modifier: Modifier, navigateToWelcomeScreen : () -> Unit) {
                     navHostController.navigate(AppNavigation.Profile)
                 },
                 navigateToChangePasswordScreen = {},
-                navigateToTermsAndCondition = {}
+                navigateToTermsAndCondition = {
+                    navHostController.navigate(AppNavigation.TermsAndCondition)
+                }
             ) {
                 navigateToWelcomeScreen()
             }
@@ -65,6 +68,12 @@ fun AppNavHost(modifier: Modifier, navigateToWelcomeScreen : () -> Unit) {
             ProfileScreen {
                 navHostController.popBackStack()
             }
+        }
+        composable<AppNavigation.TermsAndCondition> {
+            TermsAndCondition(
+                isSignUp = false,
+                navController = navHostController
+            )
         }
 
     }
@@ -82,4 +91,7 @@ sealed class AppNavigation {
 
     @Serializable
     data object Profile
+
+    @Serializable
+    data object TermsAndCondition
 }
