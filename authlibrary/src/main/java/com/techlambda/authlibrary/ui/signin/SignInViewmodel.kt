@@ -213,7 +213,7 @@ data class SignInUiState(
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
-    val isPasswordVisible: Boolean = false,
+    val isPasswordVisible: Boolean = true,
     val isLoading: Boolean = false,
     val otp: String = "",
     var isPasswordReset: Boolean = false,

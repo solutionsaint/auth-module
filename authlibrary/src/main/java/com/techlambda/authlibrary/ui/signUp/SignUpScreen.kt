@@ -221,7 +221,7 @@ fun SignUpScreen(
         }
 
         var passwordVisibility by remember {
-            mutableStateOf(false)
+            mutableStateOf(true)
         }
         OutlinedTextField(
             value = uiState.password,
@@ -235,7 +235,7 @@ fun SignUpScreen(
                     passwordVisibility = !passwordVisibility
                 }) {
                     Icon(
-                        if (passwordVisibility) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        if (passwordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                         contentDescription = "Toggle Password Visibility"
                     )
                 }
@@ -246,7 +246,7 @@ fun SignUpScreen(
             }
         )
         var confirmPasswordVisibility by remember {
-            mutableStateOf(false)
+            mutableStateOf(true)
         }
         OutlinedTextField(
             value = uiState.confirmPassword,
@@ -260,12 +260,12 @@ fun SignUpScreen(
                     confirmPasswordVisibility = !confirmPasswordVisibility
                 }) {
                     Icon(
-                        if (confirmPasswordVisibility) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        if (confirmPasswordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                         contentDescription = "Toggle Password Visibility"
                     )
                 }
             },
-            visualTransformation = if (passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None,
+            visualTransformation = if (confirmPasswordVisibility) PasswordVisualTransformation() else VisualTransformation.None,
             supportingText = {
 
             }

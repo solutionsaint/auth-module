@@ -122,7 +122,7 @@ fun SignInScreen(
         OutlinedTextField(
             value = uiStates.email,
             onValueChange = {
-                viewModel.onEvent(SignInUiActions.EmailChanged(it))
+                viewModel.onEvent(SignInUiActions.EmailChanged(it.trim()))
             },
             label = { Text("Email*") },
             modifier = Modifier.fillMaxWidth(),
@@ -136,7 +136,7 @@ fun SignInScreen(
         OutlinedTextField(
             value = uiStates.password,
             onValueChange = {
-                viewModel.onEvent(SignInUiActions.PasswordChanged(it))
+                viewModel.onEvent(SignInUiActions.PasswordChanged(it.trim()))
             },
             label = { Text("Password*") },
             modifier = Modifier.fillMaxWidth(),
@@ -145,7 +145,7 @@ fun SignInScreen(
                     viewModel.onEvent(SignInUiActions.TogglePasswordVisibility)
                 }) {
                     Icon(
-                        if (passwordVisibility) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        if (passwordVisibility) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                         contentDescription = "Toggle Password Visibility"
                     )
                 }

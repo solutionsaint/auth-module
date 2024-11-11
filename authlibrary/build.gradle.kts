@@ -131,13 +131,13 @@ afterEvaluate {
                 from(components["prodRelease"])
                 groupId = "com.github.solutionsaint"
                 artifactId = "authlibrary-prod"
-                version = "1.3.0"
+                version = "1.3.2"
             }
             create<MavenPublication>("devRelease") {
                 from(components["devRelease"])
                 groupId = "com.github.solutionsaint"
                 artifactId = "authlibrary-dev"
-                version = "1.3.0"
+                version = "1.3.2"
             }
         }
     }
