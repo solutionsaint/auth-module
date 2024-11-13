@@ -124,7 +124,7 @@ fun SignInScreen(
             onValueChange = {
                 viewModel.onEvent(SignInUiActions.EmailChanged(it.trim()))
             },
-            label = { Text("Email*") },
+            label = { Text("Email or Phone*") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions.Default
         )

@@ -86,10 +86,9 @@ fun SignUpScreen(
     val roles = listOf("User", "Admin")
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-    var termsAndConditionState by remember { mutableStateOf(true) }
     navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("isTermsAccepted")
         ?.observe(LocalLifecycleOwner.current) { accepted ->
-            termsAndConditionState = accepted
+            viewModel.onEvent(SignUpUiActions.TermsAndConditionChanged(accepted))
         }
     LaunchedEffect(selectedRole) {
         viewModel.onEvent(SignUpUiActions.UserTypeChanged(selectedRole))
@@ -313,9 +312,9 @@ fun SignUpScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = termsAndConditionState,
+                checked = uiState.termsAndCondition,
                 onCheckedChange = {
-                    termsAndConditionState = it
+                    viewModel.onEvent(SignUpUiActions.TermsAndConditionChanged(it))
                 },
                 modifier = Modifier
                     .padding(top = 2.dp, start = 4.dp),
@@ -331,14 +330,9 @@ fun SignUpScreen(
                 style = TextStyle(fontSize = 18.sp)
             )
         }
-        val context = LocalContext.current
         Button(
             onClick = {
-                if(termsAndConditionState) {
-                    viewModel.onEvent(SignUpUiActions.SignUp)
-                }else {
-                    Toast.makeText(context, "Please accept the terms and conditions", Toast.LENGTH_SHORT).show()
-                }
+                viewModel.onEvent(SignUpUiActions.SignUp)
             },
             modifier = Modifier
                 .fillMaxWidth()

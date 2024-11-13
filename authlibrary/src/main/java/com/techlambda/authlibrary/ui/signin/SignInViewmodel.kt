@@ -8,6 +8,8 @@ import com.techlambda.authlibrary.ui.models.SignInRequest
 import com.techlambda.authlibrary.ui.models.SignUpResponse
 import com.techlambda.authlibrary.ui.signUp.UserRepository
 import com.techlambda.authlibrary.ui.utils.NetworkResult
+import com.techlambda.authlibrary.ui.utils.isPhoneNumber
+import com.techlambda.authlibrary.ui.utils.isValidPhoneNumber
 import com.techlambda.authlibrary.ui.utils.setLoading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -82,15 +84,29 @@ class SignInViewModel @Inject constructor(
         viewModelScope.launch {
          //   _uiStates.update { it.copy(isLoading = true) }
             setLoading(true)
-            val validateMessage = validateSignIn(email = _uiStates.value.email, password = _uiStates.value.password)
+            val validateMessage: String = if (_uiStates.value.email.isNotEmpty() && isPhoneNumber(_uiStates.value.email)) {
+                validateSignInUsingPhone(phone = _uiStates.value.email, password = _uiStates.value.password)
+            } else {
+                validateSignInUsingEmail(email = _uiStates.value.email, password = _uiStates.value.password)
+            }
             if (validateMessage == "Validated") {
-                val response = repository.signIn(
-                    SignInRequest(
-                        email = _uiStates.value.email,
-                        password = _uiStates.value.password,
-                        type = "email"
+                val response = if(isPhoneNumber(_uiStates.value.email)){
+                    repository.signIn(
+                        SignInRequest(
+                            email = _uiStates.value.email,
+                            password = _uiStates.value.password,
+                            type = "phone"
+                        )
                     )
-                )
+                }else {
+                    repository.signIn(
+                        SignInRequest(
+                            email = _uiStates.value.email,
+                            password = _uiStates.value.password,
+                            type = "email"
+                        )
+                    )
+                }
                 Log.d("SignInViewModel", "API Response: $response")
                 when (response) {
                     is NetworkResult.Error -> {
@@ -112,13 +128,24 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun validateSignIn(
+    fun validateSignInUsingEmail(
         password: String,
         email: String
     ): String {
         return when {
             email.isEmpty() -> "Please enter Email"
             !isValidEmail(email) -> "Please enter valid Email"
+            password.isEmpty() -> "Please enter Password"
+            else -> "Validated"
+        }
+    }
+    fun validateSignInUsingPhone(
+        password: String,
+        phone: String
+    ): String {
+        return when {
+            phone.isEmpty() -> "Please enter Phone Number"
+            !isValidPhoneNumber(phone) -> "Please enter valid Phone Number"
             password.isEmpty() -> "Please enter Password"
             else -> "Validated"
         }

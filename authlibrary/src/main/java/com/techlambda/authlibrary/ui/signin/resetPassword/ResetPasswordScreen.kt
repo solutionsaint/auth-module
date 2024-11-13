@@ -85,7 +85,7 @@ fun ResetPasswordScreen(
     ) {
         TextField(
             value = state.password,
-            onValueChange = { viewModel.onEvent(SignInUiActions.PasswordChanged(it)) },
+            onValueChange = { viewModel.onEvent(SignInUiActions.PasswordChanged(it.trim())) },
             label = { Text("New Password") },
             visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -103,7 +103,7 @@ fun ResetPasswordScreen(
 
         TextField(
             value = state.confirmPassword,
-            onValueChange = { viewModel.onEvent(SignInUiActions.ConfirmPasswordChanged(it)) },
+            onValueChange = { viewModel.onEvent(SignInUiActions.ConfirmPasswordChanged(it.trim())) },
             label = { Text("Re-enter New Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()

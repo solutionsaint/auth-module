@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techlambda.authlibrary.ui.models.SignUpRequest
 import com.techlambda.authlibrary.ui.utils.NetworkResult
+import com.techlambda.authlibrary.ui.utils.isValidEmail
+import com.techlambda.authlibrary.ui.utils.isValidPhoneNumber
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,6 +60,10 @@ class SignUpViewModel @Inject constructor(
             is SignUpUiActions.SignUp -> {
                 signUp()
             }
+
+            is SignUpUiActions.TermsAndConditionChanged -> {
+                _uiStates.value = _uiStates.value.copy(termsAndCondition = event.termsAndCondition)
+            }
         }
     }
 
@@ -70,7 +76,7 @@ class SignUpViewModel @Inject constructor(
                 mobileNumber = _uiStates.value.number,
                 email = _uiStates.value.email,
                 confirmPassword = _uiStates.value.confirmPassword,
-                termsAndCondition = true // Assuming terms and conditions are accepted for simplicity
+                termsAndCondition = _uiStates.value.termsAndCondition
             )
 
             if (validationMessage == "Validated") {
@@ -113,31 +119,17 @@ class SignUpViewModel @Inject constructor(
     ): String {
         return when {
             userName.isEmpty() -> "Please enter Name"
-            mobileNumber.isEmpty() && email.isEmpty() -> "Please provide either a Mobile Number or an Email Address"
+            email.isEmpty() -> "Please enter Email Address"
+            mobileNumber.isEmpty() -> "Please enter Mobile Number"
             password.isEmpty() -> "Please enter Password"
             confirmPassword.isEmpty() -> "Please enter Confirm Password"
             password != confirmPassword -> "Passwords do not match"
             !termsAndCondition -> "Please accept terms and conditions"
+            !isValidEmail(email) -> "Please enter valid email address"
+            !isValidPhoneNumber(mobileNumber) -> "Please enter valid mobile number"
             else -> "Validated"
         }
     }
-
-    fun isValidPhoneNumber(phoneNumber: String): Boolean {
-        val phoneNumberPattern = "^[+]?[0-9]{10,13}\$"
-        return Pattern.matches(phoneNumberPattern, phoneNumber)
-    }
-
-    fun isPhoneNumber(input: String): Boolean {
-        val numericPattern = "^[0-9]+$"
-        return input.matches(Regex(numericPattern))
-    }
-
-    fun isValidEmail(email: String): Boolean {
-        val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-        return Pattern.matches(emailPattern, email)
-    }
-
-
 }
 
 data class SignUpUiState(
@@ -148,6 +140,7 @@ data class SignUpUiState(
     val confirmPassword: String = "",
     val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false,
+    val termsAndCondition: Boolean = true,
     val userType: String = ""
 )
 
@@ -155,6 +148,7 @@ sealed class SignUpUiActions {
     data class NameChanged(val name: String) : SignUpUiActions()
     data class NumberChanged(val number: String) : SignUpUiActions()
     data class EmailChanged(val email: String) : SignUpUiActions()
+    data class TermsAndConditionChanged(val termsAndCondition: Boolean) : SignUpUiActions()
     data class PasswordChanged(val password: String) : SignUpUiActions()
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignUpUiActions()
     data object SignUp : SignUpUiActions()

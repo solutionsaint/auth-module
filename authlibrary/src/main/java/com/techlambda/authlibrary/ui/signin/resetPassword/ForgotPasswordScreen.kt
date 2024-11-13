@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.techlambda.authlibrary.ui.utils.isValidEmail
 import com.techlambda.common.utils.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +46,7 @@ fun ForgotPasswordScreen(
             // Email field to enter email before sending OTP
             TextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { email = it.trim() },
                 label = { Text(text = "Enter Email") },
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
             )
@@ -53,10 +54,12 @@ fun ForgotPasswordScreen(
             val context = LocalContext.current
             Button(
                 onClick = {
-                    if (email.isNotEmpty()) {
+                    if (email.isNotEmpty() && isValidEmail(email)) {
                         verifyEmail(email)
-                    } else {
+                    } else if(email.isEmpty()){
                         context.showToast("Email is required.")
+                    } else {
+                        context.showToast("Email is invalid.")
                     }
                 },
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)

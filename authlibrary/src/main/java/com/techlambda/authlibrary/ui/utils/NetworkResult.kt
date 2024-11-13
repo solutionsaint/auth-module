@@ -3,6 +3,7 @@ package com.techlambda.authlibrary.ui.utils
 import com.google.gson.JsonParser
 import retrofit2.Response
 import java.io.IOException
+import java.net.UnknownHostException
 
 sealed class NetworkResult<T>(val data: T? = null, val message: String? = null) {
     class Success<T>(data: T) : NetworkResult<T>(data)
@@ -31,7 +32,9 @@ suspend fun <Req, Res> makeApiCall(
             }
             NetworkResult.Error("Error: $error")
         }
-    } catch (e: IOException) {
+    } catch (e: UnknownHostException) {
+        NetworkResult.Error("No Internet Connection")
+    }catch (e: IOException) {
         NetworkResult.Error("Network error: ${e.message}")
     } catch (e: Exception) {
         NetworkResult.Error("Unexpected error: ${e.message}")
