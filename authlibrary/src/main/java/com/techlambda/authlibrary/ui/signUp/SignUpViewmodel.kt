@@ -70,63 +70,41 @@ class SignUpViewModel @Inject constructor(
 
     private fun signUp() {
         viewModelScope.launch {
-            val validationMessage = validateSignUp(
-                userName = _uiStates.value.name,
-                password = _uiStates.value.password,
-                mobileNumber = _uiStates.value.number,
+            val req = SignUpRequest(
+                name = _uiStates.value.name,
+                phone = _uiStates.value.number,
                 email = _uiStates.value.email,
-                confirmPassword = _uiStates.value.confirmPassword,
-                termsAndCondition = _uiStates.value.termsAndCondition
+                password = _uiStates.value.password,
+                userType = _uiStates.value.userType
+            )
+            Log.d("TAG", "signUp: $req")
+            val response = repository.signUp(
+                req
             )
 
-            if (validationMessage == "Validated") {
-                val req = SignUpRequest(
-                    name = _uiStates.value.name,
-                    phone = _uiStates.value.number,
-                    email = _uiStates.value.email,
-                    password = _uiStates.value.password,
-                    userType = _uiStates.value.userType
-                )
-                Log.d("TAG", "signUp: $req")
-                val response = repository.signUp(
-                   req
-                )
-
-                when (response) {
-                    is NetworkResult.Error -> {
-                        _uiEvents.send(SignUpUiEvents.OnError("An error occurred during signup: ${response.message}"))
-                    }
-
-                    is NetworkResult.Success -> {
-                        _uiEvents.send(SignUpUiEvents.SignUpSuccess(response.message ?: ""))
-                    }
+            when (response) {
+                is NetworkResult.Error -> {
+                    _uiEvents.send(SignUpUiEvents.OnError("An error occurred during signup: ${response.message}"))
                 }
-            } else {
-                viewModelScope.launch {
-                    _uiEvents.send(SignUpUiEvents.OnError(validationMessage))
+
+                is NetworkResult.Success -> {
+                    _uiEvents.send(SignUpUiEvents.SignUpSuccess(response.message ?: ""))
                 }
             }
         }
     }
 
-    fun validateSignUp(
-        userName: String,
-        password: String,
-        mobileNumber: String,
-        email: String,
-        confirmPassword: String,
-        termsAndCondition: Boolean
-    ): String {
+    fun validateSignUp(): String {
         return when {
-            userName.isEmpty() -> "Please enter Name"
-            email.isEmpty() -> "Please enter Email Address"
-            mobileNumber.isEmpty() -> "Please enter Mobile Number"
-            password.isEmpty() -> "Please enter Password"
-            confirmPassword.isEmpty() -> "Please enter Confirm Password"
-            password != confirmPassword -> "Passwords do not match"
-            !termsAndCondition -> "Please accept terms and conditions"
-            !isValidEmail(email) -> "Please enter valid email address"
-            !isValidPhoneNumber(mobileNumber) -> "Please enter valid mobile number"
+            _uiStates.value.name.isEmpty() -> "Please enter Name"
+            _uiStates.value.email.isEmpty() -> "Please enter Email Address"
+            _uiStates.value.number.isEmpty() -> "Please enter Mobile Number"
+            _uiStates.value.password.isEmpty() -> "Please enter Password"
+            _uiStates.value.confirmPassword.isEmpty() -> "Please enter Confirm Password"
+            _uiStates.value.password != _uiStates.value.confirmPassword -> "Passwords do not match"
+            !_uiStates.value.termsAndCondition -> "Please accept terms and conditions"
+            !isValidEmail(_uiStates.value.email) -> "Please enter valid email address"
+            !isValidPhoneNumber(_uiStates.value.number) -> "Please enter valid mobile number"
             else -> "Validated"
         }
     }

@@ -122,6 +122,16 @@ class ProfileViewModel @Inject constructor(
         return Pattern.matches(emailPattern, email)
     }
 
+    fun validateProfile(name: String, email: String, number: String): String {
+        return when {
+            name.isEmpty() -> "Name is required"
+            email.isEmpty() -> "Email is required"
+            !isValidEmail(email) -> "Enter valid email"
+            number.isEmpty() -> "Phone number is required"
+            else -> "Validated"
+        }
+    }
+
 
 }
 

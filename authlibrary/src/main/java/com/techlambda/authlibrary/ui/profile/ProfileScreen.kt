@@ -21,12 +21,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.techlambda.authlibrary.ui.utils.showToast
 import com.techlambda.common.ui.CommonButton
 import com.techlambda.common.ui.InputField
 
@@ -101,15 +103,25 @@ fun ProfileScreen(onUpdateSuccess: () -> Unit) {
                         isEditMode = true
                     }
                     InputField(label = "Email", value = uiState.email) {
-                        viewModel.onEvent(ProfileUiActions.EmailChanged(it))
+                        viewModel.onEvent(ProfileUiActions.EmailChanged(it.trim()))
                         isEditMode = true
                     }
                     InputField(label = "Phone Number", value = uiState.number) {
                         viewModel.onEvent(ProfileUiActions.NumberChanged(it))
                         isEditMode = true
                     }
+                    val context = LocalContext.current
                     if (isEditMode) {
                         CommonButton(text = "Update Profile") {
+                            val validateMessage = viewModel.validateProfile(
+                                uiState.name,
+                                uiState.email,
+                                uiState.number
+                            )
+                            if (validateMessage != "Validated") {
+                                context.showToast(validateMessage)
+                                return@CommonButton
+                            }
                             viewModel.onEvent(ProfileUiActions.Update)
                         }
                     }

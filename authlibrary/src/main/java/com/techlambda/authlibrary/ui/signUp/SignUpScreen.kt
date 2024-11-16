@@ -67,6 +67,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.techlambda.authlibrary.R
 import com.techlambda.authlibrary.ui.AppNavigation
+import com.techlambda.authlibrary.ui.utils.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,7 +83,6 @@ fun SignUpScreen(
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedRole by remember { mutableStateOf("") }
     val roles = listOf("User", "Admin")
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
@@ -90,9 +90,6 @@ fun SignUpScreen(
         ?.observe(LocalLifecycleOwner.current) { accepted ->
             viewModel.onEvent(SignUpUiActions.TermsAndConditionChanged(accepted))
         }
-    LaunchedEffect(selectedRole) {
-        viewModel.onEvent(SignUpUiActions.UserTypeChanged(selectedRole))
-    }
 
     LaunchedEffect(key1 = uiEvents) {
         when (uiEvents) {
@@ -162,7 +159,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = uiState.email,
             onValueChange = {
-                viewModel.onEvent(SignUpUiActions.EmailChanged(it))
+                viewModel.onEvent(SignUpUiActions.EmailChanged(it.trim()))
             },
             label = { Text("Email*") },
             modifier = Modifier
@@ -190,9 +187,9 @@ fun SignUpScreen(
             onExpandedChange = { expanded = !expanded }
         ) {
             OutlinedTextField(
-                value = selectedRole,
+                value = uiState.userType,
                 onValueChange = {
-                    selectedRole = it
+                    viewModel.onEvent(SignUpUiActions.UserTypeChanged(it))
                 },
                 readOnly = true,
                 label = { Text("Please Select Your Role") },
@@ -210,7 +207,7 @@ fun SignUpScreen(
                 roles.forEach { role ->
                     DropdownMenuItem(
                         onClick = {
-                            selectedRole = role
+                            viewModel.onEvent(SignUpUiActions.UserTypeChanged(role))
                             expanded = false
                         },
                         text = { Text(text = role) }
@@ -225,7 +222,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = uiState.password,
             onValueChange = {
-                viewModel.onEvent(SignUpUiActions.PasswordChanged(it))
+                viewModel.onEvent(SignUpUiActions.PasswordChanged(it.trim()))
             },
             label = { Text("Password*") },
             modifier = Modifier.fillMaxWidth(),
@@ -250,7 +247,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = uiState.confirmPassword,
             onValueChange = {
-                viewModel.onEvent(SignUpUiActions.ConfirmPasswordChanged(it))
+                viewModel.onEvent(SignUpUiActions.ConfirmPasswordChanged(it.trim()))
             },
             label = { Text("Confirm Password*") },
             modifier = Modifier.fillMaxWidth(),
@@ -330,8 +327,14 @@ fun SignUpScreen(
                 style = TextStyle(fontSize = 18.sp)
             )
         }
+        val context = LocalContext.current
         Button(
             onClick = {
+                val validateMessage = viewModel.validateSignUp()
+                if (validateMessage != "Validated"){
+                    context.showToast(validateMessage)
+                    return@Button
+                }
                 viewModel.onEvent(SignUpUiActions.SignUp)
             },
             modifier = Modifier

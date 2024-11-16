@@ -120,7 +120,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.25")
 
-    implementation ("com.github.solutionsaint:common-library:1.0.2")
+    implementation ("com.github.solutionsaint:common-library:1.1.7")
 }
 
 
@@ -131,13 +131,13 @@ afterEvaluate {
                 from(components["prodRelease"])
                 groupId = "com.github.solutionsaint"
                 artifactId = "authlibrary-prod"
-                version = "1.3.3"
+                version = "1.3.4"
             }
             create<MavenPublication>("devRelease") {
                 from(components["devRelease"])
                 groupId = "com.github.solutionsaint"
                 artifactId = "authlibrary-dev"
-                version = "1.3.3"
+                version = "1.3.4"
             }
         }
     }
