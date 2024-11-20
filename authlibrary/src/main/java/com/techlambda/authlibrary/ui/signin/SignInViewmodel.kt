@@ -11,6 +11,7 @@ import com.techlambda.authlibrary.ui.utils.NetworkResult
 import com.techlambda.authlibrary.ui.utils.isPhoneNumber
 import com.techlambda.authlibrary.ui.utils.isValidPhoneNumber
 import com.techlambda.authlibrary.ui.utils.setLoading
+import com.techlambda.pushnotificationlibrary.PushNotificationInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -77,6 +78,10 @@ class SignInViewModel @Inject constructor(
             is SignInUiActions.ClearError -> {
                 clearError()
             }
+
+            is SignInUiActions.UpdateAppId -> {
+                _uiStates.update { it.copy(appId = event.appId) }
+            }
         }
     }
 
@@ -95,7 +100,9 @@ class SignInViewModel @Inject constructor(
                         SignInRequest(
                             email = _uiStates.value.email,
                             password = _uiStates.value.password,
-                            type = "phone"
+                            type = "phone",
+                            fcmToken = PushNotificationInitializer.token!!,
+                            appId = _uiStates.value.appId
                         )
                     )
                 }else {
@@ -103,7 +110,9 @@ class SignInViewModel @Inject constructor(
                         SignInRequest(
                             email = _uiStates.value.email,
                             password = _uiStates.value.password,
-                            type = "email"
+                            type = "email",
+                            fcmToken = PushNotificationInitializer.token!!,
+                            appId = _uiStates.value.appId
                         )
                     )
                 }
@@ -136,6 +145,7 @@ class SignInViewModel @Inject constructor(
             email.isEmpty() -> "Please enter Email"
             !isValidEmail(email) -> "Please enter valid Email"
             password.isEmpty() -> "Please enter Password"
+            PushNotificationInitializer.token.isNullOrBlank() -> "Something went wrong. Please re-install"
             else -> "Validated"
         }
     }
@@ -147,6 +157,7 @@ class SignInViewModel @Inject constructor(
             phone.isEmpty() -> "Please enter Phone Number"
             !isValidPhoneNumber(phone) -> "Please enter valid Phone Number"
             password.isEmpty() -> "Please enter Password"
+            PushNotificationInitializer.token.isNullOrBlank() -> "Something went wrong. Please re-install"
             else -> "Validated"
         }
     }
@@ -243,6 +254,7 @@ data class SignInUiState(
     val isPasswordVisible: Boolean = true,
     val isLoading: Boolean = false,
     val otp: String = "",
+    val appId: String = "",
     var isPasswordReset: Boolean = false,
     var isOtpSent: Boolean = false
 )
@@ -254,6 +266,7 @@ sealed class SignInUiActions {
     data class PasswordChanged(val password: String) : SignInUiActions()
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignInUiActions()
     data class OtpChanged(val otp: String) : SignInUiActions()
+    data class UpdateAppId(val appId: String) : SignInUiActions()
     data object TogglePasswordVisibility : SignInUiActions()
     data object SignIn : SignInUiActions()
     data object ResetPassword : SignInUiActions()

@@ -35,6 +35,7 @@ import kotlinx.serialization.Serializable
 fun AuthNavHost(
     modifier: Modifier,
     navHostController: NavHostController,
+    projectId: String,
     onSignInSuccess: (SignUpResponse) -> Unit,
     appLogo: @Composable BoxScope.() -> Unit,
     onCodeSuccess: () -> Unit
@@ -71,7 +72,8 @@ fun AuthNavHost(
                 onSignInClick = {
                     navHostController.navigate(AppNavigation.SignInScreen)
                 },
-                navController = navHostController
+                navController = navHostController,
+                projectId = projectId
             )
         }
 
@@ -104,7 +106,8 @@ fun AuthNavHost(
                 },
                 onSignUpClick = {
                     navHostController.navigate(AppNavigation.SignUpScreen)
-                }
+                },
+                projectId = projectId
             )
         }
 

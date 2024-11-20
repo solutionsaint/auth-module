@@ -76,7 +76,8 @@ fun SignUpScreen(
     appLogo: @Composable BoxScope.() -> Unit,
     onSignUpSuccess: (email: String) -> Unit,
     navController: NavController,
-    onSignInClick: () -> Unit
+    onSignInClick: () -> Unit,
+    projectId: String
 ) {
 
     val uiState = viewModel.state.collectAsStateWithLifecycle().value
@@ -90,7 +91,9 @@ fun SignUpScreen(
         ?.observe(LocalLifecycleOwner.current) { accepted ->
             viewModel.onEvent(SignUpUiActions.TermsAndConditionChanged(accepted))
         }
-
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(SignUpUiActions.UpdateAppId(projectId))
+    }
     LaunchedEffect(key1 = uiEvents) {
         when (uiEvents) {
             SignUpUiEvents.None -> {

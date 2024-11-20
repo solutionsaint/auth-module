@@ -49,6 +49,7 @@ fun SignInScreen(
     onSignInSuccess: (signInResponse: SignUpResponse) -> Unit,
     onSignUpClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
+    projectId: String
 ) {
     val uiStates = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
@@ -57,6 +58,9 @@ fun SignInScreen(
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(SignInUiActions.UpdateAppId(projectId))
+    }
 
     when (uiEvents) {
         is SignUpUiEvents.OnError -> {

@@ -5,13 +5,17 @@ data class SignUpRequest(
     val phone: String,
     val email: String,
     val password: String,
-    val userType: String
+    val userType: String,
+    val fcmToken: String,
+    val appId: String
 )
 
 data class SignInRequest(
     val email: String,
     val password: String,
-    val type: String = "email"
+    val type: String = "email",
+    val fcmToken: String,
+    val appId: String
 )
 
 data class OtpRequest(

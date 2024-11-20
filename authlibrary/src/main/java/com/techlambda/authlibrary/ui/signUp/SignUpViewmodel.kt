@@ -7,6 +7,7 @@ import com.techlambda.authlibrary.ui.models.SignUpRequest
 import com.techlambda.authlibrary.ui.utils.NetworkResult
 import com.techlambda.authlibrary.ui.utils.isValidEmail
 import com.techlambda.authlibrary.ui.utils.isValidPhoneNumber
+import com.techlambda.pushnotificationlibrary.PushNotificationInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,6 +65,10 @@ class SignUpViewModel @Inject constructor(
             is SignUpUiActions.TermsAndConditionChanged -> {
                 _uiStates.value = _uiStates.value.copy(termsAndCondition = event.termsAndCondition)
             }
+
+            is SignUpUiActions.UpdateAppId -> {
+                _uiStates.value = _uiStates.value.copy(appId = event.appId)
+            }
         }
     }
 
@@ -75,7 +80,9 @@ class SignUpViewModel @Inject constructor(
                 phone = _uiStates.value.number,
                 email = _uiStates.value.email,
                 password = _uiStates.value.password,
-                userType = _uiStates.value.userType
+                userType = _uiStates.value.userType,
+                fcmToken = PushNotificationInitializer.token!!,
+                appId = _uiStates.value.appId
             )
             Log.d("TAG", "signUp: $req")
             val response = repository.signUp(
@@ -105,6 +112,7 @@ class SignUpViewModel @Inject constructor(
             !_uiStates.value.termsAndCondition -> "Please accept terms and conditions"
             !isValidEmail(_uiStates.value.email) -> "Please enter valid email address"
             !isValidPhoneNumber(_uiStates.value.number) -> "Please enter valid mobile number"
+            PushNotificationInitializer.token.isNullOrBlank() -> "Something went wrong. Please re-install"
             else -> "Validated"
         }
     }
@@ -114,6 +122,7 @@ data class SignUpUiState(
     val name: String = "",
     val number: String = "",
     val email: String = "",
+    val appId: String = "",
     val password: String = "",
     val confirmPassword: String = "",
     val isPasswordVisible: Boolean = false,
@@ -128,6 +137,7 @@ sealed class SignUpUiActions {
     data class EmailChanged(val email: String) : SignUpUiActions()
     data class TermsAndConditionChanged(val termsAndCondition: Boolean) : SignUpUiActions()
     data class PasswordChanged(val password: String) : SignUpUiActions()
+    data class UpdateAppId(val appId: String) : SignUpUiActions()
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignUpUiActions()
     data object SignUp : SignUpUiActions()
     data class UserTypeChanged(val userType: String) : SignUpUiActions()

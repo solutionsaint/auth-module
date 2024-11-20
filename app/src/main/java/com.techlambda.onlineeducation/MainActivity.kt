@@ -64,7 +64,8 @@ class MainActivity : ComponentActivity() {
                                 navHostController = navController,
                                 onSignInSuccess = {
                                     showDashboard = true
-                                }
+                                },
+                                projectId = "project7"
                             )
                         }
                     }

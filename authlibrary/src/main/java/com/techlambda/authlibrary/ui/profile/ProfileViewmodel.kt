@@ -128,6 +128,7 @@ class ProfileViewModel @Inject constructor(
             email.isEmpty() -> "Email is required"
             !isValidEmail(email) -> "Enter valid email"
             number.isEmpty() -> "Phone number is required"
+            !isValidPhoneNumber(number) -> "Enter valid phone number"
             else -> "Validated"
         }
     }
