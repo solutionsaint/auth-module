@@ -3,7 +3,11 @@ package com.techlambda.authlibrary.ui.signUp
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.techlambda.authlibrary.ui.models.FilterData
+import com.techlambda.authlibrary.ui.models.FilterRequest
 import com.techlambda.authlibrary.ui.models.SignUpRequest
+import com.techlambda.authlibrary.ui.models.ValueData
+import com.techlambda.authlibrary.ui.network.repo.CommonRepository
 import com.techlambda.authlibrary.ui.utils.NetworkResult
 import com.techlambda.authlibrary.ui.utils.isValidEmail
 import com.techlambda.authlibrary.ui.utils.isValidPhoneNumber
@@ -20,7 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val repository: UserRepository
+    private val repository: UserRepository,
+    private val commonRepo: CommonRepository
 ) : ViewModel() {
 
     private val _uiStates = MutableStateFlow(SignUpUiState())
@@ -101,6 +106,38 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    fun masterFilter() {
+        viewModelScope.launch {
+            val req = FilterRequest(
+                filter = FilterData(
+                    value = ValueData(
+                        field = "type",
+                        op = "=",
+                        value = "role"
+                    )
+                )
+            )
+            Log.d("TAG", "commonFilter: $req")
+            val response = commonRepo.masterFilter(
+                req
+            )
+
+            when (response) {
+                is NetworkResult.Error -> {
+                    _uiEvents.send(SignUpUiEvents.OnError("An error occurred while fetching user roles: ${response.message}"))
+                }
+
+                is NetworkResult.Success -> {
+                    val userRolesList = ArrayList<String>()
+                    response.data?.data?.forEach{
+                        userRolesList.add(it.title)
+                    }
+                    _uiStates.value = _uiStates.value.copy(userRoles = userRolesList)
+                }
+            }
+        }
+    }
+
     fun validateSignUp(): String {
         return when {
             _uiStates.value.name.isEmpty() -> "Please enter Name"
@@ -128,7 +165,8 @@ data class SignUpUiState(
     val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false,
     val termsAndCondition: Boolean = true,
-    val userType: String = ""
+    val userType: String = "",
+    val userRoles: List<String> = emptyList()
 )
 
 sealed class SignUpUiActions {

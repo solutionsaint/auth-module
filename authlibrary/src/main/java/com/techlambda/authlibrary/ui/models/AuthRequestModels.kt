@@ -49,3 +49,17 @@ data class UpdateProfileRequest(
     val phone: String = "",
     val id: String
 )
+
+data class FilterRequest(
+    val filter: FilterData
+)
+
+data class FilterData(
+    val value: ValueData
+)
+
+data class ValueData(
+    val field: String,
+    val op: String,
+    val value: String
+)

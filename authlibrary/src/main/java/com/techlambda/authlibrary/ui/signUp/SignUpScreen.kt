@@ -84,7 +84,6 @@ fun SignUpScreen(
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
 
     var expanded by remember { mutableStateOf(false) }
-    val roles = listOf("User", "Admin")
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("isTermsAccepted")
@@ -93,6 +92,7 @@ fun SignUpScreen(
         }
     LaunchedEffect(Unit) {
         viewModel.onEvent(SignUpUiActions.UpdateAppId(projectId))
+        viewModel.masterFilter()
     }
     LaunchedEffect(key1 = uiEvents) {
         when (uiEvents) {
@@ -207,7 +207,7 @@ fun SignUpScreen(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                roles.forEach { role ->
+                uiState.userRoles.forEach { role ->
                     DropdownMenuItem(
                         onClick = {
                             viewModel.onEvent(SignUpUiActions.UserTypeChanged(role))
