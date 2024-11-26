@@ -67,6 +67,8 @@ import androidx.navigation.NavController
 import com.techlambda.authlibrary.R
 import com.techlambda.authlibrary.ui.AppNavigation
 import com.techlambda.authlibrary.ui.data.AuthPrefManager
+import com.techlambda.authlibrary.ui.utils.LoaderDialog
+import com.techlambda.authlibrary.ui.utils.LoaderManager
 import com.techlambda.authlibrary.ui.utils.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,6 +84,7 @@ fun SignUpScreen(
 
     val uiState = viewModel.state.collectAsStateWithLifecycle().value
     val uiEvents = viewModel.uiEvents.collectAsStateWithLifecycle(SignUpUiEvents.None).value
+    val isLoading by LoaderManager.isLoading
 
     var expanded by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
@@ -113,6 +116,8 @@ fun SignUpScreen(
             }
         }
     }
+
+    LoaderDialog(isLoading = isLoading)
 
     if (showErrorDialog) {
         AlertDialog(

@@ -11,6 +11,7 @@ import com.techlambda.authlibrary.ui.network.repo.CommonRepository
 import com.techlambda.authlibrary.ui.utils.NetworkResult
 import com.techlambda.authlibrary.ui.utils.isValidEmail
 import com.techlambda.authlibrary.ui.utils.isValidPhoneNumber
+import com.techlambda.authlibrary.ui.utils.setLoading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,6 +83,7 @@ class SignUpViewModel @Inject constructor(
 
     private fun signUp() {
         viewModelScope.launch {
+            setLoading(true)
             val req = SignUpRequest(
                 name = _uiStates.value.name,
                 phone = _uiStates.value.number,
@@ -98,10 +100,12 @@ class SignUpViewModel @Inject constructor(
 
             when (response) {
                 is NetworkResult.Error -> {
+                    setLoading(false)
                     _uiEvents.send(SignUpUiEvents.OnError("An error occurred during signup: ${response.message}"))
                 }
 
                 is NetworkResult.Success -> {
+                    setLoading(false)
                     _uiEvents.send(SignUpUiEvents.SignUpSuccess(response.message ?: ""))
                 }
             }
@@ -110,6 +114,7 @@ class SignUpViewModel @Inject constructor(
 
     fun masterFilter() {
         viewModelScope.launch {
+            setLoading(true)
             val req = FilterRequest(
                 filter = FilterData(
                     value = ValueData(
@@ -126,10 +131,12 @@ class SignUpViewModel @Inject constructor(
 
             when (response) {
                 is NetworkResult.Error -> {
+                    setLoading(false)
                     _uiEvents.send(SignUpUiEvents.OnError("An error occurred while fetching user roles: ${response.message}"))
                 }
 
                 is NetworkResult.Success -> {
+                    setLoading(false)
                     val userRolesList = ArrayList<String>()
                     response.data?.data?.forEach{
                         userRolesList.add(it.title)
