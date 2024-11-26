@@ -11,7 +11,6 @@ import com.techlambda.authlibrary.ui.network.repo.CommonRepository
 import com.techlambda.authlibrary.ui.utils.NetworkResult
 import com.techlambda.authlibrary.ui.utils.isValidEmail
 import com.techlambda.authlibrary.ui.utils.isValidPhoneNumber
-import com.techlambda.pushnotificationlibrary.PushNotificationInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -74,6 +72,10 @@ class SignUpViewModel @Inject constructor(
             is SignUpUiActions.UpdateAppId -> {
                 _uiStates.value = _uiStates.value.copy(appId = event.appId)
             }
+
+            is SignUpUiActions.UpdateToken -> {
+                _uiStates.update { _uiStates.value.copy(token = event.token) }
+            }
         }
     }
 
@@ -86,7 +88,7 @@ class SignUpViewModel @Inject constructor(
                 email = _uiStates.value.email,
                 password = _uiStates.value.password,
                 userType = _uiStates.value.userType,
-                fcmToken = PushNotificationInitializer.token!!,
+                fcmToken = _uiStates.value.token!!,
                 appId = _uiStates.value.appId
             )
             Log.d("TAG", "signUp: $req")
@@ -149,7 +151,7 @@ class SignUpViewModel @Inject constructor(
             !_uiStates.value.termsAndCondition -> "Please accept terms and conditions"
             !isValidEmail(_uiStates.value.email) -> "Please enter valid email address"
             !isValidPhoneNumber(_uiStates.value.number) -> "Please enter valid mobile number"
-            PushNotificationInitializer.token.isNullOrBlank() -> "Something went wrong. Please re-install"
+            _uiStates.value.token.isNullOrBlank() -> "Something went wrong. Please re-install"
             else -> "Validated"
         }
     }
@@ -161,6 +163,7 @@ data class SignUpUiState(
     val email: String = "",
     val appId: String = "",
     val password: String = "",
+    val token: String? = null,
     val confirmPassword: String = "",
     val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false,
@@ -176,6 +179,7 @@ sealed class SignUpUiActions {
     data class TermsAndConditionChanged(val termsAndCondition: Boolean) : SignUpUiActions()
     data class PasswordChanged(val password: String) : SignUpUiActions()
     data class UpdateAppId(val appId: String) : SignUpUiActions()
+    data class UpdateToken(val token: String?) : SignUpUiActions()
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignUpUiActions()
     data object SignUp : SignUpUiActions()
     data class UserTypeChanged(val userType: String) : SignUpUiActions()

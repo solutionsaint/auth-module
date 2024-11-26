@@ -1,6 +1,5 @@
 package com.techlambda.authlibrary.ui.signUp
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -67,6 +66,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.techlambda.authlibrary.R
 import com.techlambda.authlibrary.ui.AppNavigation
+import com.techlambda.authlibrary.ui.data.AuthPrefManager
 import com.techlambda.authlibrary.ui.utils.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,12 +86,15 @@ fun SignUpScreen(
     var expanded by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val authPrefManager = AuthPrefManager(context)
     navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("isTermsAccepted")
         ?.observe(LocalLifecycleOwner.current) { accepted ->
             viewModel.onEvent(SignUpUiActions.TermsAndConditionChanged(accepted))
         }
     LaunchedEffect(Unit) {
         viewModel.onEvent(SignUpUiActions.UpdateAppId(projectId))
+        viewModel.onEvent(SignUpUiActions.UpdateToken(authPrefManager.getFCMToken()))
         viewModel.masterFilter()
     }
     LaunchedEffect(key1 = uiEvents) {
@@ -330,7 +333,6 @@ fun SignUpScreen(
                 style = TextStyle(fontSize = 18.sp)
             )
         }
-        val context = LocalContext.current
         Button(
             onClick = {
                 val validateMessage = viewModel.validateSignUp()

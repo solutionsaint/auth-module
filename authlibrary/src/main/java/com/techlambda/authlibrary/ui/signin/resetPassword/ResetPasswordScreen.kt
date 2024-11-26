@@ -1,6 +1,5 @@
 package com.techlambda.authlibrary.ui.signin.resetPassword
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,11 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.techlambda.authlibrary.ui.signUp.SignUpUiActions
 import com.techlambda.authlibrary.ui.signin.SignInUiActions
 import com.techlambda.authlibrary.ui.signin.SignInViewModel
 import com.techlambda.authlibrary.ui.signin.SignUpUiEvents

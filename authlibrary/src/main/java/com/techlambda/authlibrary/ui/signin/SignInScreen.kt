@@ -32,15 +32,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.techlambda.authlibrary.ui.data.AuthPrefManager
 import com.techlambda.authlibrary.ui.models.SignUpResponse
 import com.techlambda.authlibrary.ui.utils.LoaderDialog
 import com.techlambda.authlibrary.ui.utils.LoaderManager
+import com.techlambda.pushnotificationlibrary.PushNotificationInitializer
 
 @Composable
 fun SignInScreen(
@@ -57,9 +60,16 @@ fun SignInScreen(
 
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
+    val context = LocalContext.current
+    val authPreferenceManager = AuthPrefManager(context)
     LaunchedEffect(Unit) {
         viewModel.onEvent(SignInUiActions.UpdateAppId(projectId))
+        if (authPreferenceManager.getFCMToken() == null && PushNotificationInitializer.token != null) {
+            authPreferenceManager.saveFCMToken(PushNotificationInitializer.token!!)
+            viewModel.onEvent(SignInUiActions.UpdateToken(PushNotificationInitializer.token))
+        } else {
+            viewModel.onEvent(SignInUiActions.UpdateToken(authPreferenceManager.getFCMToken()))
+        }
     }
 
     when (uiEvents) {

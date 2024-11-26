@@ -2,8 +2,6 @@ package com.techlambda.authlibrary.ui.signUp
 
 import com.techlambda.authlibrary.ui.models.ApiResponse
 import com.techlambda.authlibrary.ui.models.CodeVerificationResponse
-import com.techlambda.authlibrary.ui.models.FilterRequest
-import com.techlambda.authlibrary.ui.models.FilterResponse
 import com.techlambda.authlibrary.ui.models.OtpRequest
 import com.techlambda.authlibrary.ui.models.ResetPasswordRequest
 import com.techlambda.authlibrary.ui.models.SignInRequest

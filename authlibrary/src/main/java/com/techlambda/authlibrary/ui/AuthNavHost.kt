@@ -24,10 +24,10 @@ import com.techlambda.authlibrary.ui.signUp.tandc.TermsAndCondition
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.OtpViewModel
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.VerifyOtpScreen
 import com.techlambda.authlibrary.ui.signUp.verifyOtp.VerifyUserScreen
-import com.techlambda.authlibrary.ui.signin.resetPassword.ResetPasswordScreen
 import com.techlambda.authlibrary.ui.signin.SignInScreen
 import com.techlambda.authlibrary.ui.signin.SignInViewModel
 import com.techlambda.authlibrary.ui.signin.resetPassword.ForgotPasswordScreen
+import com.techlambda.authlibrary.ui.signin.resetPassword.ResetPasswordScreen
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 

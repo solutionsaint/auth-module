@@ -16,6 +16,7 @@ class AuthPrefManager @Inject constructor(context: Context) {
 
     // Key for storing UserData
     private val USER_DATA = "user_data"
+    private val FCM_TOKEN = "fcm_token"
 
     // Function to save UserData
     fun saveUserData(userData: UserData) {
@@ -36,6 +37,15 @@ class AuthPrefManager @Inject constructor(context: Context) {
             }
         }
     }
+    fun saveFCMToken(token: String) {
+        sharedPreferences.edit()
+            .putString(FCM_TOKEN, token)
+            .apply()
+    }
+
+    fun getFCMToken(): String? {
+        return sharedPreferences.getString(FCM_TOKEN, null)
+    }
 
     // Function to check if user is logged in
     fun isLoggedIn(): Boolean {
@@ -46,6 +56,7 @@ class AuthPrefManager @Inject constructor(context: Context) {
     fun clearUserData() {
         sharedPreferences.edit()
             .remove(USER_DATA)
+            .remove(FCM_TOKEN)
             .apply()
     }
 }

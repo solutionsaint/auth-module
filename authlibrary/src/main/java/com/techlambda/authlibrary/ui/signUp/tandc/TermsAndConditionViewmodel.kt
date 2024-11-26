@@ -1,10 +1,7 @@
 package com.techlambda.authlibrary.ui.signUp.tandc
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.techlambda.authlibrary.ui.models.SignUpRequest
-import com.techlambda.authlibrary.ui.signUp.SignUpUiActions
 import com.techlambda.authlibrary.ui.signUp.UserRepository
 import com.techlambda.authlibrary.ui.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel

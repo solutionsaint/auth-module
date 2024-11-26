@@ -11,7 +11,6 @@ import com.techlambda.authlibrary.ui.utils.NetworkResult
 import com.techlambda.authlibrary.ui.utils.isPhoneNumber
 import com.techlambda.authlibrary.ui.utils.isValidPhoneNumber
 import com.techlambda.authlibrary.ui.utils.setLoading
-import com.techlambda.pushnotificationlibrary.PushNotificationInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,6 +81,10 @@ class SignInViewModel @Inject constructor(
             is SignInUiActions.UpdateAppId -> {
                 _uiStates.update { it.copy(appId = event.appId) }
             }
+
+            is SignInUiActions.UpdateToken -> {
+                _uiStates.update { _uiStates.value.copy(token = event.token) }
+            }
         }
     }
 
@@ -90,9 +93,9 @@ class SignInViewModel @Inject constructor(
          //   _uiStates.update { it.copy(isLoading = true) }
             setLoading(true)
             val validateMessage: String = if (_uiStates.value.email.isNotEmpty() && isPhoneNumber(_uiStates.value.email)) {
-                validateSignInUsingPhone(phone = _uiStates.value.email, password = _uiStates.value.password)
+                validateSignInUsingPhone(phone = _uiStates.value.email, password = _uiStates.value.password, token = _uiStates.value.token)
             } else {
-                validateSignInUsingEmail(email = _uiStates.value.email, password = _uiStates.value.password)
+                validateSignInUsingEmail(email = _uiStates.value.email, password = _uiStates.value.password, token = _uiStates.value.token)
             }
             if (validateMessage == "Validated") {
                 val response = if(isPhoneNumber(_uiStates.value.email)){
@@ -101,7 +104,7 @@ class SignInViewModel @Inject constructor(
                             email = _uiStates.value.email,
                             password = _uiStates.value.password,
                             type = "phone",
-                            fcmToken = PushNotificationInitializer.token!!,
+                            fcmToken = _uiStates.value.token!!,
                             appId = _uiStates.value.appId
                         )
                     )
@@ -111,7 +114,7 @@ class SignInViewModel @Inject constructor(
                             email = _uiStates.value.email,
                             password = _uiStates.value.password,
                             type = "email",
-                            fcmToken = PushNotificationInitializer.token!!,
+                            fcmToken = _uiStates.value.token!!,
                             appId = _uiStates.value.appId
                         )
                     )
@@ -139,25 +142,27 @@ class SignInViewModel @Inject constructor(
 
     fun validateSignInUsingEmail(
         password: String,
-        email: String
+        email: String,
+        token: String?
     ): String {
         return when {
             email.isEmpty() -> "Please enter Email"
             !isValidEmail(email) -> "Please enter valid Email"
             password.isEmpty() -> "Please enter Password"
-            PushNotificationInitializer.token.isNullOrBlank() -> "Something went wrong. Please re-install"
+            token.isNullOrBlank() -> "Something went wrong. Please re-install"
             else -> "Validated"
         }
     }
     fun validateSignInUsingPhone(
         password: String,
-        phone: String
+        phone: String,
+        token: String?
     ): String {
         return when {
             phone.isEmpty() -> "Please enter Phone Number"
             !isValidPhoneNumber(phone) -> "Please enter valid Phone Number"
             password.isEmpty() -> "Please enter Password"
-            PushNotificationInitializer.token.isNullOrBlank() -> "Something went wrong. Please re-install"
+            token.isNullOrBlank() -> "Something went wrong. Please re-install"
             else -> "Validated"
         }
     }
@@ -250,6 +255,7 @@ data class SignInUiState(
     val number: String = "",
     val email: String = "",
     val password: String = "",
+    val token: String? = null,
     val confirmPassword: String = "",
     val isPasswordVisible: Boolean = true,
     val isLoading: Boolean = false,
@@ -267,6 +273,7 @@ sealed class SignInUiActions {
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignInUiActions()
     data class OtpChanged(val otp: String) : SignInUiActions()
     data class UpdateAppId(val appId: String) : SignInUiActions()
+    data class UpdateToken(val token: String?) : SignInUiActions()
     data object TogglePasswordVisibility : SignInUiActions()
     data object SignIn : SignInUiActions()
     data object ResetPassword : SignInUiActions()
