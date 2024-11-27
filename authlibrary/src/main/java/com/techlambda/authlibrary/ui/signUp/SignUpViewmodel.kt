@@ -12,6 +12,7 @@ import com.techlambda.authlibrary.ui.utils.NetworkResult
 import com.techlambda.authlibrary.ui.utils.isValidEmail
 import com.techlambda.authlibrary.ui.utils.isValidPhoneNumber
 import com.techlambda.authlibrary.ui.utils.setLoading
+import com.techlambda.pushnotificationlibrary.PushNotificationInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -90,7 +91,7 @@ class SignUpViewModel @Inject constructor(
                 email = _uiStates.value.email,
                 password = _uiStates.value.password,
                 userType = _uiStates.value.userType,
-                fcmToken = _uiStates.value.token!!,
+                fcmToken = _uiStates.value.token ?: "",
                 appId = _uiStates.value.appId
             )
             Log.d("TAG", "signUp: $req")
@@ -158,7 +159,6 @@ class SignUpViewModel @Inject constructor(
             !_uiStates.value.termsAndCondition -> "Please accept terms and conditions"
             !isValidEmail(_uiStates.value.email) -> "Please enter valid email address"
             !isValidPhoneNumber(_uiStates.value.number) -> "Please enter valid mobile number"
-            _uiStates.value.token.isNullOrBlank() -> "Something went wrong. Please re-install"
             else -> "Validated"
         }
     }

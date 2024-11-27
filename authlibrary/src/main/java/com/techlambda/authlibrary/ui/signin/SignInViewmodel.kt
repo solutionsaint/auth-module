@@ -93,9 +93,9 @@ class SignInViewModel @Inject constructor(
          //   _uiStates.update { it.copy(isLoading = true) }
             setLoading(true)
             val validateMessage: String = if (_uiStates.value.email.isNotEmpty() && isPhoneNumber(_uiStates.value.email)) {
-                validateSignInUsingPhone(phone = _uiStates.value.email, password = _uiStates.value.password, token = _uiStates.value.token)
+                validateSignInUsingPhone(phone = _uiStates.value.email, password = _uiStates.value.password)
             } else {
-                validateSignInUsingEmail(email = _uiStates.value.email, password = _uiStates.value.password, token = _uiStates.value.token)
+                validateSignInUsingEmail(email = _uiStates.value.email, password = _uiStates.value.password)
             }
             if (validateMessage == "Validated") {
                 val response = if(isPhoneNumber(_uiStates.value.email)){
@@ -104,7 +104,7 @@ class SignInViewModel @Inject constructor(
                             email = _uiStates.value.email,
                             password = _uiStates.value.password,
                             type = "phone",
-                            fcmToken = _uiStates.value.token!!,
+                            fcmToken = _uiStates.value.token ?: "",
                             appId = _uiStates.value.appId
                         )
                     )
@@ -114,7 +114,7 @@ class SignInViewModel @Inject constructor(
                             email = _uiStates.value.email,
                             password = _uiStates.value.password,
                             type = "email",
-                            fcmToken = _uiStates.value.token!!,
+                            fcmToken = _uiStates.value.token ?: "",
                             appId = _uiStates.value.appId
                         )
                     )
@@ -143,26 +143,22 @@ class SignInViewModel @Inject constructor(
     fun validateSignInUsingEmail(
         password: String,
         email: String,
-        token: String?
     ): String {
         return when {
             email.isEmpty() -> "Please enter Email"
             !isValidEmail(email) -> "Please enter valid Email"
             password.isEmpty() -> "Please enter Password"
-            token.isNullOrBlank() -> "Something went wrong. Please re-install"
             else -> "Validated"
         }
     }
     fun validateSignInUsingPhone(
         password: String,
         phone: String,
-        token: String?
     ): String {
         return when {
             phone.isEmpty() -> "Please enter Phone Number"
             !isValidPhoneNumber(phone) -> "Please enter valid Phone Number"
             password.isEmpty() -> "Please enter Password"
-            token.isNullOrBlank() -> "Something went wrong. Please re-install"
             else -> "Validated"
         }
     }

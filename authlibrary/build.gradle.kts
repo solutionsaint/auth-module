@@ -121,7 +121,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.25")
 
     implementation ("com.github.solutionsaint:common-library:1.1.7")
-    implementation ("com.github.solutionsaint:push-notification:1.0.3")
+    implementation ("com.github.solutionsaint:push-notification:1.0.6")
 }
 
 
@@ -132,13 +132,13 @@ afterEvaluate {
                 from(components["prodRelease"])
                 groupId = "com.github.solutionsaint"
                 artifactId = "authlibrary-prod"
-                version = "1.3.8"
+                version = "1.3.9"
             }
             create<MavenPublication>("devRelease") {
                 from(components["devRelease"])
                 groupId = "com.github.solutionsaint"
                 artifactId = "authlibrary-dev"
-                version = "1.3.8"
+                version = "1.3.9"
             }
         }
     }
