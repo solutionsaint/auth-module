@@ -92,7 +92,7 @@ fun AuthNavHost(
                             )
                         }
                     }
-                    if (signInResponse.userType.lowercase() == "admin") {
+                    if (signInResponse.userType.lowercase() == "admin" || signInResponse.userType.lowercase() == "super admin") {
                         onSignInSuccess(signInResponse)
                     } else {
                         navHostController.navigate(AppNavigation.CodeScreen)
@@ -191,7 +191,8 @@ fun AuthNavHost(
                                 name = userData.name,
                                 email = userData.email,
                                 userId = userData.userId,
-                                id = userData.id
+                                id = userData.id,
+                                userType = userData.userType
                             )
                         )
                         onCodeSuccess()
