@@ -98,7 +98,8 @@ class ProfileViewModel @Inject constructor(
                             phone = response.data?.phone ?: userObject.phone,
                             userId = userObject.userId,
                             isAdmin = userObject.isAdmin,
-                            username = userObject.username
+                            username = userObject.username,
+                            userType = userObject.userType
                         )
                     )
                     _uiEvents.send(ProfileUiEvents.UpdateSuccess)
